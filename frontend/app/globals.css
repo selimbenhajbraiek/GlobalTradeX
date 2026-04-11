@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-deep: #070a0d;
+  --panel: #0f141b;
+  --panel-2: #141b24;
+  --stroke: #223042;
+  --text: #e6edf5;
+  --muted: #8fa3bd;
+  --accent: #d4a24a;
+  --accent-soft: rgba(212, 162, 74, 0.15);
+  --glow: rgba(74, 212, 192, 0.12);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-ink text-[var(--text)] antialiased;
+  background-image:
+    radial-gradient(1200px 600px at 10% -10%, var(--glow), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(212, 162, 74, 0.08), transparent 50%),
+    linear-gradient(180deg, var(--bg-deep), #05070a 60%);
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(212, 162, 74, 0.35);
+  color: #0a0e12;
+}
+
+.glass {
+  @apply border border-line/80 bg-panel/70 backdrop-blur-md;
+}
+
+.input-field {
+  @apply w-full rounded-lg border border-line bg-rail/80 px-3 py-2.5 text-sm text-mist outline-none transition placeholder:text-mist/50 focus:border-brass/60 focus:ring-2 focus:ring-brass/20;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-lg bg-brass px-4 py-2.5 text-sm font-semibold text-ink shadow-lift transition hover:bg-[#e0b45c] active:scale-[0.99];
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center rounded-lg border border-line bg-transparent px-4 py-2.5 text-sm font-medium text-mist transition hover:border-brass/40 hover:text-[var(--text)];
+}
