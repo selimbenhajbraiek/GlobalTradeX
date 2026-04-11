@@ -25,12 +25,18 @@ const DASHBOARD_ROLE_ROUTES = new Set([
   "admin",
 ]);
 
+function normalizeRole(role) {
+  if (typeof role === "string") return role;
+  if (role && typeof role === "object" && "value" in role) return String(role.value);
+  return "";
+}
+
 function dashboardPathForRole(role) {
-  const r = typeof role === "string" ? role : "";
+  const r = normalizeRole(role);
   if (DASHBOARD_ROLE_ROUTES.has(r)) {
     return `/dashboard/${r}`;
   }
-  return "/dashboard/importateur";
+  return "/login";
 }
 
 const AuthContext = createContext(null);
@@ -74,11 +80,21 @@ export function AuthProvider({ children }) {
       Cookies.set(TOKEN_COOKIE, accessToken, {
         expires: COOKIE_EXPIRES_DAYS,
         sameSite: "lax",
+        path: "/",
       });
       setToken(accessToken);
       setUser(nextUser);
 
-      router.replace(dashboardPathForRole(nextUser?.role));
+      const nextPath = dashboardPathForRole(nextUser?.role);
+      if (nextPath === "/login") {
+        throw new Error("Invalid account role. Contact support.");
+      }
+      // Full navigation so the `token` cookie is always sent on the next request (middleware reads it).
+      if (typeof window !== "undefined") {
+        window.location.assign(nextPath);
+      } else {
+        router.replace(nextPath);
+      }
       return data;
     },
     [router]

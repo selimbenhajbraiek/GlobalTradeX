@@ -62,9 +62,29 @@ def suggest_routes(
     payload: SuggestRoutesRequest,
     _: User = Depends(get_current_user),
 ) -> SuggestRoutesResponse:
+    """Returns three example route options for the UI (carrier, cost, ETA, risk, transport_mode)."""
     return SuggestRoutesResponse(
         routes=[
-            {"mode": "sea", "summary": f"{payload.origin} → {payload.destination} (example)"},
-            {"mode": "air", "summary": "Express option (example)"},
+            {
+                "carrier": "Oceanic Freight Co.",
+                "estimated_cost": "USD 3,800",
+                "eta": "14–21 days",
+                "risk_level": "Low",
+                "transport_mode": "sea",
+            },
+            {
+                "carrier": "SkyBridge Cargo",
+                "estimated_cost": "USD 12,400",
+                "eta": "3–5 days",
+                "risk_level": "Medium",
+                "transport_mode": "air",
+            },
+            {
+                "carrier": "Continental Rail & Road",
+                "estimated_cost": "USD 5,100",
+                "eta": "10–12 days",
+                "risk_level": "Low",
+                "transport_mode": "rail",
+            },
         ]
     )

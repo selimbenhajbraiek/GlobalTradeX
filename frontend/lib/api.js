@@ -52,25 +52,55 @@ export const authApi = {
 export const shipmentsApi = {
   getAll: (params) => api.get("/api/shipments", { params }),
   create: (data) => api.post("/api/shipments", data),
-  updateStatus: (id, status) =>
-    api.patch(`/api/shipments/${id}/status`, { status }),
+  updateStatus: (id, body) =>
+    api.patch(
+      `/api/shipments/${id}/status`,
+      typeof body === "string" ? { new_status: body } : body
+    ),
   getById: (id) => api.get(`/api/shipments/${id}`),
 };
 
 export const productsApi = {
-  getAll: () => api.get("/api/products"),
+  getAll: (params) => api.get("/api/products", { params }),
+  create: (data) => api.post("/api/products", data),
+  update: (id, data) => api.put(`/api/products/${id}`, data),
+  remove: (id) => api.delete(`/api/products/${id}`),
 };
 
 /** Used by dashboard documents page */
 export const documentsApi = {
   list: () => api.get("/api/documents"),
   upload: (formData) => api.post("/api/documents/upload", formData),
+  pendingReview: () => api.get("/api/documents/pending-review"),
+  recentlyVerifiedToday: () => api.get("/api/documents/recently-verified-today"),
+  byShipment: (shipmentId) => api.get(`/api/documents/shipment/${shipmentId}`),
+  verify: (id, body) => api.patch(`/api/documents/${id}/verify`, body),
+  aiVerify: (id) => api.post(`/api/documents/${id}/ai-verify`),
 };
 
 /** Used by dashboard calculator page */
 export const calculatorApi = {
   duties: (body) => api.post("/api/calculator/duties", body),
   freight: (body) => api.post("/api/calculator/freight", body),
+};
+
+export const analyticsApi = {
+  global: () => api.get("/api/analytics/global"),
+  shipments: () => api.get("/api/analytics/shipments"),
+  documents: () => api.get("/api/analytics/documents"),
+};
+
+export const notificationsApi = {
+  list: (params) => api.get("/api/notifications", { params }),
+};
+
+export const usersApi = {
+  list: (params) => api.get("/api/users", { params }),
+  updateAdmin: (id, body) => api.patch(`/api/users/${id}`, body),
+};
+
+export const aiApi = {
+  suggestRoutes: (body) => api.post("/api/ai/suggest-routes", body),
 };
 
 export default api;

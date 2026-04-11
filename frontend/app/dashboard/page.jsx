@@ -7,13 +7,14 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 
 const ROLE_PATHS = {
+  admin: "/dashboard/admin",
   importateur: "/dashboard/importateur",
   exportateur: "/dashboard/exportateur",
   transitaire: "/dashboard/transitaire",
   courtier: "/dashboard/courtier",
-  admin: "/dashboard/admin",
-  user: "/dashboard/importateur",
 };
+
+const KNOWN_ROLES = new Set(Object.keys(ROLE_PATHS));
 
 export default function DashboardHome() {
   const { user, isLoading } = useAuth();
@@ -25,16 +26,21 @@ export default function DashboardHome() {
       router.replace("/login");
       return;
     }
-    const path = ROLE_PATHS[user.role] || "/dashboard/importateur";
-    router.replace(path);
+    const role = user.role;
+    if (!KNOWN_ROLES.has(role)) {
+      router.replace("/login");
+      return;
+    }
+    router.replace(ROLE_PATHS[role]);
   }, [user, isLoading, router]);
 
-  return (
-    <div className="flex min-h-[40vh] items-center justify-center">
-      <div className="flex flex-col items-center gap-4 text-mist">
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center">
         <LoadingSpinner />
-        <p className="text-sm">Redirection selon votre rôle…</p>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 }

@@ -16,8 +16,9 @@ export default function ProductsPage() {
     let cancelled = false;
     (async () => {
       try {
-        const { data } = await productsApi.getAll();
-        if (!cancelled) setRows(data || []);
+        const { data } = await productsApi.getAll({ page: 1, limit: 200 });
+        const list = data?.items ?? data;
+        if (!cancelled) setRows(Array.isArray(list) ? list : []);
       } catch {
         if (!cancelled) setError("Impossible de charger les produits.");
       } finally {

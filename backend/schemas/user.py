@@ -30,8 +30,14 @@ class UserResponse(BaseModel):
     full_name: str
     email: str
     role: StrEnumField
+    is_active: bool
 
     model_config = {"from_attributes": True}
+
+
+class AdminUserUpdate(BaseModel):
+    role: str | None = None
+    is_active: bool | None = None
 
 
 class Token(BaseModel):

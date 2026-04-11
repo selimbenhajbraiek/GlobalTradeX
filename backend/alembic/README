@@ -1,0 +1,35 @@
+# Alembic migrations
+
+## Apply migrations
+
+From the `backend` directory (with `.env` / `DATABASE_URL` pointing at your DB):
+
+```bash
+python -m alembic upgrade head
+```
+
+## Create a new migration after model changes
+
+```bash
+python -m alembic revision --autogenerate -m "describe_change"
+```
+
+Review the generated file under `alembic/versions/`, then run `upgrade head`.
+
+## Fresh database
+
+1. Create an empty database (e.g. MySQL schema `globaltradex`).
+2. Set `DATABASE_URL` in `.env`.
+3. If you have **no tables yet**, either:
+   - use SQLAlchemy once: `python -c "from database import Base, engine; Base.metadata.create_all(engine)"`, then `python -m alembic stamp head` so Alembic matches the current revision without re-running upgrades that assume existing tables; **or**
+   - add a migration that creates all tables (autogenerate against an empty DB), then `upgrade head`.
+
+## Database already migrated manually
+
+If you applied SQL by hand (e.g. `ALTER TABLE ... verified_at`) and Alembic would duplicate it:
+
+```bash
+python -m alembic stamp head
+```
+
+This marks the DB as up to date without executing migrations.

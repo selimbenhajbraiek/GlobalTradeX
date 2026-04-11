@@ -23,8 +23,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr" className={`${fraunces.variable} ${outfit.variable}`}>
-      <body className="font-sans">
+    <html
+      lang="fr"
+      className={`${fraunces.variable} ${outfit.variable}`}
+      suppressHydrationWarning
+    >
+      {/* Browser extensions (e.g. Grammarly) inject attributes on <body>; suppress avoids dev hydration noise */}
+      <body className="font-sans" suppressHydrationWarning>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

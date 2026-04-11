@@ -41,6 +41,7 @@ class Document(Base):
     is_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     ai_result: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
     uploaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     shipment: Mapped["Shipment | None"] = relationship(back_populates="documents")
     uploader: Mapped["User"] = relationship(

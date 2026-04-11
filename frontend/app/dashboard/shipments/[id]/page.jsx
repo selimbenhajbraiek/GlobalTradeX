@@ -44,7 +44,7 @@ export default function ShipmentDetailPage() {
     setSaving(true);
     setError("");
     try {
-      const { data } = await shipmentsApi.updateStatus(id, status);
+      const { data } = await shipmentsApi.updateStatus(id, { new_status: status });
       setRow(data);
     } catch {
       setError("Mise à jour du statut impossible.");

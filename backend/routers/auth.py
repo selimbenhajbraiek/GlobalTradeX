@@ -54,7 +54,9 @@ def login(
             detail="Invalid email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token({"sub": str(user.id)})
+    access_token = create_access_token(
+        {"sub": str(user.id), "role": user.role.value},
+    )
     return Token(
         access_token=access_token,
         token_type="bearer",

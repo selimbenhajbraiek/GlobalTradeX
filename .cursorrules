@@ -1,0 +1,360 @@
+You are helping me build GlobalTradeX, a full-stack web platform for
+international trade management. Here is everything you need to know.
+--- WHAT IS IT ---
+GlobalTradeX is a B2B SaaS platform that digitalizes and automates the
+import/export workflow for businesses in international trade.
+It connects five user types on one platform: importers, exporters,
+freight forwarders, customs brokers, and a platform admin.
+It replaces manual paperwork, email chains, and spreadsheets with a
+unified digital workspace. Each role has its own dashboard and sees
+only the data relevant to their job.
+--- THE 5 USER ROLES ---
+1. Importer: Buys goods from abroad. Creates shipments, tracks delivery,
+uploads payment documents, calculates import duties.
+2. Exporter: Sells goods abroad. Manages product catalog with HS codes,
+creates outgoing shipments, uploads commercial invoices.
+3. Freight Forwarder (Transitaire): The logistics agent. Updates shipment
+statuses in real time as cargo moves through ports and customs.
+4. Customs Broker (Courtier en Douane): The compliance specialist.
+Reviews documents, verifies completeness, uses AI to detect missing fields.
+5. Admin: Manages all user accounts, assigns roles, monitors all shipments,
+and views global analytics across the entire platform.
+--- CORE FEATURES ---
+- Shipment lifecycle: pending > in_transit > customs_hold > delivered
+- Document management: upload, store, and verify trade documents
+- AI document verification: OpenAI Vision detects missing fields
+- AI route optimizer: GPT-4o suggests 3 optimized shipping routes
+- AI chatbot: floating chat widget with role-aware context
+- AI talking avatar: D-ID video avatar with cloned voice (ElevenLabs)
+and voice input via OpenAI Whisper
+- Duty and freight calculator: estimates taxes by HS code and freight cost
+- Real-time notifications: in-app, email (SMTP), and SMS (Twilio)
+- Role-based access control: JWT + require_role() + RoleGuard component
+- Analytics: KPI cards and Chart.js charts per role
+--- PROJECT CONTEXT ---
+This is a Bachelor graduation project (Projet de Fin d'Etudes) in Tunisia.
+Goal: working features, clean code, easy to explain to a jury.
+Always generate code I can understand and present with confidence.
+Medium complexity — avoid over-engineering.
+How to use: Paste this once at the start of every new Cursor session
+Here is the full technical setup. Always follow these conventions.
+--- TECH STACK ---
+Frontend : Next.js 14, App Router, plain .jsx (no TypeScript)
+Styling : Tailwind CSS only — no custom CSS files
+Charts : Chart.js + react-chartjs-2
+HTTP : Axios — configured instance at frontend/lib/api.js
+Auth state: React Context at frontend/context/AuthContext.jsx
+Cookies : js-cookie — JWT stored as cookie named 'token'
+Icons : lucide-react
+Toasts : react-hot-toast
+Backend : Python FastAPI 0.111+
+ORM : SQLAlchemy 2.0 with declarative_base()
+DB driver: PyMySQL — connection: mysql+pymysql://root:@localhost:3306/globaltradex
+Database : MySQL 8 via XAMPP on localhost:3306, database name: globaltradex
+Auth : JWT via python-jose, passwords hashed with passlib/bcrypt
+Validation: Pydantic v2 schemas in backend/schemas/
+Uploads : FastAPI UploadFile — files saved in backend/uploads/
+AI : OpenAI Python SDK — model: gpt-4o for all AI features
+Avatar : D-ID REST API (POST https://api.d-id.com/talks)
+Voice : ElevenLabs API + OpenAI Whisper for speech-to-text
+Email : smtplib with Gmail SMTP
+SMS : Twilio Python SDK
+--- FOLDER STRUCTURE ---
+globaltradex/
+backend/
+main.py <- FastAPI app, CORS, all router registrations
+database.py <- engine, SessionLocal, Base, get_db()
+.env <- DATABASE_URL, SECRET_KEY, OPENAI_API_KEY ...
+seed_db.py <- populate DB with 5 test accounts + demo data
+models/ <- SQLAlchemy models: user.py, shipment.py ...
+schemas/ <- Pydantic schemas: user.py, shipment.py ...
+routers/ <- auth.py, users.py, shipments.py, products.py,
+documents.py, calculator.py, analytics.py, ai.py
+auth/ <- hashing.py, jwt.py, dependencies.py
+services/ <- openai_service.py, did_service.py,
+elevenlabs_service.py, email_service.py
+uploads/ <- saved uploaded files (uuid filenames)
+frontend/
+app/
+layout.jsx <- root layout, wraps AuthProvider
+page.jsx <- redirects to /login
+login/page.jsx <- login form
+register/page.jsx <- register with role selection
+dashboard/
+layout.jsx <- Sidebar + Header wrapper
+page.jsx <- smart redirect by role
+admin/page.jsx
+importateur/page.jsx
+exportateur/page.jsx
+transitaire/page.jsx
+courtier/page.jsx
+shipments/page.jsx, new/page.jsx, [id]/page.jsx
+products/page.jsx
+documents/page.jsx
+calculator/page.jsx
+components/
+layout/Sidebar.jsx, Header.jsx
+ui/KPICard.jsx, DataTable.jsx, StatusBadge.jsx, FileUpload.jsx
+RoleGuard.jsx, Chatbot.jsx, AvatarModal.jsx
+context/AuthContext.jsx
+lib/api.js
+middleware.js
+.env.local <- NEXT_PUBLIC_API_URL=http://localhost:8000
+--- KEY CONVENTIONS ---
+- All FastAPI routes use prefix /api (e.g. /api/shipments)
+- All protected routes: Depends(get_current_user) from auth/dependencies.py
+- Role checks: Depends(require_role(['rolename'])) — HTTP 403 if blocked
+- DB sessions: always db = Depends(get_db) — never create sessions manually
+- Next.js data-fetching pages: always add 'use client' at the top
+- Always use api from '@/lib/api' for calls — never raw fetch()
+- Always read user from useAuth() hook — never read cookie directly
+- Status colors: pending=orange, in_transit=blue, delivered=green,
+delayed=red, customs_hold=purple, cancelled=gray
+- All forms: loading spinner on submit, react-hot-toast on success/error
+Database name: globaltradex — MySQL 8 via XAMPP on localhost:3306.
+Root user, no password (XAMPP default).
+SQLAlchemy connection string: mysql+pymysql://root:@localhost:3306/globaltradex
+TABLE: users
+id INT PK AUTO_INCREMENT
+full_name VARCHAR(100) NOT NULL
+email VARCHAR(150) UNIQUE NOT NULL INDEX
+password_hash VARCHAR(255) NOT NULL
+role ENUM('admin','importateur','exportateur','transitaire','courtier')
+phone VARCHAR(20) nullable
+is_active BOOLEAN DEFAULT TRUE
+created_at DATETIME DEFAULT NOW()
+TABLE: products
+id INT PK AUTO_INCREMENT
+user_id INT FK -> users.id CASCADE DELETE
+name VARCHAR(200) NOT NULL
+hs_code VARCHAR(20) NOT NULL
+description TEXT nullable
+unit_price DECIMAL(10,2) NOT NULL
+quantity INT DEFAULT 0
+unit VARCHAR(20) DEFAULT 'pcs'
+origin_country VARCHAR(100) nullable
+created_at DATETIME DEFAULT NOW()
+TABLE: shipments
+id INT PK AUTO_INCREMENT
+owner_id INT FK -> users.id CASCADE DELETE
+reference VARCHAR(50) UNIQUE format: GTX-YYYYMMDD-XXXXX
+origin VARCHAR(200) NOT NULL
+destination VARCHAR(200) NOT NULL
+cargo_type ENUM('general','fragile','dangerous','perishable','oversized')
+transport_mode ENUM('air','sea','road','rail')
+status ENUM('pending','in_transit','customs_hold','delivered',
+'delayed','cancelled') DEFAULT 'pending'
+weight_kg DECIMAL(10,2) nullable
+volume_m3 DECIMAL(10,3) nullable
+estimated_value DECIMAL(15,2) nullable
+currency VARCHAR(10) DEFAULT 'USD'
+departure_date DATE nullable
+arrival_date DATE nullable
+notes TEXT nullable
+created_at DATETIME DEFAULT NOW()
+updated_at DATETIME ON UPDATE NOW()
+TABLE: documents
+id INT PK AUTO_INCREMENT
+shipment_id INT FK -> shipments.id CASCADE DELETE
+uploaded_by INT FK -> users.id
+filename VARCHAR(255) NOT NULL UUID-based filename on disk
+original_name VARCHAR(255) original filename shown to user
+file_type ENUM('invoice','certificate','bill_of_lading',
+'customs_declaration','packing_list','other')
+file_size INT nullable
+file_path VARCHAR(500) path inside uploads/
+is_verified BOOLEAN DEFAULT FALSE
+ai_result JSON nullable OpenAI verification result
+uploaded_at DATETIME DEFAULT NOW()
+TABLE: notifications
+id INT PK AUTO_INCREMENT
+user_id INT FK -> users.id CASCADE DELETE
+title VARCHAR(200) NOT NULL
+message TEXT NOT NULL
+type ENUM('info','success','warning','error') DEFAULT 'info'
+is_read BOOLEAN DEFAULT FALSE
+shipment_id INT FK -> shipments.id ON DELETE SET NULL nullable
+created_at DATETIME DEFAULT NOW()
+TABLE: shipment_products (many-to-many join)
+id INT PK AUTO_INCREMENT
+shipment_id INT FK -> shipments.id CASCADE DELETE
+product_id INT FK -> products.id CASCADE DELETE
+quantity INT DEFAULT 1
+unit_price DECIMAL(10,2) nullable
+RELATIONSHIPS:
+users (1) ---> (N) products via user_id
+users (1) ---> (N) shipments via owner_id
+users (1) ---> (N) notifications via user_id
+shipments (1) -> (N) documents via shipment_id
+shipments (N) <-> (N) products via shipment_products join table
+shipments (1) -> (N) notifications via shipment_id
+Use these exact column names and types in all SQLAlchemy models and Pydantic schemas.
+GlobalTradeX uses a professional blue-themed design. Always follow these rules.
+--- GLOBAL COLORS (Tailwind classes) ---
+Page background : bg-gray-50 (or bg-slate-50)
+Primary action : bg-blue-600 hover:bg-blue-700 text-white
+Card background : bg-white border border-gray-200 rounded-xl
+Sidebar : bg-slate-900 text-white (dark sidebar)
+Header : bg-white border-b border-gray-200 shadow-sm
+--- ROLE ACCENT COLORS ---
+Admin : bg-purple-50 border-purple-500 text-purple-800
+Importer : bg-blue-50 border-blue-500 text-blue-800
+Exporter : bg-green-50 border-green-500 text-green-800
+Freight Forwarder: bg-amber-50 border-amber-500 text-amber-800
+Customs Broker : bg-pink-50 border-pink-500 text-pink-800
+--- STATUS BADGE CLASSES ---
+pending : bg-orange-100 text-orange-700 border border-orange-300
+in_transit : bg-blue-100 text-blue-700 border border-blue-300
+customs_hold : bg-purple-100 text-purple-700 border border-purple-300
+delivered : bg-green-100 text-green-700 border border-green-300
+delayed : bg-red-100 text-red-700 border border-red-300
+cancelled : bg-gray-100 text-gray-500 border border-gray-300
+All badges : text-xs font-medium px-2.5 py-0.5 rounded-full
+--- LAYOUT STRUCTURE ---
+Sidebar width : w-64 (256px), fixed, h-screen, bg-slate-900
+Main content : ml-64 min-h-screen bg-gray-50
+Page padding : p-6 or p-8
+Header : fixed top-0 left-64 right-0 h-16 bg-white z-10
+Content with hdr : pt-16 (offset below fixed header)
+--- COMPONENT PATTERNS ---
+KPI card : bg-white rounded-xl border border-gray-200 p-5
+small icon box top-left (role accent color)
+muted label text-sm text-gray-500 mt-1
+large value text-2xl font-semibold text-gray-900
+Table : bg-white rounded-xl border border-gray-200 overflow-hidden
+thead: bg-gray-50 text-xs uppercase text-gray-500 tracking-wider
+th/td: px-6 py-3
+tbody rows: divide-y divide-gray-100 hover:bg-gray-50 transition
+Form card : bg-white rounded-xl border border-gray-200 p-6 max-w-2xl mx-auto
+Input : w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
+focus:outline-none focus:ring-2 focus:ring-blue-500
+Label : block text-sm font-medium text-gray-700 mb-1
+Error text : text-sm text-red-600 mt-1
+--- BUTTONS ---
+Primary : bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg
+text-sm font-medium transition-colors disabled:opacity-50
+Secondary : bg-white border border-gray-300 hover:bg-gray-50 text-gray-700
+px-4 py-2 rounded-lg text-sm font-medium
+Danger : bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg
+--- SIDEBAR NAV LINKS ---
+Inactive: flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300
+hover:bg-white/10 hover:text-white transition text-sm
+Active : flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-600
+text-white text-sm font-medium
+--- LOADING AND EMPTY STATES ---
+Page spinner : flex items-center justify-center h-64
+animate-spin h-8 w-8 border-4 border-blue-600
+border-t-transparent rounded-full
+Skeleton row : animate-pulse bg-gray-200 rounded h-4 w-full
+Empty state : text-center py-12 text-gray-400 text-sm
+with a relevant lucide-react icon above the message
+--- RESPONSIVE ---
+Breakpoints : sm(640) md(768) lg(1024) xl(1280)
+KPI grid : grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4
+Sidebar : hidden lg:flex on mobile, hamburger toggle
+Tables : overflow-x-auto wrapper on mobile
+Never hardcode hex colors. Always use Tailwind color classes.
+Never use inline style= for colors unless no Tailwind equivalent exists.
+Here is every feature in GlobalTradeX and how each one works.
+=== AUTHENTICATION ===
+POST /api/auth/register create account (full_name, email, password, role)
+POST /api/auth/login verify credentials, return JWT + user object
+GET /api/users/me return current user profile
+PUT /api/users/me update own profile
+JWT stored in cookie 'token', sent as Authorization: Bearer
+Token expiry: 1440 minutes (24 hours)
+=== SHIPMENT MANAGEMENT ===
+POST /api/shipments importateur + admin can create
+GET /api/shipments importateur sees own / admin sees all
+query params: status, page, limit
+GET /api/shipments/{id} owner or admin only
+PATCH /api/shipments/{id}/status transitaire + admin only
+DELETE /api/shipments/{id} admin only
+Reference format: GTX-YYYYMMDD-XXXXX (auto-generated on creation)
+Valid status transitions:
+pending -> in_transit allowed
+in_transit -> customs_hold allowed
+in_transit -> delivered allowed
+in_transit -> delayed allowed
+customs_hold -> in_transit allowed
+customs_hold -> delivered allowed
+delayed -> in_transit allowed
+delivered -> anything NOT ALLOWED (raise HTTP 400)
+=== PRODUCT CATALOG ===
+POST /api/products exportateur + admin
+GET /api/products exportateur sees own / admin sees all
+PUT /api/products/{id} owner or admin (check ownership, else 403)
+DELETE /api/products/{id} owner or admin
+=== DOCUMENT MANAGEMENT ===
+POST /api/documents/upload all roles, multipart/form-data
+saves file to uploads/ with UUID name
+GET /api/documents/{shipment_id} all roles with shipment access
+DELETE /api/documents/{id} uploader or admin
+PATCH /api/documents/{id}/verify courtier + admin
+body: {is_verified, rejection_reason}
+POST /api/documents/{id}/ai-verify courtier + admin
+calls OpenAI Vision, saves to ai_result
+ai_result JSON shape: {valid, document_type, missing_fields[], errors[], confidence}
+=== CALCULATORS ===
+POST /api/calculator/duties
+input : hs_code, origin_country, destination_country, declared_value
+output: duty_rate_percent, vat_percent, total_tax_usd
+POST /api/calculator/freight
+input : weight_kg, length_cm, width_cm, height_cm, transport_mode
+output: volumetric_weight_kg, billable_weight_kg, cost_usd, eta_days
+=== ANALYTICS ===
+GET /api/analytics/shipments current user stats (admin = all users)
+returns: {total, by_status:{pending,in_transit,...}, by_month:[]}
+GET /api/analytics/revenue estimated revenue by month
+GET /api/analytics/global admin only — platform-wide numbers
+=== NOTIFICATIONS ===
+GET /api/notifications newest first, current user
+PATCH /api/notifications/{id}/read mark one read
+PATCH /api/notifications/read-all mark all read
+Auto-created when: shipment created, status changed, document verified/rejected
+Email via Gmail SMTP on all events
+SMS via Twilio on status: in_transit, delivered, delayed
+=== AI FEATURES ===
+POST /api/ai/chat
+input : {message, history[], user_role, recent_shipments[]}
+model : gpt-4o with role-aware system prompt
+output: {response: string}
+used by: Chatbot.jsx floating widget on all pages
+POST /api/ai/suggest-routes
+input : {origin, destination, cargo_type, weight_kg, urgency}
+model : gpt-4o — returns exactly 3 routes as JSON array
+output: {routes:[{carrier,mode,cost_usd,eta_days,risk_level,notes}]}
+used by: new shipment form Step 2, calculator page
+POST /api/ai/verify-document
+input : file (image/PDF), document_type_expected
+model : gpt-4o with vision (base64 image)
+output: {valid,document_type,missing_fields[],errors[],confidence}
+used by: documents page for courtier role
+=== AVATAR AI ===
+POST /api/avatar/talk
+input : {message, user_role, recent_shipments[]}
+step 1: GPT-4o generates text response
+step 2: text sent to D-ID API (POST https://api.d-id.com/talks)
+step 3: poll D-ID until video ready (max 30 seconds)
+output: {video_url, text_response}
+frontend: AvatarModal.jsx floating button on all dashboard pages
+POST /api/avatar/transcribe
+input : audio file WAV/MP3 from browser MediaRecorder
+uses : OpenAI Whisper API
+output: {text, language}
+POST /api/avatar/speak
+input : {text, voice_id}
+uses : ElevenLabs API with user's cloned voice
+output: MP3 audio bytes
+=== FRONTEND COMPONENTS ===
+RoleGuard.jsx wraps pages, blocks wrong roles with 403 UI
+Chatbot.jsx floating bubble bottom-right, slide-in panel
+AvatarModal.jsx floating button, modal with video + mic input
+Sidebar.jsx role-aware nav — different links per role
+Header.jsx user name, role badge, notif bell, logout
+KPICard.jsx reusable stat card with icon, label, value
+DataTable.jsx generic paginated table with column config
+StatusBadge.jsx colored pill for shipment status values
+FileUpload.jsx drag-and-drop uploader with progress bar
+When I ask you to build any feature, use this list to understand
+what other parts it connects to and which API endpoints it calls.

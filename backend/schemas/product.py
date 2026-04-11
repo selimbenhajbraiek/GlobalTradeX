@@ -5,8 +5,8 @@ from pydantic import BaseModel, Field
 
 
 class ProductCreate(BaseModel):
-    name: str
-    hs_code: str = ""
+    name: str = Field(..., min_length=1, max_length=255)
+    hs_code: str = Field(..., min_length=6, max_length=10)
     description: str | None = None
     unit_price: Decimal = Field(default=Decimal("0"), ge=0)
     quantity: int = Field(default=1, ge=0)
@@ -15,8 +15,8 @@ class ProductCreate(BaseModel):
 
 
 class ProductUpdate(BaseModel):
-    name: str | None = None
-    hs_code: str | None = None
+    name: str | None = Field(None, min_length=1, max_length=255)
+    hs_code: str | None = Field(None, min_length=6, max_length=10)
     description: str | None = None
     unit_price: Decimal | None = Field(default=None, ge=0)
     quantity: int | None = Field(default=None, ge=0)
@@ -37,3 +37,10 @@ class ProductResponse(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class ProductListResponse(BaseModel):
+    items: list[ProductResponse]
+    total: int
+    page: int
+    limit: int

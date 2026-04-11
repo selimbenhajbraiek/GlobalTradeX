@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from config import get_settings
-from database import Base, engine, get_db
+from database import engine, get_db
 from models import Document, Notification, Product, Shipment, User  # noqa: F401 — register mappers
 from routers import api_router, auth as auth_router
 
@@ -20,7 +20,7 @@ logger = logging.getLogger("globaltradex")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Base.metadata.create_all(bind=engine)
+    # Schema: apply migrations with `alembic upgrade head` (see backend/alembic/README).
     yield
 
 
