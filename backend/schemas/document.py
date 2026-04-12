@@ -32,6 +32,7 @@ class DocumentResponse(BaseModel):
     ai_result: dict[str, Any] | None
     uploaded_at: datetime
     verified_at: datetime | None = None
+    uploader_name: str | None = None
 
     model_config = {"from_attributes": True}
 

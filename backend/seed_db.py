@@ -11,7 +11,7 @@ from database import SessionLocal
 from models import (
     CargoType,
     Document,
-    DocumentFileType,
+    TradeDocumentType,
     Notification,
     NotificationType,
     Product,
@@ -227,7 +227,7 @@ def seed() -> None:
                     uploaded_by=importer.id,
                     filename=ds["filename"],
                     original_name=ds["original_name"],
-                    file_type=DocumentFileType.pdf,
+                    file_type=TradeDocumentType.commercial_invoice,
                     file_size=size,
                     file_path=ds["file_path"],
                     is_verified=False,

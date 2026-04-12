@@ -1,9 +1,9 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy import func, select, text
+from sqlalchemy.orm import Session, joinedload
 
 from auth.dependencies import get_current_user, require_role
 from database import get_db
@@ -37,6 +37,12 @@ def _next_month_start(dt: datetime) -> datetime:
     return _month_start_utc(*_add_months(dt.year, dt.month, 1))
 
 
+def _mom_percent(current: int, previous: int) -> float:
+    if previous == 0:
+        return round(100.0, 1) if current > 0 else 0.0
+    return round(((current - previous) / previous) * 100, 1)
+
+
 @router.get("/summary")
 def analytics_summary(
     db: Session = Depends(get_db),
@@ -60,47 +66,207 @@ def analytics_global(
     db: Session = Depends(get_db),
     _: User = _admin_only,
 ) -> dict:
-    """Global revenue / volume analytics (admin only)."""
-    total_shipments = db.scalar(select(func.count()).select_from(Shipment)) or 0
-    total_users = db.scalar(select(func.count()).select_from(User)) or 0
-    total_docs = db.scalar(select(func.count()).select_from(Document)) or 0
-    revenue = db.scalar(select(func.coalesce(func.sum(Shipment.estimated_value), 0))) or Decimal("0")
-    if isinstance(revenue, float):
-        revenue = Decimal(str(revenue))
-    rows = db.execute(
-        select(Shipment.status, func.count()).group_by(Shipment.status)
+    """Platform-wide KPIs (admin only)."""
+    now_utc = datetime.now(timezone.utc)
+
+    total_users = db.scalar(select(func.count()).select_from(User).where(User.is_active.is_(True))) or 0
+
+    role_rows = db.execute(
+        select(User.role, func.count()).where(User.is_active.is_(True)).group_by(User.role)
     ).all()
-    by_status = {
-        (row[0].value if hasattr(row[0], "value") else str(row[0])): row[1] for row in rows
-    }
-    delayed = int(by_status.get("delayed", 0))
-    delay_rate_percent = (
-        round((delayed / total_shipments) * 100, 2) if total_shipments else 0.0
+    users_by_role: dict[str, int] = {r.value: 0 for r in UserRole}
+    for row in role_rows:
+        key = row[0].value if hasattr(row[0], "value") else str(row[0])
+        users_by_role[key] = int(row[1])
+
+    total_shipments = db.scalar(select(func.count()).select_from(Shipment)) or 0
+
+    ship_rows = db.execute(select(Shipment.status, func.count()).group_by(Shipment.status)).all()
+    shipments_by_status: dict[str, int] = {s.value: 0 for s in ShipmentStatus}
+    for row in ship_rows:
+        key = row[0].value if hasattr(row[0], "value") else str(row[0])
+        shipments_by_status[key] = int(row[1])
+
+    shipments_by_month: list[dict[str, int | str]] = []
+    for delta in range(-5, 1):
+        yy, mm = _add_months(now_utc.year, now_utc.month, delta)
+        start = _month_start_utc(yy, mm)
+        end = _next_month_start(start)
+        cnt = (
+            db.scalar(
+                select(func.count())
+                .select_from(Shipment)
+                .where(Shipment.created_at >= start, Shipment.created_at < end)
+            )
+            or 0
+        )
+        shipments_by_month.append({"month": f"{yy}-{mm:02d}", "count": int(cnt)})
+
+    total_declared_value_usd = (
+        db.scalar(select(func.coalesce(func.sum(Shipment.estimated_value), 0)).select_from(Shipment)) or Decimal("0")
+    )
+    if isinstance(total_declared_value_usd, float):
+        total_declared_value_usd = Decimal(str(total_declared_value_usd))
+
+    avg_delivery_days = 0.0
+    try:
+        raw_avg = db.execute(
+            text(
+                "SELECT AVG(TIMESTAMPDIFF(DAY, created_at, updated_at)) "
+                "FROM shipments WHERE status = 'delivered'"
+            )
+        ).scalar()
+        if raw_avg is not None:
+            avg_delivery_days = round(float(raw_avg), 2)
+    except Exception:
+        delivered_rows = db.execute(
+            select(Shipment.created_at, Shipment.updated_at).where(Shipment.status == ShipmentStatus.delivered)
+        ).all()
+        if delivered_rows:
+            acc = 0.0
+            for c_at, u_at in delivered_rows:
+                if c_at and u_at:
+                    acc += max(0.0, (u_at - c_at).total_seconds() / 86400.0)
+            avg_delivery_days = round(acc / len(delivered_rows), 2)
+
+    delayed = int(shipments_by_status.get("delayed", 0))
+    delay_rate_percent = round((delayed / total_shipments) * 100, 2) if total_shipments else 0.0
+
+    documents_total = db.scalar(select(func.count()).select_from(Document)) or 0
+    documents_verified = (
+        db.scalar(select(func.count()).select_from(Document).where(Document.is_verified.is_(True))) or 0
+    )
+    docs_with_ai = (
+        db.scalar(select(func.count()).select_from(Document).where(Document.ai_result.isnot(None))) or 0
+    )
+    ai_verification_rate = (
+        round((docs_with_ai / documents_total) * 100, 2) if documents_total else 0.0
     )
 
-    now_utc = datetime.now(timezone.utc)
     cur_start = _month_start_utc(now_utc.year, now_utc.month)
     cur_end = _next_month_start(cur_start)
-    monthly_rev = (
+    prev_y, prev_m = _add_months(now_utc.year, now_utc.month, -1)
+    prev_start = _month_start_utc(prev_y, prev_m)
+    prev_end = cur_start
+
+    users_tm = (
         db.scalar(
-            select(func.coalesce(func.sum(Shipment.estimated_value), 0)).where(
+            select(func.count())
+            .select_from(User)
+            .where(User.created_at >= cur_start, User.created_at < cur_end)
+        )
+        or 0
+    )
+    users_lm = (
+        db.scalar(
+            select(func.count())
+            .select_from(User)
+            .where(User.created_at >= prev_start, User.created_at < prev_end)
+        )
+        or 0
+    )
+
+    ship_tm = (
+        db.scalar(
+            select(func.count())
+            .select_from(Shipment)
+            .where(Shipment.created_at >= cur_start, Shipment.created_at < cur_end)
+        )
+        or 0
+    )
+    ship_lm = (
+        db.scalar(
+            select(func.count())
+            .select_from(Shipment)
+            .where(Shipment.created_at >= prev_start, Shipment.created_at < prev_end)
+        )
+        or 0
+    )
+
+    val_tm = (
+        db.scalar(
+            select(func.coalesce(func.sum(Shipment.estimated_value), 0))
+            .select_from(Shipment)
+            .where(Shipment.created_at >= cur_start, Shipment.created_at < cur_end)
+        )
+        or Decimal("0")
+    )
+    val_lm = (
+        db.scalar(
+            select(func.coalesce(func.sum(Shipment.estimated_value), 0))
+            .select_from(Shipment)
+            .where(Shipment.created_at >= prev_start, Shipment.created_at < prev_end)
+        )
+        or Decimal("0")
+    )
+    if isinstance(val_tm, float):
+        val_tm = Decimal(str(val_tm))
+    if isinstance(val_lm, float):
+        val_lm = Decimal(str(val_lm))
+    val_tm_i = int(val_tm)
+    val_lm_i = int(val_lm)
+
+    delayed_tm = (
+        db.scalar(
+            select(func.count())
+            .select_from(Shipment)
+            .where(
+                Shipment.status == ShipmentStatus.delayed,
+                Shipment.updated_at >= cur_start,
+                Shipment.updated_at < cur_end,
+            )
+        )
+        or 0
+    )
+    delayed_lm = (
+        db.scalar(
+            select(func.count())
+            .select_from(Shipment)
+            .where(
+                Shipment.status == ShipmentStatus.delayed,
+                Shipment.updated_at >= prev_start,
+                Shipment.updated_at < prev_end,
+            )
+        )
+        or 0
+    )
+
+    kpi_trends = {
+        "users_percent": _mom_percent(users_tm, users_lm),
+        "shipments_percent": _mom_percent(ship_tm, ship_lm),
+        "declared_value_percent": _mom_percent(val_tm_i, val_lm_i),
+        "delays_percent": _mom_percent(delayed_tm, delayed_lm),
+    }
+
+    monthly_revenue = (
+        db.scalar(
+            select(func.coalesce(func.sum(Shipment.estimated_value), 0))
+            .select_from(Shipment)
+            .where(
                 Shipment.created_at >= cur_start,
                 Shipment.created_at < cur_end,
             )
         )
         or Decimal("0")
     )
-    if isinstance(monthly_rev, float):
-        monthly_rev = Decimal(str(monthly_rev))
+    if isinstance(monthly_revenue, float):
+        monthly_revenue = Decimal(str(monthly_revenue))
 
     return {
-        "total_users": total_users,
-        "total_shipments": total_shipments,
-        "total_documents": total_docs,
-        "total_estimated_value": str(revenue),
-        "shipments_by_status": by_status,
+        "total_users": int(total_users),
+        "users_by_role": users_by_role,
+        "total_shipments": int(total_shipments),
+        "shipments_by_status": shipments_by_status,
+        "shipments_by_month": shipments_by_month,
+        "total_declared_value_usd": str(total_declared_value_usd),
+        "total_estimated_value": str(total_declared_value_usd),
+        "monthly_revenue": str(monthly_revenue),
+        "avg_delivery_days": avg_delivery_days,
         "delay_rate_percent": delay_rate_percent,
-        "monthly_revenue": str(monthly_rev),
+        "documents_total": int(documents_total),
+        "documents_verified": int(documents_verified),
+        "ai_verification_rate": ai_verification_rate,
+        "kpi_trends": kpi_trends,
     }
 
 
@@ -122,36 +288,52 @@ def analytics_user_shipments(
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ) -> dict:
-    """KPIs and monthly counts — owner-scoped, except freight forwarder (global shipment stats)."""
-    is_forwarder = current.role == UserRole.transitaire
+    """KPIs and monthly counts — admin & transitaire: all shipments; others: own only."""
     owner = current.id
 
-    def _ship_scope(stmt):
-        if is_forwarder:
+    if current.role == UserRole.admin or current.role == UserRole.transitaire:
+
+        def _ship_scope(stmt):
             return stmt
-        return stmt.where(Shipment.owner_id == owner)
+    else:
+
+        def _ship_scope(stmt):
+            return stmt.where(Shipment.owner_id == owner)
 
     total = db.scalar(_ship_scope(select(func.count()).select_from(Shipment))) or 0
 
-    gq = select(Shipment.status, func.count()).select_from(Shipment)
-    if not is_forwarder:
-        gq = gq.where(Shipment.owner_id == owner)
+    gq = _ship_scope(select(Shipment.status, func.count()).select_from(Shipment))
     rows = db.execute(gq.group_by(Shipment.status)).all()
-    by_status = {
-        (row[0].value if hasattr(row[0], "value") else str(row[0])): int(row[1]) for row in rows
-    }
+    by_status: dict[str, int] = {s.value: 0 for s in ShipmentStatus}
+    for row in rows:
+        key = row[0].value if hasattr(row[0], "value") else str(row[0])
+        by_status[key] = int(row[1])
     pending = by_status.get("pending", 0)
     in_transit = by_status.get("in_transit", 0)
     delivered = by_status.get("delivered", 0)
 
     now_utc = datetime.now(timezone.utc)
+    start_today = now_utc.replace(hour=0, minute=0, second=0, microsecond=0)
+    end_today = start_today + timedelta(days=1)
+    delivered_today = (
+        db.scalar(
+            _ship_scope(
+                select(func.count())
+                .select_from(Shipment)
+                .where(
+                    Shipment.status == ShipmentStatus.delivered,
+                    Shipment.updated_at >= start_today,
+                    Shipment.updated_at < end_today,
+                )
+            )
+        )
+        or 0
+    )
 
     total_products = (
         0
-        if is_forwarder
-        else (
-            db.scalar(select(func.count()).select_from(Product).where(Product.user_id == owner)) or 0
-        )
+        if current.role in (UserRole.admin, UserRole.transitaire)
+        else (db.scalar(select(func.count()).select_from(Product).where(Product.user_id == owner)) or 0)
     )
 
     active_scope = (
@@ -225,8 +407,36 @@ def analytics_user_shipments(
             rev = Decimal(str(rev))
         revenue_by_month.append({"month": f"{yy}-{mm:02d}", "revenue": float(rev)})
 
+    recent_q = (
+        _ship_scope(select(Shipment))
+        .options(joinedload(Shipment.owner))
+        .order_by(Shipment.created_at.desc())
+        .limit(10)
+    )
+    recent_rows = db.scalars(recent_q).unique().all()
+    recent_shipments = []
+    for s in recent_rows:
+        own = s.owner
+        recent_shipments.append(
+            {
+                "id": s.id,
+                "reference": s.reference,
+                "owner_id": s.owner_id,
+                "owner_name": own.full_name if own else "",
+                "owner_email": own.email if own else "",
+                "origin": s.origin,
+                "destination": s.destination,
+                "status": s.status.value if hasattr(s.status, "value") else str(s.status),
+                "estimated_value": str(s.estimated_value) if s.estimated_value is not None else None,
+                "currency": s.currency,
+                "created_at": s.created_at.isoformat() if s.created_at else None,
+            }
+        )
+
     return {
+        "total": int(total),
         "total_shipments": int(total),
+        "by_status": by_status,
         "pending": pending,
         "in_transit": in_transit,
         "delivered": delivered,
@@ -236,6 +446,9 @@ def analytics_user_shipments(
         "delivered_this_month": int(delivered_this_month),
         "revenue_by_month": revenue_by_month,
         "delayed": int(by_status.get("delayed", 0)),
+        "delivered_today": int(delivered_today),
+        "recent_shipments": recent_shipments,
+        "recent_5": recent_shipments[:5],
     }
 
 

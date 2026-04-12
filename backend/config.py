@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     smtp_user: str = ""
     smtp_password: str = ""
     sms_api_key: str = ""
+    twilio_account_sid: str = ""
+    twilio_auth_token: str = ""
+    twilio_from_number: str = ""
 
 
 @lru_cache

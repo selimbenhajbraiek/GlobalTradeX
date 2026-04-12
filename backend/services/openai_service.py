@@ -114,3 +114,43 @@ class OpenAIService:
                 "errors": [str(e)],
                 "confidence": 0.0,
             }
+
+    def suggest_freight_routes(
+        self,
+        *,
+        origin: str,
+        destination: str,
+        cargo_type: str,
+        weight_kg: float,
+        urgency: str,
+        model: str = "gpt-4o",
+    ) -> dict[str, Any]:
+        """Ask GPT-4o for exactly 3 freight routes as a JSON array (raw model reply)."""
+        if not self._settings.openai_api_key:
+            logger.warning("OpenAI API key not set")
+            return {"text": "", "error": "OPENAI_API_KEY not configured"}
+        system_prompt = (
+            f"You are a freight routing expert. Given a shipment from {origin} to {destination}, "
+            f"cargo type {cargo_type}, weight {weight_kg}kg, urgency {urgency}, "
+            "suggest exactly 3 shipping routes as a JSON array. Each route must have: "
+            "carrier (string), mode (air/sea/road/rail), cost_usd (number), "
+            "eta_days (number), risk_level (low/medium/high), notes (string). "
+            "Return ONLY the JSON array, no other text."
+        )
+        try:
+            from openai import OpenAI
+
+            client = OpenAI(api_key=self._settings.openai_api_key)
+            completion = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": "Return the JSON array now."},
+                ],
+                temperature=0.4,
+            )
+            text = completion.choices[0].message.content or ""
+            return {"text": text.strip(), "error": None}
+        except Exception as e:
+            logger.exception("OpenAI suggest_freight_routes failed: %s", e)
+            return {"text": "", "error": str(e)}

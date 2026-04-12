@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import and_, func, select
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import Session
 
 from auth.dependencies import get_current_user, require_role
@@ -11,6 +11,7 @@ from schemas.product import ProductCreate, ProductListResponse, ProductResponse,
 router = APIRouter()
 
 _product_authors = Depends(require_role(["exportateur", "admin"]))
+_product_managers = Depends(require_role(["exportateur", "admin"]))
 
 
 def _is_admin(user: User) -> bool:
@@ -25,7 +26,14 @@ def _product_filters(
     if not _is_admin(current):
         conds.append(Product.user_id == current.id)
     if search and search.strip():
-        conds.append(Product.name.ilike(f"%{search.strip()}%"))
+        term = f"%{search.strip()}%"
+        conds.append(
+            or_(
+                Product.name.ilike(term),
+                Product.hs_code.ilike(term),
+                Product.origin_country.ilike(term),
+            )
+        )
     return conds
 
 
@@ -48,7 +56,7 @@ def list_products(
     current: User = Depends(get_current_user),
     search: str | None = Query(None, description="Filter by product name"),
     page: int = Query(1, ge=1),
-    limit: int = Query(50, ge=1, le=100),
+    limit: int = Query(50, ge=1, le=500),
 ) -> ProductListResponse:
     conds = _product_filters(current, search)
     count_q = select(func.count()).select_from(Product)
@@ -89,7 +97,7 @@ def update_product(
     product_id: int,
     payload: ProductUpdate,
     db: Session = Depends(get_db),
-    current: User = Depends(get_current_user),
+    current: User = _product_managers,
 ) -> Product:
     p = db.get(Product, product_id)
     if p is None:
@@ -110,7 +118,7 @@ def update_product(
 def delete_product(
     product_id: int,
     db: Session = Depends(get_db),
-    current: User = Depends(get_current_user),
+    current: User = _product_managers,
 ) -> None:
     p = db.get(Product, product_id)
     if p is None:

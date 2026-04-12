@@ -1,4 +1,5 @@
 import enum
+from datetime import datetime
 from typing import Annotated
 
 from pydantic import BaseModel, BeforeValidator, EmailStr, Field
@@ -31,6 +32,7 @@ class UserResponse(BaseModel):
     email: str
     role: StrEnumField
     is_active: bool
+    created_at: datetime
 
     model_config = {"from_attributes": True}
 

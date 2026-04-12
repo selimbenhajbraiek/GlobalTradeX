@@ -24,3 +24,7 @@ class Product(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     user: Mapped["User"] = relationship(back_populates="products")
+    shipment_products: Mapped[list["ShipmentProduct"]] = relationship(
+        back_populates="product",
+        cascade="all, delete-orphan",
+    )

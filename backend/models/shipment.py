@@ -60,8 +60,13 @@ class Shipment(Base):
     weight_kg: Mapped[Decimal | None] = mapped_column(Numeric(10, 2), nullable=True)
     volume_m3: Mapped[Decimal | None] = mapped_column(Numeric(10, 3), nullable=True)
     estimated_value: Mapped[Decimal | None] = mapped_column(Numeric(15, 2), nullable=True)
+    currency: Mapped[str] = mapped_column(String(10), nullable=False, default="USD")
+    freight_estimate_usd: Mapped[Decimal | None] = mapped_column(Numeric(15, 2), nullable=True)
     departure_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     arrival_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    vessel_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    voyage_number: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    eta_update: Mapped[date | None] = mapped_column(Date, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
@@ -76,4 +81,8 @@ class Shipment(Base):
     notifications: Mapped[list["Notification"]] = relationship(
         back_populates="shipment",
         foreign_keys="Notification.shipment_id",
+    )
+    shipment_products: Mapped[list["ShipmentProduct"]] = relationship(
+        back_populates="shipment",
+        cascade="all, delete-orphan",
     )

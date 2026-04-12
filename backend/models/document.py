@@ -10,13 +10,19 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database import Base
 
 
-class DocumentFileType(str, enum.Enum):
-    pdf = "pdf"
-    image = "image"
-    spreadsheet = "spreadsheet"
-    word = "word"
-    archive = "archive"
+class TradeDocumentType(str, enum.Enum):
+    """Exporter / trade classification for uploaded files."""
+
+    commercial_invoice = "commercial_invoice"
+    packing_list = "packing_list"
+    certificate_of_origin = "certificate_of_origin"
+    bill_of_lading = "bill_of_lading"
+    customs_declaration = "customs_declaration"
     other = "other"
+
+
+# Backwards compatibility for imports
+DocumentFileType = TradeDocumentType
 
 
 class Document(Base):
@@ -31,10 +37,10 @@ class Document(Base):
     uploaded_by: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     filename: Mapped[str] = mapped_column(String(512), nullable=False)
     original_name: Mapped[str] = mapped_column(String(512), nullable=False)
-    file_type: Mapped[DocumentFileType] = mapped_column(
-        Enum(DocumentFileType, values_callable=lambda obj: [e.value for e in obj], native_enum=False),
+    file_type: Mapped[TradeDocumentType] = mapped_column(
+        Enum(TradeDocumentType, values_callable=lambda obj: [e.value for e in obj], native_enum=False),
         nullable=False,
-        default=DocumentFileType.other,
+        default=TradeDocumentType.other,
     )
     file_size: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     file_path: Mapped[str] = mapped_column(String(1024), nullable=False)

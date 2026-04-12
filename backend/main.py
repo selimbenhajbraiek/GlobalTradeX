@@ -12,7 +12,14 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from config import get_settings
 from database import engine, get_db
-from models import Document, Notification, Product, Shipment, User  # noqa: F401 — register mappers
+from models import (  # noqa: F401 — register mappers
+    Document,
+    Notification,
+    Product,
+    Shipment,
+    ShipmentProduct,
+    User,
+)
 from routers import api_router, auth as auth_router
 
 logger = logging.getLogger("globaltradex")

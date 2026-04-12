@@ -70,10 +70,19 @@ export const productsApi = {
 /** Used by dashboard documents page */
 export const documentsApi = {
   list: () => api.get("/api/documents"),
-  upload: (formData) => api.post("/api/documents/upload", formData),
+  upload: (formData, onUploadProgress) =>
+    api.post("/api/documents/upload", formData, {
+      onUploadProgress: (evt) => {
+        if (onUploadProgress && evt.total) {
+          onUploadProgress(Math.round((evt.loaded / evt.total) * 100));
+        }
+      },
+    }),
+  byShipment: (shipmentId) => api.get(`/api/documents/shipment/${shipmentId}`),
+  download: (id) => api.get(`/api/documents/${id}/download`, { responseType: "blob" }),
+  remove: (id) => api.delete(`/api/documents/${id}`),
   pendingReview: () => api.get("/api/documents/pending-review"),
   recentlyVerifiedToday: () => api.get("/api/documents/recently-verified-today"),
-  byShipment: (shipmentId) => api.get(`/api/documents/shipment/${shipmentId}`),
   verify: (id, body) => api.patch(`/api/documents/${id}/verify`, body),
   aiVerify: (id) => api.post(`/api/documents/${id}/ai-verify`),
 };
@@ -96,11 +105,13 @@ export const notificationsApi = {
 
 export const usersApi = {
   list: (params) => api.get("/api/users", { params }),
+  create: (data) => api.post("/api/users", data),
   updateAdmin: (id, body) => api.patch(`/api/users/${id}`, body),
 };
 
 export const aiApi = {
   suggestRoutes: (body) => api.post("/api/ai/suggest-routes", body),
+  chat: (body) => api.post("/api/ai/chat", body),
 };
 
 export default api;

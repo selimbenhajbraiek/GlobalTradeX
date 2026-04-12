@@ -106,6 +106,13 @@ const NAV_ITEMS = [
     roles: ["exportateur"],
   },
   {
+    key: "exp-new-shipment",
+    label: "New Shipment",
+    href: "/dashboard/shipments/new",
+    icon: PlusCircle,
+    roles: ["exportateur"],
+  },
+  {
     key: "exp-docs",
     label: "My Documents",
     href: "/dashboard/documents",

@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class ProductCreate(BaseModel):
@@ -13,6 +13,13 @@ class ProductCreate(BaseModel):
     unit: str = Field(default="pcs", max_length=32)
     origin_country: str = Field(default="", max_length=100)
 
+    @field_validator("hs_code", mode="before")
+    @classmethod
+    def strip_hs_code(cls, v: object) -> object:
+        if isinstance(v, str):
+            return v.strip()
+        return v
+
 
 class ProductUpdate(BaseModel):
     name: str | None = Field(None, min_length=1, max_length=255)
@@ -22,6 +29,13 @@ class ProductUpdate(BaseModel):
     quantity: int | None = Field(default=None, ge=0)
     unit: str | None = Field(default=None, max_length=32)
     origin_country: str | None = Field(default=None, max_length=100)
+
+    @field_validator("hs_code", mode="before")
+    @classmethod
+    def strip_hs_code_optional(cls, v: object) -> object:
+        if isinstance(v, str):
+            return v.strip()
+        return v
 
 
 class ProductResponse(BaseModel):
