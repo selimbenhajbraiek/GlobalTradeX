@@ -34,8 +34,14 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     shipments: Mapped[list["Shipment"]] = relationship(
+        foreign_keys="Shipment.owner_id",
         back_populates="owner",
         cascade="all, delete-orphan",
+    )
+    export_shipments: Mapped[list["Shipment"]] = relationship(
+        "Shipment",
+        foreign_keys="Shipment.exporter_user_id",
+        back_populates="exporter",
     )
     products: Mapped[list["Product"]] = relationship(
         back_populates="user",

@@ -4,11 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { useAuth } from "@/context/AuthContext";
+import { CompactLanguageSwitcher } from "@/components/i18n/CompactLanguageSwitcher";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useAuth } from "@/context/AuthContext";
+import { useLocale } from "@/context/LocaleContext";
 
 export default function RegisterPage() {
   const { register } = useAuth();
+  const { t } = useLocale();
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -27,8 +30,8 @@ export default function RegisterPage() {
       const raw = err?.response?.data?.detail;
       const msg = Array.isArray(raw)
         ? raw.map((d) => d.msg || d).join(", ")
-        : raw || err?.message || "Inscription impossible.";
-      setError(typeof msg === "string" ? msg : "Erreur d’inscription");
+        : raw || err?.message || t("register.failed");
+      setError(typeof msg === "string" ? msg : t("register.failed"));
     } finally {
       setPending(false);
     }
@@ -36,21 +39,19 @@ export default function RegisterPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-16">
-      <div className="glass rounded-2xl p-8 shadow-lift">
-        <p className="font-display text-xs uppercase tracking-[0.35em] text-brass/90">
-          GlobalTradeX
-        </p>
-        <h1 className="mt-3 font-display text-3xl font-semibold text-[var(--text)]">
-          Inscription
-        </h1>
-        <p className="mt-2 text-sm text-mist">
-          Créez un compte pour suivre expéditions, documents et calculs.
-        </p>
+      <div className="relative glass rounded-2xl p-8 shadow-lift">
+        <div className="absolute end-3 top-3">
+          <CompactLanguageSwitcher variant="light" />
+        </div>
+
+        <p className="pt-6 font-display text-xs uppercase tracking-[0.35em] text-brass/90">GlobalTradeX</p>
+        <h1 className="mt-3 font-display text-3xl font-semibold text-[var(--text)]">{t("register.title")}</h1>
+        <p className="mt-2 text-sm text-mist">{t("register.subtitle")}</p>
 
         <form className="mt-8 space-y-4" onSubmit={onSubmit}>
           <div>
             <label className="text-xs font-medium text-mist" htmlFor="fullName">
-              Nom complet
+              {t("register.fullName")}
             </label>
             <input
               id="fullName"
@@ -63,7 +64,7 @@ export default function RegisterPage() {
           </div>
           <div>
             <label className="text-xs font-medium text-mist" htmlFor="email">
-              E-mail
+              {t("auth.email")}
             </label>
             <input
               id="email"
@@ -78,7 +79,7 @@ export default function RegisterPage() {
           </div>
           <div>
             <label className="text-xs font-medium text-mist" htmlFor="password">
-              Mot de passe (min. 8 caractères)
+              {t("register.passwordHint")}
             </label>
             <input
               id="password"
@@ -101,18 +102,18 @@ export default function RegisterPage() {
             {pending ? (
               <span className="flex items-center justify-center gap-2">
                 <LoadingSpinner className="h-4 w-4 border-2 border-ink/30 border-t-ink" />
-                Création…
+                {t("register.creating")}
               </span>
             ) : (
-              "Créer le compte"
+              t("register.submit")
             )}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-mist">
-          Déjà inscrit ?{" "}
+          {t("register.alreadyHave")}{" "}
           <Link href="/login" className="font-medium text-brass hover:underline">
-            Se connecter
+            {t("register.signInLink")}
           </Link>
         </p>
       </div>

@@ -37,10 +37,14 @@ def _is_admin(user: User) -> bool:
 def _can_access_shipment_docs(current: User, shipment_id: int | None, db: Session) -> bool:
     if shipment_id is None:
         return False
-    if _is_admin(current) or current.role == UserRole.courtier:
+    if _is_admin(current) or current.role in (UserRole.courtier, UserRole.transitaire):
         return True
     sh = db.get(Shipment, shipment_id)
-    return bool(sh and sh.owner_id == current.id)
+    if not sh:
+        return False
+    if sh.owner_id == current.id:
+        return True
+    return sh.exporter_user_id == current.id
 
 
 def _can_read_document(current: User, doc: Document, db: Session) -> bool:
@@ -50,7 +54,11 @@ def _can_read_document(current: User, doc: Document, db: Session) -> bool:
         return True
     if doc.shipment_id:
         sh = db.get(Shipment, doc.shipment_id)
-        if sh and sh.owner_id == current.id:
+        if sh and (
+            sh.owner_id == current.id
+            or sh.exporter_user_id == current.id
+            or current.role == UserRole.transitaire
+        ):
             return True
     return False
 
@@ -124,7 +132,13 @@ async def upload_document(
     sh = db.get(Shipment, shipment_id)
     if sh is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Shipment not found")
-    if sh.owner_id != current.id and not _is_admin(current) and current.role != UserRole.transitaire:
+    allowed_uploader = (
+        sh.owner_id == current.id
+        or sh.exporter_user_id == current.id
+        or _is_admin(current)
+        or current.role == UserRole.transitaire
+    )
+    if not allowed_uploader:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can only upload documents to your own shipments",

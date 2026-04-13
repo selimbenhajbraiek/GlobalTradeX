@@ -14,7 +14,7 @@ python -m alembic upgrade head
 python -m alembic revision --autogenerate -m "describe_change"
 ```
 
-Review the generated file under `alembic/versions/`, then run `upgrade head`.
+Review the generated file under `migrations/versions/`, then run `upgrade head`.
 
 ## Fresh database
 

@@ -1,6 +1,7 @@
 """Populate MySQL (or configured DB) with demo data. Run from backend/: python seed_db.py"""
 
 import os
+from datetime import date
 from decimal import Decimal
 from pathlib import Path
 
@@ -16,6 +17,7 @@ from models import (
     NotificationType,
     Product,
     Shipment,
+    ShipmentProduct,
     ShipmentStatus,
     TransportMode,
     User,
@@ -61,6 +63,52 @@ DEMO_ACCOUNTS = [
         "role": UserRole.courtier,
         "full_name": "Demo Customs Broker",
         "dashboard_path": "/dashboard/courtier",
+    },
+]
+
+# End-to-end walkthrough: TunisOlive (Fatima) → FreshMart (Klaus), MedTrans (Karim), broker, admin.
+GTX_TUNISOLIVE_REF = "GTX-20240315-00042"
+
+SCENARIO_ACCOUNTS = [
+    {
+        "email": "klaus.weber@scenario.globaltradex.com",
+        "password": "Test123!",
+        "role": UserRole.importateur,
+        "full_name": "Klaus Weber",
+        "phone": "+4917011122233",
+        "dashboard_path": "/dashboard/importateur",
+    },
+    {
+        "email": "fatima.benali@scenario.globaltradex.com",
+        "password": "Test123!",
+        "role": UserRole.exportateur,
+        "full_name": "Fatima Ben Ali",
+        "phone": "+216711223344",
+        "dashboard_path": "/dashboard/exportateur",
+    },
+    {
+        "email": "karim.mansour@scenario.globaltradex.com",
+        "password": "Test123!",
+        "role": UserRole.transitaire,
+        "full_name": "Karim Mansour",
+        "phone": "+216722334455",
+        "dashboard_path": "/dashboard/transitaire",
+    },
+    {
+        "email": "amira.benbrahim@scenario.globaltradex.com",
+        "password": "Test123!",
+        "role": UserRole.courtier,
+        "full_name": "Amira Ben Brahim",
+        "phone": None,
+        "dashboard_path": "/dashboard/courtier",
+    },
+    {
+        "email": "sami.trabelsi@scenario.globaltradex.com",
+        "password": "Admin123!",
+        "role": UserRole.admin,
+        "full_name": "Sami Trabelsi",
+        "phone": None,
+        "dashboard_path": "/dashboard/admin",
     },
 ]
 
@@ -119,21 +167,23 @@ PRODUCT_SPECS = [
 ]
 
 
+_MINI_PDF = b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n"
+
+
+def _ensure_seed_pdf(relative_name: str) -> str:
+    """Return path relative to backend root for a tiny PDF under uploads/seed."""
+    UPLOAD_SEED_DIR.mkdir(parents=True, exist_ok=True)
+    path = UPLOAD_SEED_DIR / relative_name
+    if not path.exists():
+        path.write_bytes(_MINI_PDF)
+    return str(path.relative_to(BACKEND_ROOT)).replace("\\", "/")
+
+
 def _ensure_placeholder_files() -> tuple[str, str]:
     """Create tiny placeholder files under uploads/seed; return relative paths from backend root."""
-    UPLOAD_SEED_DIR.mkdir(parents=True, exist_ok=True)
-    placeholders = (
-        ("placeholder_commercial_invoice.pdf", b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n"),
-        ("placeholder_packing_list.pdf", b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n"),
+    return _ensure_seed_pdf("placeholder_commercial_invoice.pdf"), _ensure_seed_pdf(
+        "placeholder_packing_list.pdf"
     )
-    rel_paths = []
-    for name, content in placeholders:
-        path = UPLOAD_SEED_DIR / name
-        if not path.exists():
-            path.write_bytes(content)
-        rel = str(path.relative_to(BACKEND_ROOT)).replace("\\", "/")
-        rel_paths.append(rel)
-    return tuple(rel_paths)
 
 
 def seed() -> None:
@@ -142,6 +192,7 @@ def seed() -> None:
     frontend_base = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
 
     try:
+        print("(Run `alembic upgrade head` first so the schema matches models, e.g. exporter_user_id.)")
         print("--- Users ---")
         for spec in DEMO_ACCOUNTS:
             if db.scalar(select(User.id).where(User.email == spec["email"])):
@@ -336,12 +387,241 @@ def seed() -> None:
                 db.refresh(n)
                 print(f"  [created] Notification id={n.id} type={n.notification_type.value}")
 
+        print("--- Scenario: TunisOlive to FreshMart (olive oil, Sfax - Hamburg) ---")
+        for spec in SCENARIO_ACCOUNTS:
+            if db.scalar(select(User.id).where(User.email == spec["email"])):
+                print(f"  [skip] Scenario user exists: {spec['email']}")
+                continue
+            user = User(
+                email=spec["email"],
+                full_name=spec["full_name"],
+                password_hash=hash_password(spec["password"]),
+                role=spec["role"],
+                phone=spec.get("phone"),
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+            print(f"  [created] Scenario user id={user.id} email={user.email} role={user.role.value}")
+
+        klaus = db.scalar(
+            select(User).where(User.email == "klaus.weber@scenario.globaltradex.com")
+        )
+        fatima = db.scalar(
+            select(User).where(User.email == "fatima.benali@scenario.globaltradex.com")
+        )
+        karim = db.scalar(
+            select(User).where(User.email == "karim.mansour@scenario.globaltradex.com")
+        )
+
+        if not klaus or not fatima:
+            print("  [skip] Scenario users Klaus/Fatima missing; cannot seed GTX shipment.")
+        else:
+            olive = db.scalar(
+                select(Product).where(
+                    Product.user_id == fatima.id,
+                    Product.hs_code == "1509.10",
+                )
+            )
+            if olive is None:
+                olive = Product(
+                    user_id=fatima.id,
+                    name="Extra Virgin Olive Oil",
+                    hs_code="1509.10",
+                    description="Catalog item — TunisOlive SARL (Tunisia origin, EU preferential eligible).",
+                    unit_price=Decimal("8.50"),
+                    quantity=5000,
+                    unit="kg",
+                    origin_country="Tunisia",
+                )
+                db.add(olive)
+                db.commit()
+                db.refresh(olive)
+                print(f"  [created] Scenario product id={olive.id} name={olive.name!r} hs={olive.hs_code}")
+            else:
+                print(f"  [skip] Scenario product already exists id={olive.id}")
+
+            coo_ai = {
+                "verification_status": "flagged",
+                "issues": ["missing_chamber_of_commerce_stamp"],
+                "summary": (
+                    "Automated check: Tunisian Certificate of Origin may be missing "
+                    "the required Chamber of Commerce stamp for preferential (0%) duty."
+                ),
+            }
+            doc_rows: list[dict] = [
+                {
+                    "filename": "seed_gtx42_commercial_invoice.pdf",
+                    "original_name": "Commercial_Invoice_FreshMart_GmbH.pdf",
+                    "file_type": TradeDocumentType.commercial_invoice,
+                    "uploaded_by": fatima.id,
+                    "is_verified": True,
+                    "ai_result": None,
+                },
+                {
+                    "filename": "seed_gtx42_packing_list.pdf",
+                    "original_name": "Packing_List_Extra_Virgin_Olive_Oil.pdf",
+                    "file_type": TradeDocumentType.packing_list,
+                    "uploaded_by": fatima.id,
+                    "is_verified": True,
+                    "ai_result": None,
+                },
+                {
+                    "filename": "seed_gtx42_certificate_of_origin.pdf",
+                    "original_name": "Certificate_of_Origin_Made_in_Tunisia.pdf",
+                    "file_type": TradeDocumentType.certificate_of_origin,
+                    "uploaded_by": fatima.id,
+                    "is_verified": False,
+                    "ai_result": coo_ai,
+                },
+            ]
+            if karim:
+                doc_rows.append(
+                    {
+                        "filename": "seed_gtx42_bill_of_lading.pdf",
+                        "original_name": "Bill_of_Lading_Tunis_Star_HapagLloyd.pdf",
+                        "file_type": TradeDocumentType.bill_of_lading,
+                        "uploaded_by": karim.id,
+                        "is_verified": False,
+                        "ai_result": None,
+                    }
+                )
+
+            gtx = db.scalar(select(Shipment).where(Shipment.reference == GTX_TUNISOLIVE_REF))
+            if gtx is not None:
+                print(f"  [skip] Scenario shipment exists: {GTX_TUNISOLIVE_REF}")
+                if gtx.exporter_user_id != fatima.id:
+                    gtx.exporter_user_id = fatima.id
+                    db.commit()
+                    print("  [updated] GTX shipment exporter_user_id -> Fatima")
+            else:
+                gtx = Shipment(
+                    owner_id=klaus.id,
+                    exporter_user_id=fatima.id,
+                    reference=GTX_TUNISOLIVE_REF,
+                    origin="Sfax, Tunisia",
+                    destination="Hamburg, Germany",
+                    cargo_type=CargoType.general,
+                    transport_mode=TransportMode.sea,
+                    status=ShipmentStatus.customs_hold,
+                    weight_kg=Decimal("5000.00"),
+                    volume_m3=Decimal("6.500"),
+                    estimated_value=Decimal("42500.00"),
+                    currency="USD",
+                    freight_estimate_usd=Decimal("1800.00"),
+                    departure_date=date(2024, 3, 18),
+                    vessel_name="Tunis Star",
+                    voyage_number="HLU-TN-2024-0318",
+                    notes=(
+                        "Importer: FreshMart GmbH (Hamburg). Exporter: TunisOlive SARL. "
+                        "Carrier: Hapag-Lloyd (selected route). "
+                        "Held at Hamburg for customs inspection — organic certification paperwork under review. "
+                        "Certificate of Origin (Made in Tunisia / EU Association Agreement) flagged: "
+                        "possible missing Chamber of Commerce stamp."
+                    ),
+                )
+                db.add(gtx)
+                db.commit()
+                db.refresh(gtx)
+                print(f"  [created] Scenario shipment id={gtx.id} ref={gtx.reference} status={gtx.status.value}")
+
+            if not db.scalar(
+                select(ShipmentProduct.id).where(
+                    ShipmentProduct.shipment_id == gtx.id,
+                    ShipmentProduct.product_id == olive.id,
+                )
+            ):
+                db.add(
+                    ShipmentProduct(
+                        shipment_id=gtx.id,
+                        product_id=olive.id,
+                        quantity=5000,
+                    )
+                )
+                db.commit()
+                print("  [created] ShipmentProduct 5000 kg Extra Virgin Olive Oil")
+
+            for dr in doc_rows:
+                exists_doc = db.scalar(
+                    select(Document.id).where(
+                        Document.shipment_id == gtx.id,
+                        Document.original_name == dr["original_name"],
+                    )
+                )
+                if exists_doc:
+                    print(f"  [skip] Document exists: {dr['original_name']}")
+                    continue
+                rel = _ensure_seed_pdf(dr["filename"])
+                p = BACKEND_ROOT / rel
+                size = p.stat().st_size if p.exists() else 0
+                doc = Document(
+                    shipment_id=gtx.id,
+                    uploaded_by=dr["uploaded_by"],
+                    filename=dr["filename"],
+                    original_name=dr["original_name"],
+                    file_type=dr["file_type"],
+                    file_size=size,
+                    file_path=rel,
+                    is_verified=dr["is_verified"],
+                    ai_result=dr["ai_result"],
+                )
+                db.add(doc)
+                db.commit()
+                db.refresh(doc)
+                print(f"  [created] Document id={doc.id} type={dr['file_type'].value}")
+
+            gtx_id = db.scalar(select(Shipment.id).where(Shipment.reference == GTX_TUNISOLIVE_REF))
+            if gtx_id:
+                notif_specs = [
+                    {
+                        "user": klaus,
+                        "title": "Customs hold - GTX-20240315-00042",
+                        "message": (
+                            "Your olive oil shipment from TunisOlive (Sfax to Hamburg) is on customs hold "
+                            "at Hamburg. Additional review of organic certification documents is in progress. "
+                            "You will receive updates by email and SMS."
+                        ),
+                        "notification_type": NotificationType.warning,
+                    },
+                    {
+                        "user": fatima,
+                        "title": "Export on customs hold - FreshMart order",
+                        "message": (
+                            f"Shipment {GTX_TUNISOLIVE_REF} for FreshMart GmbH is held at German customs. "
+                            "Please coordinate with your customs broker if additional exporter documents are requested."
+                        ),
+                        "notification_type": NotificationType.warning,
+                    },
+                ]
+                for ns in notif_specs:
+                    u = ns["user"]
+                    if db.scalar(
+                        select(Notification.id).where(
+                            Notification.user_id == u.id,
+                            Notification.title == ns["title"],
+                        )
+                    ):
+                        print(f"  [skip] Scenario notification: {ns['title']}")
+                        continue
+                    db.add(
+                        Notification(
+                            user_id=u.id,
+                            title=ns["title"],
+                            message=ns["message"],
+                            notification_type=ns["notification_type"],
+                            shipment_id=gtx_id,
+                            is_read=False,
+                        )
+                    )
+                    db.commit()
+                    print(f"  [created] Scenario notification for {u.email}")
+
         print()
         print("=" * 88)
-        print("DEMO ACCOUNTS — copy for walkthrough")
+        print("DEMO ACCOUNTS - copy for walkthrough")
         print("=" * 88)
         col_role = 14
-        col_email = 28
+        col_email = 42
         col_pw = 12
         header = (
             f"{'Role':<{col_role}}"
@@ -361,6 +641,23 @@ def seed() -> None:
                 f"{url}"
             )
         print("=" * 88)
+        print()
+        print("=" * 88)
+        print("SCENARIO ACCOUNTS - TunisOlive / FreshMart / MedTrans (same passwords as above)")
+        print("=" * 88)
+        print(header)
+        print("-" * 88)
+        for spec in SCENARIO_ACCOUNTS:
+            role_label = spec["role"].value
+            url = f"{frontend_base}{spec['dashboard_path']}"
+            print(
+                f"{role_label:<{col_role}}"
+                f"{spec['email']:<{col_email}}"
+                f"{spec['password']:<{col_pw}}"
+                f"{url}"
+            )
+        print("=" * 88)
+        print(f"Shipment reference: {GTX_TUNISOLIVE_REF} (importer-owned; Fatima linked as exporter for documents.)")
         print(f"(Set FRONTEND_URL to override base URL; default {frontend_base})")
         print()
 

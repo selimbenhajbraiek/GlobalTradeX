@@ -72,6 +72,7 @@ class ShipmentUpdate(BaseModel):
 class ShipmentResponse(BaseModel):
     id: int
     owner_id: int
+    exporter_user_id: int | None = None
     reference: str
     origin: str
     destination: str

@@ -39,6 +39,12 @@ class Shipment(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    # Importer-owned shipment: linked exporter may upload invoice / CoO / packing list.
+    exporter_user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
     reference: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     origin: Mapped[str] = mapped_column(String(200), nullable=False, default="")
     destination: Mapped[str] = mapped_column(String(200), nullable=False, default="")
@@ -73,7 +79,15 @@ class Shipment(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    owner: Mapped["User"] = relationship(back_populates="shipments")
+    owner: Mapped["User"] = relationship(
+        foreign_keys=[owner_id],
+        back_populates="shipments",
+    )
+    exporter: Mapped["User | None"] = relationship(
+        "User",
+        foreign_keys=[exporter_user_id],
+        back_populates="export_shipments",
+    )
     documents: Mapped[list["Document"]] = relationship(
         back_populates="shipment",
         cascade="all, delete-orphan",

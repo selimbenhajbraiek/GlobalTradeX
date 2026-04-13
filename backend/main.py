@@ -27,7 +27,7 @@ logger = logging.getLogger("globaltradex")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Schema: apply migrations with `alembic upgrade head` (see backend/alembic/README).
+    # Schema: apply migrations with `alembic upgrade head` (see backend/migrations/README).
     yield
 
 

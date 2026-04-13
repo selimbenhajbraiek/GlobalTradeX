@@ -12,6 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 
 import api, { authApi } from "@/lib/api";
+import { useLocale } from "@/context/LocaleContext";
 
 const TOKEN_COOKIE = "token";
 const COOKIE_EXPIRES_DAYS = 1;
@@ -43,6 +44,7 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const router = useRouter();
+  const { t } = useLocale();
   const [user, setUser] = useState(null);
   const [token, setToken] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -87,7 +89,7 @@ export function AuthProvider({ children }) {
 
       const nextPath = dashboardPathForRole(nextUser?.role);
       if (nextPath === "/login") {
-        throw new Error("Invalid account role. Contact support.");
+        throw new Error(t("auth.invalidRole"));
       }
       // Full navigation so the `token` cookie is always sent on the next request (middleware reads it).
       if (typeof window !== "undefined") {
@@ -97,7 +99,7 @@ export function AuthProvider({ children }) {
       }
       return data;
     },
-    [router]
+    [router, t]
   );
 
   const register = useCallback(async (payload) => {

@@ -2,7 +2,7 @@ import random
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, joinedload
 
 from auth.dependencies import get_current_user, require_role
@@ -82,7 +82,21 @@ def _is_admin(user: User) -> bool:
     return user.role == UserRole.admin
 
 
-def _can_access_shipment(current: User, s: Shipment | None) -> bool:
+def _can_view_shipment(current: User, s: Shipment | None) -> bool:
+    if s is None:
+        return False
+    if _is_admin(current):
+        return True
+    if current.role in (UserRole.courtier, UserRole.transitaire):
+        return True
+    if s.owner_id == current.id:
+        return True
+    if current.role == UserRole.exportateur and s.exporter_user_id == current.id:
+        return True
+    return False
+
+
+def _can_mutate_shipment(current: User, s: Shipment | None) -> bool:
     if s is None:
         return False
     if _is_admin(current):
@@ -237,7 +251,12 @@ def list_shipments(
         # else: all shipments (read-only broker view)
     else:
         if not _is_admin(current):
-            q = q.where(Shipment.owner_id == current.id)
+            if current.role == UserRole.exportateur:
+                q = q.where(
+                    or_(Shipment.owner_id == current.id, Shipment.exporter_user_id == current.id)
+                )
+            else:
+                q = q.where(Shipment.owner_id == current.id)
         elif mine_only:
             q = q.where(Shipment.owner_id == current.id)
         if status is not None:
@@ -260,7 +279,7 @@ def get_shipment(
     ).unique().scalar_one_or_none()
     if s is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Shipment not found")
-    if not (_is_admin(current) or current.id == s.owner_id):
+    if not _can_view_shipment(current, s):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to view this shipment",
@@ -359,6 +378,16 @@ def update_shipment_status(
             shipment_id=s.id,
         )
     )
+    if s.exporter_user_id and s.exporter_user_id != s.owner_id:
+        db.add(
+            Notification(
+                user_id=s.exporter_user_id,
+                title=f"Shipment {s.reference} status updated",
+                message=msg,
+                notification_type=NotificationType.info,
+                shipment_id=s.id,
+            )
+        )
     db.commit()
     db.refresh(s)
 
@@ -389,7 +418,7 @@ def update_shipment(
     current: User = Depends(get_current_user),
 ) -> Shipment:
     s = db.get(Shipment, shipment_id)
-    if not _can_access_shipment(current, s):
+    if not _can_mutate_shipment(current, s):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Shipment not found")
     assert s is not None
     _apply_shipment_update(s, payload.model_dump(exclude_unset=True))
@@ -405,7 +434,7 @@ def delete_shipment(
     current: User = Depends(get_current_user),
 ) -> None:
     s = db.get(Shipment, shipment_id)
-    if not _can_access_shipment(current, s):
+    if not _can_mutate_shipment(current, s):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Shipment not found")
     assert s is not None
     db.delete(s)

@@ -4,11 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { CompactLanguageSwitcher } from "@/components/i18n/CompactLanguageSwitcher";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
+import { useLocale } from "@/context/LocaleContext";
 
 export default function LoginPage() {
   const { login, user, token, isLoading } = useAuth();
+  const { t } = useLocale();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,8 +40,8 @@ export default function LoginPage() {
       const msg =
         (typeof detail === "string" ? detail : null) ||
         err?.message ||
-        "Sign in failed. Check your credentials and API URL.";
-      setError(typeof msg === "string" ? msg : "Sign in failed.");
+        t("auth.signInFailed");
+      setError(typeof msg === "string" ? msg : t("auth.signInFailed"));
     } finally {
       setPending(false);
     }
@@ -49,21 +52,23 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4 py-12">
-      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-lg">
-        <div className="text-center">
+      <div className="relative w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-lg">
+        <div className="absolute end-3 top-3">
+          <CompactLanguageSwitcher variant="light" />
+        </div>
+
+        <div className="pt-8 text-center">
           <p className="font-display text-sm font-semibold tracking-wide text-blue-700">
             GlobalTradeX
           </p>
-          <h1 className="mt-2 font-display text-2xl font-bold text-gray-900">Sign in</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Enter your email and password to continue.
-          </p>
+          <h1 className="mt-2 font-display text-2xl font-bold text-gray-900">{t("auth.signIn")}</h1>
+          <p className="mt-1 text-sm text-gray-500">{t("auth.signInSubtitle")}</p>
         </div>
 
         <form className="mt-8 space-y-4" onSubmit={onSubmit}>
           <div>
             <label className="text-sm font-medium text-gray-700" htmlFor="email">
-              Email
+              {t("auth.email")}
             </label>
             <input
               id="email"
@@ -79,7 +84,7 @@ export default function LoginPage() {
           </div>
           <div>
             <label className="text-sm font-medium text-gray-700" htmlFor="password">
-              Password
+              {t("auth.password")}
             </label>
             <input
               id="password"
@@ -102,10 +107,10 @@ export default function LoginPage() {
             {pending ? (
               <span className="flex items-center gap-2">
                 <LoadingSpinner className="h-5 w-5 border-2 border-white/40 border-t-white" />
-                Signing in…
+                {t("auth.signingIn")}
               </span>
             ) : (
-              "Sign In"
+              t("auth.signInButton")
             )}
           </button>
         </form>
@@ -120,11 +125,8 @@ export default function LoginPage() {
         ) : null}
 
         <p className="mt-6 text-center text-sm text-gray-600">
-          <Link
-            href="/register"
-            className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
-          >
-            Create an account
+          <Link href="/register" className="font-medium text-blue-600 hover:text-blue-800 hover:underline">
+            {t("auth.createAccount")}
           </Link>
         </p>
       </div>
