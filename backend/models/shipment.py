@@ -3,8 +3,9 @@ from __future__ import annotations
 import enum
 from datetime import date, datetime
 from decimal import Decimal
+from typing import Any
 
-from sqlalchemy import Date, DateTime, Enum, ForeignKey, Numeric, String, Text, func
+from sqlalchemy import JSON, Date, DateTime, Enum, Float, ForeignKey, Numeric, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
@@ -78,6 +79,19 @@ class Shipment(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
+
+    # --- Simulated GPS tracking (optional until initialized) ---
+    origin_lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    origin_lng: Mapped[float | None] = mapped_column(Float, nullable=True)
+    dest_lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    dest_lng: Mapped[float | None] = mapped_column(Float, nullable=True)
+    current_lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    current_lng: Mapped[float | None] = mapped_column(Float, nullable=True)
+    tracking_status: Mapped[str] = mapped_column(String(32), nullable=False, default="pending")
+    tracking_progress: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    location_history: Mapped[list[dict[str, Any]] | None] = mapped_column(JSON, nullable=True)
+    estimated_delivery_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    simulation_state: Mapped[str] = mapped_column(String(20), nullable=False, default="idle")
 
     owner: Mapped["User"] = relationship(
         foreign_keys=[owner_id],

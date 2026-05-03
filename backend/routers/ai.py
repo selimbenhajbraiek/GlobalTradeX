@@ -2,11 +2,16 @@ import json
 import re
 from typing import Any, Literal
 
+from pathlib import Path
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field, model_validator
 
 from auth.dependencies import get_current_user
+from database import get_db
+from models.document import Document, TradeDocumentType
 from models.user import User
+from sqlalchemy.orm import Session
 from services.openai_service import OpenAIService
 
 router = APIRouter()
@@ -32,7 +37,7 @@ class VerifyDocumentRequest(BaseModel):
 class VerifyDocumentResponse(BaseModel):
     valid: bool = False
     confidence: float = 0.0
-    notes: str = "Placeholder — connect OCR / classification pipeline."
+    notes: str = ""
 
 
 class SuggestRoutesRequest(BaseModel):
@@ -122,9 +127,63 @@ def ai_chat(
 @router.post("/verify-document", response_model=VerifyDocumentResponse)
 def verify_document(
     payload: VerifyDocumentRequest,
+    db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ) -> VerifyDocumentResponse:
-    return VerifyDocumentResponse(valid=True, confidence=0.85)
+    doc = db.get(Document, payload.document_id)
+    if doc is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document not found")
+
+    backend_root = Path(__file__).resolve().parent.parent
+    abs_path = backend_root / doc.file_path
+    if not abs_path.is_file():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Stored file not found on disk",
+        )
+
+    svc = OpenAIService()
+    result = svc.analyze_customs_document(abs_path)
+    if not isinstance(result, dict):
+        result = {}
+
+    expected = str(payload.expected_type or "").strip().lower()
+    detected = str(result.get("document_type") or "").strip().lower()
+    confidence_raw = result.get("confidence", 0.0)
+    try:
+        confidence = float(confidence_raw)
+    except (TypeError, ValueError):
+        confidence = 0.0
+    confidence = max(0.0, min(1.0, confidence))
+
+    base_valid = bool(result.get("valid"))
+    type_matches = True
+    note_parts: list[str] = []
+
+    if expected:
+        try:
+            expected_enum = TradeDocumentType(expected)
+            type_matches = detected in {expected_enum.value, "", "unknown"}
+            if not type_matches:
+                note_parts.append(
+                    f"Document type mismatch: expected '{expected_enum.value}', got '{detected or 'unknown'}'."
+                )
+        except ValueError:
+            note_parts.append("Expected type not recognized; skipping type match check.")
+
+    valid = base_valid and type_matches
+    if result.get("errors"):
+        note_parts.append("AI reported validation errors.")
+    if result.get("missing_fields"):
+        note_parts.append("AI detected missing required fields.")
+    if not note_parts:
+        note_parts.append("AI verification completed.")
+
+    return VerifyDocumentResponse(
+        valid=valid,
+        confidence=confidence,
+        notes=" ".join(note_parts),
+    )
 
 
 @router.post("/suggest-routes", response_model=SuggestRoutesResponse)

@@ -434,8 +434,13 @@ def delete_shipment(
     current: User = Depends(get_current_user),
 ) -> None:
     s = db.get(Shipment, shipment_id)
-    if not _can_mutate_shipment(current, s):
+    if s is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Shipment not found")
+    if not _is_admin(current):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admins can delete shipments",
+        )
     assert s is not None
     db.delete(s)
     db.commit()

@@ -41,6 +41,18 @@ export default function ShipmentsListPage() {
       render: (row) => <StatusBadge status={row.status} />,
     },
     {
+      key: "gps",
+      label: "GPS",
+      render: (row) =>
+        row.origin_lat != null ? (
+          <Link href={`/dashboard/shipments/${row.id}/tracking`} className="text-brass hover:underline">
+            Suivi
+          </Link>
+        ) : (
+          <span className="text-mist/40">—</span>
+        ),
+    },
+    {
       key: "id",
       label: "",
       render: (row) => (

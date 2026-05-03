@@ -457,9 +457,21 @@ def analytics_documents(
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ) -> dict[str, int]:
-    """Document verification stats (global counts)."""
-    total = db.scalar(select(func.count()).select_from(Document)) or 0
-    verified = db.scalar(select(func.count()).select_from(Document).where(Document.is_verified.is_(True))) or 0
+    """Document verification stats (scoped by role)."""
+    if current.role in (UserRole.admin, UserRole.courtier):
+        scope = select(Document)
+    else:
+        scope = select(Document).where(Document.uploaded_by == current.id)
+
+    total = db.scalar(select(func.count()).select_from(scope.subquery())) or 0
+    verified = (
+        db.scalar(
+            select(func.count()).select_from(
+                scope.where(Document.is_verified.is_(True)).subquery()
+            )
+        )
+        or 0
+    )
     pending_review = int(total) - int(verified)
     return {
         "total_documents": int(total),

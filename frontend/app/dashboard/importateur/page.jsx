@@ -422,7 +422,11 @@ function ImportateurDashboardInner() {
 export default function ImportateurPage() {
   return (
     <RoleGuard allowedRoles={["importateur", "admin"]}>
-      <ImportateurDashboardInner />
+      <div className="min-h-screen bg-gradient-to-b from-blue-50/80 via-slate-50 to-white">
+        <div className="mx-auto max-w-6xl px-4 py-10">
+          <ImportateurDashboardInner />
+        </div>
+      </div>
     </RoleGuard>
   );
 }

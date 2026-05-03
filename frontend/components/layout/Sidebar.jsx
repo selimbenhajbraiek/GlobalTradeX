@@ -13,6 +13,7 @@ import {
   FileText,
   LayoutDashboard,
   LogOut,
+  MapPin,
   Package,
   PlusCircle,
   RefreshCw,
@@ -145,6 +146,13 @@ const NAV_ITEMS = [
     href: "/dashboard/shipments",
     icon: Package,
     roles: ["courtier"],
+  },
+  {
+    key: "live-gps",
+    labelKey: "nav.liveTracking",
+    href: "/dashboard/shipments/tracking",
+    icon: MapPin,
+    roles: ["admin", "importateur", "exportateur", "transitaire", "courtier"],
   },
   {
     key: "settings",

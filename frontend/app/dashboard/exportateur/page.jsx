@@ -491,7 +491,11 @@ function ExportateurDashboardInner() {
 export default function ExportateurPage() {
   return (
     <RoleGuard allowedRoles={["exportateur", "admin"]}>
-      <ExportateurDashboardInner />
+      <div className="min-h-screen bg-gradient-to-b from-emerald-50/80 via-green-50/40 to-white">
+        <div className="mx-auto max-w-6xl px-4 py-10">
+          <ExportateurDashboardInner />
+        </div>
+      </div>
     </RoleGuard>
   );
 }

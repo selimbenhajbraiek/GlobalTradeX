@@ -402,6 +402,14 @@ function ShipmentDetailInner() {
         >
           Documents hub
         </Link>
+        {row.origin_lat != null ? (
+          <Link
+            href={`/dashboard/shipments/${id}/tracking`}
+            className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-950 hover:bg-amber-100"
+          >
+            Live GPS tracking
+          </Link>
+        ) : null}
       </div>
     </div>
   );
@@ -409,7 +417,7 @@ function ShipmentDetailInner() {
 
 export default function ShipmentDetailPage() {
   return (
-    <RoleGuard allowedRoles={["importateur", "exportateur", "admin"]}>
+    <RoleGuard allowedRoles={["importateur", "exportateur", "transitaire", "courtier", "admin"]}>
       <ShipmentDetailInner />
     </RoleGuard>
   );

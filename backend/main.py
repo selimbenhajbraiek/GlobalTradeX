@@ -27,8 +27,11 @@ logger = logging.getLogger("globaltradex")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Schema: apply migrations with `alembic upgrade head` (see backend/migrations/README).
+    from services.tracking_manager import get_tracking_manager
+
+    await get_tracking_manager().resume_from_db()
     yield
+    await get_tracking_manager().shutdown()
 
 
 app = FastAPI(

@@ -23,6 +23,7 @@ export const translations = {
       settings: "Settings",
       profile: "My profile",
       notifications: "Notifications",
+      liveTracking: "Live GPS tracking",
       signOut: "Sign out",
       sensitiveNotice:
         "Sensitive data: verify your filings with the competent authorities.",
@@ -105,6 +106,7 @@ export const translations = {
       settings: "Paramètres",
       profile: "Mon profil",
       notifications: "Notifications",
+      liveTracking: "Suivi GPS (direct)",
       signOut: "Déconnexion",
       sensitiveNotice:
         "Données sensibles : vérifiez vos déclarations auprès des autorités compétentes.",
@@ -188,6 +190,7 @@ export const translations = {
       settings: "الإعدادات",
       profile: "ملفي الشخصي",
       notifications: "الإشعارات",
+      liveTracking: "تتبع GPS مباشر",
       signOut: "تسجيل الخروج",
       sensitiveNotice:
         "بيانات حساسة: راجع تصريحاتك لدى الجهات المختصة.",

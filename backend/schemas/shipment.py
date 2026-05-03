@@ -92,6 +92,18 @@ class ShipmentResponse(BaseModel):
     notes: str | None
     created_at: datetime
     updated_at: datetime
+    # Simulated GPS tracking (optional until initialized)
+    origin_lat: float | None = None
+    origin_lng: float | None = None
+    dest_lat: float | None = None
+    dest_lng: float | None = None
+    current_lat: float | None = None
+    current_lng: float | None = None
+    tracking_status: str = "pending"
+    tracking_progress: float = 0.0
+    location_history: list[dict] | None = None
+    estimated_delivery_at: datetime | None = None
+    simulation_state: str = "idle"
 
     model_config = {"from_attributes": True}
 

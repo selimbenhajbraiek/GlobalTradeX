@@ -443,7 +443,11 @@ function AiResultPanel({ result, onVerified, onReject, busy }) {
 export default function CourtierPage() {
   return (
     <RoleGuard allowedRoles={["courtier", "admin"]}>
-      <CourtierDashboardInner />
+      <div className="min-h-screen bg-gradient-to-b from-rose-50/90 via-pink-50/50 to-white">
+        <div className="mx-auto max-w-6xl px-4 py-10">
+          <CourtierDashboardInner />
+        </div>
+      </div>
     </RoleGuard>
   );
 }

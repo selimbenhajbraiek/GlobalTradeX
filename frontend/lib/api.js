@@ -1,14 +1,21 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
+/** When NEXT_PUBLIC_API_URL is missing (e.g. fresh clone without .env.local), dev still targets FastAPI. */
+const DEFAULT_DEV_API_URL = "http://127.0.0.1:8000";
+
+export const resolvedApiBaseUrl =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.NODE_ENV === "development" ? DEFAULT_DEV_API_URL : "");
+
 /**
  * Axios instance for GlobalTradeX API.
- * - baseURL from NEXT_PUBLIC_API_URL
+ * - baseURL from NEXT_PUBLIC_API_URL (or FastAPI default in development)
  * - JWT from cookie `token` as Authorization: Bearer
  * - 401 → clear cookie, redirect to /login
  */
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "",
+  baseURL: resolvedApiBaseUrl,
   headers: {
     "Content-Type": "application/json",
   },
@@ -58,6 +65,18 @@ export const shipmentsApi = {
       typeof body === "string" ? { new_status: body } : body
     ),
   getById: (id) => api.get(`/api/shipments/${id}`),
+};
+
+/** Simulated GPS tracking (polling + REST controls) */
+export const trackingApi = {
+  active: () => api.get("/api/shipments/tracking/active"),
+  state: (id) => api.get(`/api/shipments/${id}/tracking`),
+  init: (id, body) => api.post(`/api/shipments/${id}/tracking/init`, body),
+  start: (id) => api.post(`/api/shipments/${id}/tracking/start`),
+  pause: (id) => api.post(`/api/shipments/${id}/tracking/pause`),
+  reset: (id) => api.post(`/api/shipments/${id}/tracking/reset`),
+  demoRoutes: () => api.get("/api/tracking/demo-routes"),
+  seedDemos: () => api.post("/api/tracking/seed-demos"),
 };
 
 export const productsApi = {
