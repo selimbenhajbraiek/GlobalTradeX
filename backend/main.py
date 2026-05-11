@@ -13,6 +13,10 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from config import get_settings
 from database import engine, get_db
 from models import (  # noqa: F401 — register mappers
+    AssistantAvatar,
+    AssistantConfig,
+    AssistantMessageRecord,
+    AssistantSessionRecord,
     Document,
     Notification,
     Product,

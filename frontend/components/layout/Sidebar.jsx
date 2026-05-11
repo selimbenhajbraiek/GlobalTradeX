@@ -64,6 +64,13 @@ const NAV_ITEMS = [
     roles: ["admin"],
   },
   {
+    key: "admin-assistant-avatar",
+    labelKey: "nav.avatarAssistant",
+    href: "/dashboard/admin/assistant-avatar",
+    icon: User,
+    roles: ["admin"],
+  },
+  {
     key: "imp-shipments",
     labelKey: "nav.myShipments",
     href: "/dashboard/shipments",

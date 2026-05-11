@@ -1,3 +1,6 @@
+from models.assistant_avatar import AssistantAvatar, AssistantAvatarStatus
+from models.assistant_config import AssistantConfig
+from models.assistant_session_record import AssistantMessageRecord, AssistantSessionRecord
 from models.document import Document, DocumentFileType, TradeDocumentType
 from models.notification import Notification, NotificationType
 from models.product import Product
@@ -19,4 +22,9 @@ __all__ = [
     "TradeDocumentType",
     "Notification",
     "NotificationType",
+    "AssistantAvatar",
+    "AssistantAvatarStatus",
+    "AssistantConfig",
+    "AssistantSessionRecord",
+    "AssistantMessageRecord",
 ]

@@ -133,4 +133,34 @@ export const aiApi = {
   chat: (body) => api.post("/api/ai/chat", body),
 };
 
+export const assistantApi = {
+  startSession: (body) => api.post("/api/assistant/sessions", body),
+  sendMessage: (sessionId, body) => api.post(`/api/assistant/sessions/${sessionId}/message`, body),
+  endSession: (sessionId) => api.delete(`/api/assistant/sessions/${sessionId}`),
+};
+
+export const avatarApi = {
+  status: () => api.get("/api/avatar/status"),
+  profile: () => api.get("/api/avatar/profile"),
+  talk: (body) => api.post("/api/avatar/talk", body),
+  transcribe: (formData) => api.post("/api/avatar/transcribe", formData),
+  speak: (body) => api.post("/api/avatar/speak", body, { responseType: "blob" }),
+};
+
+export const adminAvatarsApi = {
+  current: () => api.get("/api/admin/avatars/current"),
+  getById: (id) => api.get(`/api/admin/avatars/${id}`),
+  create: (formData) => api.post("/api/admin/avatars", formData),
+  preview: (id) => api.get(`/api/admin/avatars/${id}/preview`, { responseType: "blob" }),
+};
+
+export const adminAssistantApi = {
+  settings: () => api.get("/api/admin/assistant/settings"),
+  updateSettings: (body) => api.patch("/api/admin/assistant/settings", body),
+  test: (body) => api.post("/api/admin/assistant/test", body),
+  analytics: () => api.get("/api/admin/assistant/analytics"),
+  voices: () => api.get("/api/admin/assistant/voices"),
+  avatars: () => api.get("/api/admin/assistant/avatars"),
+};
+
 export default api;

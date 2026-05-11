@@ -3,10 +3,12 @@
 import { useState } from "react";
 
 import { AvatarModal } from "@/components/AvatarModal";
+import { useAssistant } from "@/context/AssistantContext";
 import { useAuth } from "@/context/AuthContext";
 
 export function Header() {
   const { user, logout } = useAuth();
+  const { openAssistant } = useAssistant();
   const [open, setOpen] = useState(false);
 
   return (
@@ -18,6 +20,9 @@ export function Header() {
         </h2>
       </div>
       <div className="flex items-center gap-3">
+        <button type="button" onClick={openAssistant} className="btn-primary text-xs">
+          Get Help
+        </button>
         <button
           type="button"
           onClick={() => setOpen(true)}

@@ -56,3 +56,7 @@ class User(Base):
         foreign_keys="Document.uploaded_by",
         cascade="all, delete-orphan",
     )
+    assistant_avatars: Mapped[list["AssistantAvatar"]] = relationship(
+        back_populates="admin",
+        cascade="all, delete-orphan",
+    )
