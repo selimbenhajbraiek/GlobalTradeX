@@ -12,6 +12,8 @@ from database import SessionLocal
 from models import (
     CargoType,
     Document,
+    Message,
+    MessageThread,
     TradeDocumentType,
     Notification,
     NotificationType,
@@ -19,6 +21,7 @@ from models import (
     Shipment,
     ShipmentProduct,
     ShipmentStatus,
+    ThreadParticipant,
     TransportMode,
     User,
     UserRole,
@@ -184,6 +187,48 @@ def _ensure_placeholder_files() -> tuple[str, str]:
     return _ensure_seed_pdf("placeholder_commercial_invoice.pdf"), _ensure_seed_pdf(
         "placeholder_packing_list.pdf"
     )
+
+
+def seed_demo_messages(db) -> None:
+    """Direct message threads between demo trade roles."""
+    importer = db.scalar(select(User).where(User.email == "importer@globaltradex.com"))
+    exporter = db.scalar(select(User).where(User.email == "exporter@globaltradex.com"))
+    forwarder = db.scalar(select(User).where(User.email == "forwarder@globaltradex.com"))
+    broker = db.scalar(select(User).where(User.email == "broker@globaltradex.com"))
+    if not all([importer, exporter, forwarder]):
+        print("  [skip] Demo message threads — missing demo users.")
+        return
+
+    pairs = [
+        (importer, exporter, "Commercial invoice for next PO"),
+        (importer, forwarder, "Rotterdam departure — booking update"),
+        (forwarder, broker, "Customs pre-file for inbound TEU"),
+    ]
+    if broker:
+        pairs.append((importer, broker, "EU entry documentation"))
+
+    for a, b, subject in pairs:
+        thread = MessageThread(subject=subject)
+        db.add(thread)
+        db.flush()
+        db.add(ThreadParticipant(thread_id=thread.id, user_id=a.id))
+        db.add(ThreadParticipant(thread_id=thread.id, user_id=b.id))
+        db.add(
+            Message(
+                thread_id=thread.id,
+                sender_id=a.id,
+                body=f"Hello {b.full_name.split()[0]} — following up on {subject.lower()}.",
+            )
+        )
+        db.add(
+            Message(
+                thread_id=thread.id,
+                sender_id=b.id,
+                body="Acknowledged. I will review and respond with the next milestone today.",
+            )
+        )
+        db.commit()
+        print(f"  [created] Message thread: {a.email} ↔ {b.email}")
 
 
 def seed() -> None:
@@ -615,6 +660,8 @@ def seed() -> None:
                     )
                     db.commit()
                     print(f"  [created] Scenario notification for {u.email}")
+
+        seed_demo_messages(db)
 
         print()
         print("=" * 88)

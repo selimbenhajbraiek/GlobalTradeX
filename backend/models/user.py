@@ -3,7 +3,7 @@ from __future__ import annotations
 import enum
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Enum, String, func
+from sqlalchemy import JSON, Boolean, DateTime, Enum, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
@@ -30,6 +30,7 @@ class User(Base):
         default=UserRole.importateur,
     )
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    notification_preferences: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -59,4 +60,12 @@ class User(Base):
     assistant_avatars: Mapped[list["AssistantAvatar"]] = relationship(
         back_populates="admin",
         cascade="all, delete-orphan",
+    )
+    thread_participations: Mapped[list["ThreadParticipant"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    sent_messages: Mapped[list["Message"]] = relationship(
+        back_populates="sender",
+        foreign_keys="Message.sender_id",
     )

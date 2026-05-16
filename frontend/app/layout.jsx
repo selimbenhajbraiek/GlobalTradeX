@@ -1,35 +1,51 @@
-import { Fraunces, Outfit } from "next/font/google";
+import { Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
 
 import { AppProviders } from "@/components/providers/AppProviders";
 
 import "./globals.css";
 
-const fraunces = Fraunces({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-inter",
   display: "swap",
 });
 
-const outfit = Outfit({
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-instrument",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
   display: "swap",
 });
 
 export const metadata = {
-  title: "GlobalTradeX",
-  description: "International trade operations platform",
+  title: "GlobalTradeX — The operating system for global commerce",
+  description:
+    "Unify shipments, customs, documents and partners on one intelligent platform for importers, exporters, brokers and logistics teams.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${outfit.variable}`}
+      className={`${inter.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
-      {/* Browser extensions (e.g. Grammarly) inject attributes on <body>; suppress avoids dev hydration noise */}
-      <body className="font-sans" suppressHydrationWarning>
+      <body
+        className="font-sans"
+        style={{
+          ["--font-sans"]: "var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif",
+          ["--font-display"]: 'var(--font-instrument), "Instrument Serif", "Times New Roman", serif',
+          ["--font-mono"]: 'var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace',
+        }}
+        suppressHydrationWarning
+      >
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

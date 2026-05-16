@@ -81,7 +81,9 @@ export async function middleware(request) {
 
   const segments = pathname.split("/").filter(Boolean);
   const firstAfterDashboard = segments[1];
+  // Non-admins may only open their own role home; admins can browse role cockpits from the sidebar.
   if (
+    role !== "admin" &&
     firstAfterDashboard &&
     DASHBOARD_ROLE_SEGMENTS.has(firstAfterDashboard) &&
     firstAfterDashboard !== role

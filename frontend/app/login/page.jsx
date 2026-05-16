@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ArrowRight } from "lucide-react";
 
+import { AuthSplitLayout } from "@/components/auth/AuthSplitLayout";
+import { Logo } from "@/components/brand/Logo";
 import { CompactLanguageSwitcher } from "@/components/i18n/CompactLanguageSwitcher";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
@@ -47,89 +50,117 @@ export default function LoginPage() {
     }
   }
 
-  const inputClass =
-    "mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30";
-
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4 py-12">
-      <div className="relative w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 shadow-lg">
-        <div className="absolute end-3 top-3">
+    <AuthSplitLayout
+      eyebrow="Welcome back"
+      headline="Pick up where your network left off."
+      quote="GlobalTradeX is the first platform our forwarders, customs and finance team all log into."
+      attribution="— Marta Lindqvist, VP Logistics, Equinox"
+    >
+      <div className="relative">
+        <div className="absolute end-0 top-0">
           <CompactLanguageSwitcher variant="light" />
         </div>
-
-        <div className="pt-8 text-center">
-          <p className="font-display text-sm font-semibold tracking-wide text-blue-700">
-            GlobalTradeX
-          </p>
-          <h1 className="mt-2 font-display text-2xl font-bold text-gray-900">{t("auth.signIn")}</h1>
-          <p className="mt-1 text-sm text-gray-500">{t("auth.signInSubtitle")}</p>
-        </div>
-
-        <form className="mt-8 space-y-4" onSubmit={onSubmit}>
-          <div>
-            <label className="text-sm font-medium text-gray-700" htmlFor="email">
-              {t("auth.email")}
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              className={inputClass}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={pending}
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-700" htmlFor="password">
-              {t("auth.password")}
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              className={inputClass}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={pending}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="mt-2 flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={pending || isLoading}
-          >
-            {pending ? (
-              <span className="flex items-center gap-2">
-                <LoadingSpinner className="h-5 w-5 border-2 border-white/40 border-t-white" />
-                {t("auth.signingIn")}
-              </span>
-            ) : (
-              t("auth.signInButton")
-            )}
-          </button>
-        </form>
-
-        {error ? (
-          <p
-            className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-center text-sm text-red-700"
-            role="alert"
-          >
-            {error}
-          </p>
-        ) : null}
-
-        <p className="mt-6 text-center text-sm text-gray-600">
-          <Link href="/register" className="font-medium text-blue-600 hover:text-blue-800 hover:underline">
-            {t("auth.createAccount")}
+        <Logo href="/" className="hidden lg:flex" />
+        <h1 className="mt-8 font-display text-3xl text-foreground">{t("auth.signIn")}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          New here?{" "}
+          <Link href="/register" className="font-medium text-kinetic hover:underline">
+            Create an account
           </Link>
         </p>
       </div>
-    </main>
+
+      <form className="mt-8 space-y-5" onSubmit={onSubmit}>
+        <div>
+          <label className="text-sm font-medium text-foreground" htmlFor="email">
+            Work email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            placeholder="you@company.com"
+            className="input-field mt-1.5"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={pending}
+          />
+        </div>
+        <div>
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-foreground" htmlFor="password">
+              Password
+            </label>
+            <Link
+              href="/forgot-password"
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
+              Forgot password?
+            </Link>
+          </div>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            className="input-field mt-1.5"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={pending}
+          />
+        </div>
+
+        <label className="flex items-center gap-2 text-sm text-muted-foreground">
+          <input
+            type="checkbox"
+            className="h-4 w-4 rounded border-border text-kinetic focus:ring-kinetic"
+          />
+          Remember me
+        </label>
+
+        <button type="submit" className="btn-primary w-full" disabled={pending || isLoading}>
+          {pending ? (
+            <span className="flex items-center gap-2">
+              <LoadingSpinner className="h-5 w-5 border-2 border-background/40 border-t-background" />
+              {t("auth.signingIn")}
+            </span>
+          ) : (
+            <>
+              Continue
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+            </>
+          )}
+        </button>
+      </form>
+
+      {error ? (
+        <p
+          className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-center text-sm text-destructive"
+          role="alert"
+        >
+          {error}
+        </p>
+      ) : null}
+
+      <div className="relative my-8">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-border" />
+        </div>
+        <p className="relative mx-auto w-fit bg-background px-3 text-xs text-muted-foreground">OR</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <button type="button" className="btn-secondary w-full justify-center">
+          Google
+        </button>
+        <button type="button" className="btn-secondary w-full justify-center">
+          SSO
+        </button>
+      </div>
+    </AuthSplitLayout>
   );
 }

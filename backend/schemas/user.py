@@ -2,7 +2,11 @@ import enum
 from datetime import datetime
 from typing import Annotated
 
+from typing import Any
+
 from pydantic import BaseModel, BeforeValidator, EmailStr, Field
+
+from schemas.preferences import NotificationPreferences
 
 
 def _enum_to_str(v):
@@ -31,6 +35,8 @@ class UserResponse(BaseModel):
     full_name: str
     email: str
     role: StrEnumField
+    phone: str | None = None
+    notification_preferences: NotificationPreferences | dict[str, Any] | None = None
     is_active: bool
     created_at: datetime
 
@@ -40,6 +46,12 @@ class UserResponse(BaseModel):
 class AdminUserUpdate(BaseModel):
     role: str | None = None
     is_active: bool | None = None
+
+
+class UserProfileUpdate(BaseModel):
+    full_name: str | None = Field(None, min_length=1, max_length=100)
+    phone: str | None = Field(None, max_length=20)
+    notification_preferences: dict[str, Any] | None = None
 
 
 class Token(BaseModel):

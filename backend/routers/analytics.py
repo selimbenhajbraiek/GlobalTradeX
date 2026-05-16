@@ -252,6 +252,37 @@ def analytics_global(
     if isinstance(monthly_revenue, float):
         monthly_revenue = Decimal(str(monthly_revenue))
 
+    tracking_in_motion = (
+        db.scalar(
+            select(func.count())
+            .select_from(Shipment)
+            .where(
+                Shipment.simulation_state == "running",
+            )
+        )
+        or 0
+    )
+    if not tracking_in_motion:
+        tracking_in_motion = (
+            db.scalar(
+                select(func.count())
+                .select_from(Shipment)
+                .where(
+                    Shipment.status.in_(
+                        (
+                            ShipmentStatus.in_transit,
+                            ShipmentStatus.customs_hold,
+                        )
+                    )
+                )
+            )
+            or 0
+        )
+
+    customs_queue = int(shipments_by_status.get("customs_hold", 0)) + int(
+        (documents_total or 0) - (documents_verified or 0)
+    )
+
     return {
         "total_users": int(total_users),
         "users_by_role": users_by_role,
@@ -267,6 +298,9 @@ def analytics_global(
         "documents_verified": int(documents_verified),
         "ai_verification_rate": ai_verification_rate,
         "kpi_trends": kpi_trends,
+        "tracking_in_motion": int(tracking_in_motion),
+        "customs_queue": int(customs_queue),
+        "pending_documents": int((documents_total or 0) - (documents_verified or 0)),
     }
 
 

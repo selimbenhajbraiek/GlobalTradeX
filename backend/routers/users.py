@@ -6,9 +6,19 @@ from auth.dependencies import get_current_user, require_role
 from auth.hashing import hash_password
 from database import get_db
 from models.user import User, UserRole
-from schemas.user import AdminUserUpdate, UserCreate, UserResponse
+from schemas.preferences import NotificationPreferences
+from schemas.user import AdminUserUpdate, UserCreate, UserProfileUpdate, UserResponse
 
 router = APIRouter()
+
+_DEFAULT_PREFS = NotificationPreferences().model_dump()
+
+
+def _merge_prefs(stored: dict | None) -> dict:
+    merged = {**_DEFAULT_PREFS}
+    if stored:
+        merged.update(stored)
+    return merged
 
 _admin_only = Depends(require_role(["admin"]))
 
@@ -59,7 +69,37 @@ def create_user_admin(
 
 
 @router.get("/me", response_model=UserResponse)
-def me(current: User = Depends(get_current_user)) -> User:
+def me(
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+) -> User:
+    current.notification_preferences = _merge_prefs(current.notification_preferences)
+    return current
+
+
+@router.patch("/me", response_model=UserResponse)
+def update_me(
+    payload: UserProfileUpdate,
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+) -> User:
+    data = payload.model_dump(exclude_unset=True)
+    if not data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No fields to update",
+        )
+    if "full_name" in data:
+        current.full_name = data["full_name"]
+    if "phone" in data:
+        current.phone = data["phone"]
+    if "notification_preferences" in data and data["notification_preferences"] is not None:
+        merged = _merge_prefs(current.notification_preferences)
+        merged.update(data["notification_preferences"])
+        current.notification_preferences = merged
+    db.commit()
+    db.refresh(current)
+    current.notification_preferences = _merge_prefs(current.notification_preferences)
     return current
 
 

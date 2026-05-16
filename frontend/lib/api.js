@@ -120,12 +120,24 @@ export const analyticsApi = {
 
 export const notificationsApi = {
   list: (params) => api.get("/api/notifications", { params }),
+  markRead: (id) => api.patch(`/api/notifications/${id}/read`),
+  markAllRead: () => api.post("/api/notifications/mark-all-read"),
 };
 
 export const usersApi = {
+  me: () => api.get("/api/users/me"),
   list: (params) => api.get("/api/users", { params }),
   create: (data) => api.post("/api/users", data),
+  updateMe: (body) => api.patch("/api/users/me", body),
   updateAdmin: (id, body) => api.patch(`/api/users/${id}`, body),
+};
+
+export const messagesApi = {
+  listThreads: () => api.get("/api/messages/threads"),
+  getThread: (id) => api.get(`/api/messages/threads/${id}`),
+  createThread: (body) => api.post("/api/messages/threads", body),
+  sendMessage: (threadId, body) => api.post(`/api/messages/threads/${threadId}/messages`, body),
+  listContacts: () => api.get("/api/messages/contacts"),
 };
 
 export const aiApi = {

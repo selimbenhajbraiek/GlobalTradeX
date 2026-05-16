@@ -110,6 +110,9 @@ class Shipment(Base):
         back_populates="shipment",
         foreign_keys="Notification.shipment_id",
     )
+    message_threads: Mapped[list["MessageThread"]] = relationship(
+        back_populates="shipment",
+    )
     shipment_products: Mapped[list["ShipmentProduct"]] = relationship(
         back_populates="shipment",
         cascade="all, delete-orphan",

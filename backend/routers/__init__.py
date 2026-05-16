@@ -10,6 +10,7 @@ from routers import (
     avatar,
     calculator,
     documents,
+    messages,
     notifications,
     products,
     shipments,
@@ -30,6 +31,7 @@ api_router.include_router(documents.router, prefix="/documents", tags=["document
 api_router.include_router(calculator.router, prefix="/calculator", tags=["calculator"])
 api_router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 api_router.include_router(notifications.router, prefix="/notifications", tags=["notifications"])
+api_router.include_router(messages.router, prefix="/messages", tags=["messages"])
 api_router.include_router(ai.router, prefix="/ai", tags=["ai"])
 api_router.include_router(assistant.router, prefix="/assistant", tags=["assistant"])
 api_router.include_router(avatar.router, prefix="/avatar", tags=["avatar"])
