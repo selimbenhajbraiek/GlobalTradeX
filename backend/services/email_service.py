@@ -19,7 +19,8 @@ class EmailService:
             return False
         msg = EmailMessage()
         msg["Subject"] = subject
-        msg["From"] = self._settings.smtp_user or "noreply@localhost"
+        from_addr = self._settings.smtp_from or self._settings.smtp_user or "noreply@localhost"
+        msg["From"] = from_addr
         msg["To"] = to_addr
         msg.set_content(body)
         if html:

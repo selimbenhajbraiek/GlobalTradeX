@@ -1,0 +1,91 @@
+================================================================================
+TABLEAU 1.5 – Besoins fonctionnels de l'acteur « Transitaire »
+Projet : GlobalTradeX — Plateforme de pilotage du commerce international
+================================================================================
+
++----------------------------------+----------------------------------------------------------+
+| Fonctionnalité                   | Description                                              |
++----------------------------------+----------------------------------------------------------+
+| S'authentifier                   | Pour accéder à son espace, le transitaire s'authentifie  |
+|                                  | avec son adresse e-mail et son mot de passe. L'accès     |
+|                                  | n'est accordé qu'après vérification de l'adresse e-mail. |
+|                                  | Un jeton JWT sécurisé ouvre le cockpit fret              |
+|                                  | (/dashboard/transitaire).                                |
++----------------------------------+----------------------------------------------------------+
+| Récupérer mot de passe           | En cas d'oubli, le transitaire demande un lien de        |
+|                                  | réinitialisation par e-mail (SMTP). Il définit alors un  |
+|                                  | nouveau mot de passe via une page dédiée sécurisée.      |
++----------------------------------+----------------------------------------------------------+
+| Gérer profil                     | Le transitaire peut consulter et mettre à jour ses       |
+|                                  | informations personnelles (nom complet, téléphone,       |
+|                                  | avatar) depuis l'espace Profil.                        |
++----------------------------------+----------------------------------------------------------+
+| Consulter cockpit fret           | Permet d'afficher un tableau de bord opérationnel :      |
+|                                  | indicateurs (expéditions en transit, retards, livrées   |
+|                                  | du jour), graphiques d'activité et onglets « actives » / |
+|                                  | « complétées » pour prioriser le traitement.             |
++----------------------------------+----------------------------------------------------------+
+| Consulter expéditions actives    | Permet de lister l'ensemble des dossiers d'expédition    |
+|                                  | du réseau (vue transitaire) : référence GTX, statut,     |
+|                                  | route, importateur, exportateur et date d'arrivée estimée.|
++----------------------------------+----------------------------------------------------------+
+| Consulter détail d'expédition    | Permet d'ouvrir la fiche d'un dossier sélectionné afin   |
+|                                  | d'en visualiser le contexte complet avant intervention.  |
++----------------------------------+----------------------------------------------------------+
+| Mettre à jour statut expédition  | Permet de faire évoluer le statut logistique selon une   |
+|                                  | machine à états métier : transitions autorisées uniquement|
+|                                  | (ex. pending → in_transit ; in_transit → customs_hold,   |
+|                                  | delivered, delayed ; customs_hold → in_transit). Les     |
+|                                  | transitions invalides sont rejetées par l'API.           |
++----------------------------------+----------------------------------------------------------+
+| Enrichir informations transport  | Lors d'une mise à jour de statut, permet de renseigner   |
+|                                  | des notes opérationnelles, le nom du navire, le numéro   |
+|                                  | de voyage et la date ETA révisée communiquées aux        |
+|                                  | parties prenantes.                                       |
++----------------------------------+----------------------------------------------------------+
+| Notifier parties prenantes       | Chaque changement de statut déclenche automatiquement   |
+|                                  | une notification à l'importateur (owner) et, le cas     |
+|                                  | échéant, à l'exportateur rattaché au dossier.            |
++----------------------------------+----------------------------------------------------------+
+| Téléverser documents logistiques | Permet de déposer sur un dossier les pièces de transport|
+|                                  | (connaissement / B/L, déclaration douanière, autres) au  |
+|                                  | format PDF ou image (taille max. 10 Mo).                 |
++----------------------------------+----------------------------------------------------------+
+| Consulter documents              | Permet de visualiser toutes les pièces rattachées à une  |
+|                                  | expédition (commerciales, logistiques) et leur état de   |
+|                                  | vérification, sans pouvoir valider au nom du courtier.   |
++----------------------------------+----------------------------------------------------------+
+| Télécharger documents            | Permet de télécharger localement un fichier du dossier   |
+|                                  | pour contrôle ou transmission à un tiers logistique.     |
++----------------------------------+----------------------------------------------------------+
+| Suivi GPS en direct              | Permet de suivre sur une carte les expéditions en        |
+|                                  | mouvement du réseau GlobalTradeX.                        |
++----------------------------------+----------------------------------------------------------+
+| Consulter liste notifications    | Permet de consulter les alertes système et les retours   |
+|                                  | liés aux dossiers qu'il manipule ou au réseau global.    |
++----------------------------------+----------------------------------------------------------+
+| Gérer préférences notifications  | Permet de configurer les canaux et types d'alertes       |
+|                                  | depuis les paramètres du compte.                         |
++----------------------------------+----------------------------------------------------------+
+| Messagerie collaborative         | Permet d'échanger avec l'importateur, l'exportateur ou   |
+|                                  | le courtier pour coordonner le départ, le transit et la  |
+|                                  | livraison (ex. mainlevée douane, ETA révisée).           |
++----------------------------------+----------------------------------------------------------+
+| Procurer aide (assistant IA)     | Un assistant conversationnel (TradeFlow) répond aux      |
+|                                  | questions sur les statuts, les documents de transport    |
+|                                  | et les procédures logistiques.                           |
++----------------------------------+----------------------------------------------------------+
+| Se déconnecter                   | Permet de clôturer la session en supprimant le jeton     |
+|                                  | d'authentification depuis le profil ou la barre latérale.|
++----------------------------------+----------------------------------------------------------+
+
+Remarques :
+- Seul le transitaire (et l'administrateur) peut modifier le statut logistique d'une expédition ;
+  l'importateur et l'exportateur sont en lecture seule sur ce point.
+- Le transitaire ne gère pas le catalogue produits ni la validation douanière officielle des pièces.
+- Scénario de démonstration : Karim Mansour (MedTrans) — GTX-20240315-00042 :
+  customs_hold → in_transit (navire « Tunis Star », voyage HLU-TN-2024-0318) → delivered.
+
+================================================================================
+Fin du tableau 1.5
+================================================================================

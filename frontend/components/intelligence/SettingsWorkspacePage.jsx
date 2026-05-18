@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Check } from "lucide-react";
+import { Check, LogOut } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
 import { useLocale } from "@/context/LocaleContext";
@@ -35,7 +35,7 @@ function prefsFromUser(user) {
 }
 
 export function SettingsWorkspacePage() {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, logout } = useAuth();
   const { locale, setLocale } = useLocale();
   const [tab, setTab] = useState("profile");
   const [saved, setSaved] = useState(false);
@@ -194,6 +194,17 @@ export function SettingsWorkspacePage() {
                   </select>
                 </label>
               </div>
+              {user?.email_verified === false ? (
+                <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-foreground">
+                  Email not verified.{" "}
+                  <Link
+                    href={`/check-email?email=${encodeURIComponent(user.email || "")}`}
+                    className="font-medium text-kinetic hover:underline"
+                  >
+                    Resend verification
+                  </Link>
+                </p>
+              ) : null}
               <button type="button" onClick={handleSave} className="btn-primary mt-6">
                 {saved ? (
                   <span className="inline-flex items-center gap-1.5">
@@ -204,6 +215,18 @@ export function SettingsWorkspacePage() {
                   "Save changes"
                 )}
               </button>
+              <div className="mt-10 border-t border-border pt-6">
+                <p className="eyebrow !text-[10px]">Session</p>
+                <p className="mt-1 text-sm text-muted-foreground">Sign out of this device.</p>
+                <button
+                  type="button"
+                  onClick={() => logout()}
+                  className="btn-secondary mt-4 inline-flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" aria-hidden />
+                  Sign out
+                </button>
+              </div>
             </>
           ) : null}
 

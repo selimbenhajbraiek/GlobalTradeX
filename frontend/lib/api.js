@@ -54,6 +54,11 @@ export const authApi = {
     return api.post("/api/auth/login", body);
   },
   register: (data) => api.post("/api/auth/register", data),
+  verifyEmail: (token) => api.post("/api/auth/verify-email", { token }),
+  resendVerification: (email) => api.post("/api/auth/resend-verification", { email }),
+  forgotPassword: (email) => api.post("/api/auth/forgot-password", { email }),
+  resetPassword: (token, new_password) =>
+    api.post("/api/auth/reset-password", { token, new_password }),
 };
 
 export const shipmentsApi = {

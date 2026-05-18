@@ -38,6 +38,7 @@ class UserResponse(BaseModel):
     phone: str | None = None
     notification_preferences: NotificationPreferences | dict[str, Any] | None = None
     is_active: bool
+    email_verified: bool = False
     created_at: datetime
 
     model_config = {"from_attributes": True}

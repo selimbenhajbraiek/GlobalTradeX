@@ -61,6 +61,7 @@ def create_user_admin(
         password_hash=hash_password(payload.password),
         role=_parse_user_role(payload.role),
         is_active=True,
+        email_verified=True,
     )
     db.add(user)
     db.commit()

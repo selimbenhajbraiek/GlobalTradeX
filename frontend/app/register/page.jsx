@@ -28,7 +28,7 @@ export default function RegisterPage() {
     setPending(true);
     try {
       await register({ email, password, full_name: fullName });
-      router.replace("/login");
+      router.replace(`/check-email?email=${encodeURIComponent(email.trim())}`);
     } catch (err) {
       const raw = err?.response?.data?.detail;
       const msg = Array.isArray(raw)

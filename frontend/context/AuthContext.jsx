@@ -111,7 +111,11 @@ export function AuthProvider({ children }) {
     Cookies.remove(TOKEN_COOKIE);
     setUser(null);
     setToken("");
-    router.replace("/login");
+    if (typeof window !== "undefined") {
+      window.location.assign("/login");
+    } else {
+      router.replace("/login");
+    }
   }, [router]);
 
   const value = useMemo(

@@ -19,6 +19,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export default function LoginPage() {
   async function onSubmit(e) {
     e.preventDefault();
     setError("");
+    setUnverifiedEmail("");
     setPending(true);
     try {
       await login(email, password);
@@ -44,6 +46,9 @@ export default function LoginPage() {
         (typeof detail === "string" ? detail : null) ||
         err?.message ||
         t("auth.signInFailed");
+      if (err?.response?.status === 403 && typeof detail === "string" && detail.includes("verified")) {
+        setUnverifiedEmail(email.trim());
+      }
       setError(typeof msg === "string" ? msg : t("auth.signInFailed"));
     } finally {
       setPending(false);
@@ -143,6 +148,17 @@ export default function LoginPage() {
           role="alert"
         >
           {error}
+        </p>
+      ) : null}
+
+      {unverifiedEmail ? (
+        <p className="mt-3 text-center text-sm text-muted-foreground">
+          <Link
+            href={`/check-email?email=${encodeURIComponent(unverifiedEmail)}`}
+            className="font-medium text-kinetic hover:underline"
+          >
+            Resend verification email
+          </Link>
         </p>
       ) : null}
 

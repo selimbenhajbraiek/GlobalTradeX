@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     smtp_port: int = 587
     smtp_user: str = ""
     smtp_password: str = ""
+    smtp_from: str = ""
+    frontend_url: str = "http://localhost:3000"
+    email_verify_expire_minutes: int = 24 * 60
+    password_reset_expire_minutes: int = 60
     sms_api_key: str = ""
     twilio_account_sid: str = ""
     twilio_auth_token: str = ""
