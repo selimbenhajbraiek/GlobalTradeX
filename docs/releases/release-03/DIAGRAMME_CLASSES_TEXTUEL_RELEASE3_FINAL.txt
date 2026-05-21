@@ -1,0 +1,237 @@
+================================================================================
+DIAGRAMME DE CLASSES — RELEASE 3 FINAL / PROJET COMPLET (texte d'instructions)
+Projet : GlobalTradeX — Modèle physique MySQL — 13 tables
+================================================================================
+
+Ce fichier est le **diagramme de classes définitif** du projet : il cumule
+Release 1 + Release 2 + Release 3.
+
+Release 3 = Sprint 5 « Analytics, Cartographie & Assistant »
+         + Sprint 6 « Administration & Scénario soutenance »
+
+  • Reprise cumul Release 2 : 9 tables (voir release-02/…RELEASE2_CUMUL.txt)
+  • Sprint 5 : assistant_sessions, assistant_messages
+              + extension attributs GPS sur table shipments (pas de nouvelle table)
+  • Sprint 6 : assistant_avatars, assistant_config
+              (calculateur et analytics admin : pas de table dédiée)
+
+
+--------------------------------------------------------------------------------
+1. RAPPEL CUMUL RELEASES 1 ET 2
+--------------------------------------------------------------------------------
+
+Release 1 (4 tables) :
+  users, shipments, products, shipment_products
+
+Release 2 (+5 tables) :
+  documents, notifications, message_threads, thread_participants, messages
+
+Détail complet : release-01/ et release-02/ DIAGRAMME_CLASSES_TEXTUEL_*.txt
+
+
+--------------------------------------------------------------------------------
+2. EXTENSION TABLE EXISTANTE — SPRINT 5 (Suivi GPS)
+--------------------------------------------------------------------------------
+
+La table shipments reçoit des colonnes (Sprint 5 — cartographie).
+À représenter sur le diagramme final par une note ou un compartiment
+« Suivi GPS » sur l'entité shipments :
+
+| Attribut              | Type SQL   | Description                          |
+|-----------------------|------------|--------------------------------------|
+| origin_lat            | FLOAT      | Latitude origine                     |
+| origin_lng            | FLOAT      | Longitude origine                    |
+| dest_lat              | FLOAT      | Latitude destination                 |
+| dest_lng              | FLOAT      | Longitude destination                |
+| current_lat           | FLOAT      | Position courante simulée            |
+| current_lng           | FLOAT      | Position courante simulée            |
+| tracking_status       | VARCHAR(32)| État suivi (défaut pending)          |
+| tracking_progress     | FLOAT      | Progression 0.0 – 1.0                |
+| location_history      | JSON       | Historique positions                 |
+| estimated_delivery_at | DATETIME   | ETA estimée                          |
+| simulation_state      | VARCHAR(20)| idle / running / paused (défaut idle)|
+
+Pas de table tracking séparée : tout est stocké sur shipments.
+
+
+--------------------------------------------------------------------------------
+3. NOUVELLES ÉNUMÉRATIONS — RELEASE 3
+--------------------------------------------------------------------------------
+
+AssistantAvatarStatus (assistant_avatars.status)
+  • not_created | processing | ready | error
+
+
+--------------------------------------------------------------------------------
+4. NOUVELLES TABLES — SPRINT 5 (Assistant TradeFlow)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : assistant_sessions             │ Session chatbot                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut          | Type SQL     | Contraintes                            |
+|-------------------|--------------|----------------------------------------|
+| id                | VARCHAR(36)  | PK (UUID)                              |
+| user_id           | INT          | FK → users.id, CASCADE, index         |
+| user_role         | VARCHAR(32)  | NOT NULL (rôle au moment de la session)|
+| started_at        | DATETIME     | défaut now()                           |
+| last_activity_at  | DATETIME     | défaut now()                           |
+| ended_at          | DATETIME     | NULL                                   |
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : assistant_messages             │ Messages assistant               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut       | Type SQL      | Contraintes                               |
+|----------------|---------------|-------------------------------------------|
+| id             | INT           | PK, auto_increment                        |
+| session_id     | VARCHAR(36)   | FK → assistant_sessions.id, CASCADE, index|
+| role           | VARCHAR(16)   | NOT NULL (user / assistant)               |
+| content        | VARCHAR(4000) | NOT NULL                                  |
+| video_url      | VARCHAR(2048) | NULL                                      |
+| provider       | VARCHAR(32)   | NULL (ex. openai)                         |
+| generation_ms  | INT           | NULL                                      |
+| created_at     | DATETIME      | défaut now()                              |
+
+
+Note Sprint 5 — sans table en base :
+  • Calculateur logistique (/dashboard/calculator) : calcul via API, pas de persistance.
+  • Analytics métier par rôle : agrégations sur shipments, documents, users existants.
+
+
+--------------------------------------------------------------------------------
+5. NOUVELLES TABLES — SPRINT 6 (Administration)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : assistant_avatars              │ Avatar vidéo admin (HeyGen)      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut              | Type SQL       | Contraintes                        |
+|-----------------------|----------------|------------------------------------|
+| id                    | INT            | PK, auto_increment                 |
+| admin_id              | INT            | FK → users.id, CASCADE, index      |
+| original_filename     | VARCHAR(512)   | NOT NULL                           |
+| video_path            | VARCHAR(1024)  | NOT NULL                           |
+| video_size            | INT            | NOT NULL, défaut 0                 |
+| public_token          | VARCHAR(64)    | NOT NULL, UK                       |
+| presenter_source_url  | VARCHAR(2048)  | NULL                               |
+| avatar_provider_id    | VARCHAR(255)   | NULL                               |
+| voice_id              | VARCHAR(255)   | NULL                               |
+| status                | ENUM (AssistantAvatarStatus) | NOT NULL           |
+| persona               | JSON           | NOT NULL, défaut {}                |
+| metadata              | JSON           | NOT NULL, défaut {} (col. metadata)  |
+| error_message         | TEXT           | NULL                               |
+| is_active             | BOOLEAN        | NOT NULL, défaut false, index      |
+| created_at            | DATETIME       | défaut now()                       |
+| updated_at            | DATETIME       | défaut now(), on update            |
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : assistant_config               │ Configuration globale assistant  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut          | Type SQL     | Contraintes                              |
+|-------------------|--------------|------------------------------------------|
+| id                | INT          | PK, défaut 1 (ligne unique configuration)|
+| heygen_avatar_id  | VARCHAR(128) | NOT NULL                                 |
+| heygen_voice_id   | VARCHAR(128) | NOT NULL                                 |
+| greeting_message  | TEXT         | NOT NULL                                 |
+| is_enabled        | BOOLEAN      | NOT NULL, défaut true                    |
+| updated_at        | DATETIME     | défaut now(), on update                  |
+
+Pas de FK : table singleton (une seule configuration plateforme).
+
+
+--------------------------------------------------------------------------------
+6. NOUVEAUX LIENS (Release 3)
+--------------------------------------------------------------------------------
+
+  (L) users ──< assistant_sessions
+      • assistant_sessions.user_id → users.id | CASCADE
+      • 1 utilisateur → 0..* sessions assistant
+
+  (M) assistant_sessions ──< assistant_messages
+      • assistant_messages.session_id → assistant_sessions.id | CASCADE
+      • 1 session → 0..* messages (user / assistant)
+
+  (N) users ──< assistant_avatars  (rôle admin)
+      • assistant_avatars.admin_id → users.id | CASCADE
+      • 1 administrateur configure 0..* avatars (un seul is_active à la fois en métier)
+
+
+--------------------------------------------------------------------------------
+7. SCHÉMA ASCII — MODÈLE COMPLET (13 tables)
+--------------------------------------------------------------------------------
+
+                              ┌─────────────┐
+                              │    users    │
+                              └──────┬──────┘
+     ┌────────────┬────────────┼────────────┬──────────────┬────────────────┐
+     │            │            │            │              │                │
+     ▼            ▼            ▼            ▼              ▼                ▼
+shipments    products    documents  notifications  assistant_sessions  assistant_avatars
+     │            │            ▲            ▲              │                │
+     │            │            │            │              ▼                │
+     ▼            ▼            │            │      assistant_messages      │
+shipment_       │               │            │                              │
+ products       │               │            │                              │
+     │           │               │            │         ┌──────────────────┘
+     │           │               │            │         │
+     └───────────┴───────────────┴────────────┴─────────┤
+                    │                    │              │
+                    ▼                    ▼              ▼
+            message_threads      (liens optionnels   assistant_config
+                    │             shipment_id)       (singleton, pas de FK)
+         ┌──────────┴──────────┐
+         ▼                     ▼
+ thread_participants      messages
+         │
+         └──> users
+
+Légende compartiments diagramme UML :
+  [Release 1] users, shipments, products, shipment_products
+  [Release 2] documents, notifications, message_threads, thread_participants, messages
+  [Release 3] assistant_sessions, assistant_messages, assistant_avatars, assistant_config
+  [Extension S5] attributs GPS dans shipments
+
+
+--------------------------------------------------------------------------------
+8. TABLEAU RÉCAPITULATIF PAR SPRINT (tout le projet)
+--------------------------------------------------------------------------------
+
+| Sprint | Release | Tables / extensions                                              |
+|--------|---------|------------------------------------------------------------------|
+| 1      | 1       | users                                                            |
+| 2      | 1       | shipments, products, shipment_products                           |
+| 3      | 2       | documents                                                        |
+| 4      | 2       | notifications, message_threads, thread_participants, messages  |
+| 5      | 3       | assistant_sessions, assistant_messages ; + colonnes GPS shipments|
+| 6      | 3       | assistant_avatars, assistant_config                              |
+
+Total tables relationnelles : **13**
+Énumérations métier : UserRole, CargoType, TransportMode, ShipmentStatus,
+  TradeDocumentType, NotificationType, AssistantAvatarStatus
+
+
+--------------------------------------------------------------------------------
+9. INSTRUCTIONS POUR LE DIAGRAMME UML FINAL (rapport PFE)
+--------------------------------------------------------------------------------
+
+  1. Dessiner les 13 tables comme classes avec stéréotype <<table>> ou nom SQL.
+  2. Lister les attributs (au minimum : PK, FK, champs métier principaux).
+  3. Relier par associations avec cardinalités (1, 0..*, etc.).
+  4. Indiquer ON DELETE (CASCADE / SET NULL) sur les FK importantes en note.
+  5. Grouper visuellement par release (couleur ou package PlantUML).
+  6. Ne pas oublier la table associative shipment_products et thread_participants.
+  7. assistant_config : isolée, sans lien FK vers users.
+  8. Fichier PlantUML de référence :
+     release-03/diagramme-classes/Diagramme_Classes_Release3_Cumul_Final.puml
+     Copie rapport : rapport-global/chapitre-02-preparation/diagramme-classes-global/
+     GlobalTradeX_class_diagram_physique_cumul.puml
+
+================================================================================
+Fin — Diagramme de classes textuel FINAL (Release 3 = projet complet)
+================================================================================

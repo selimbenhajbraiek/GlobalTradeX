@@ -1,0 +1,203 @@
+================================================================================
+DIAGRAMME DE CLASSES — RELEASE 1 (texte d'instructions)
+Projet : GlobalTradeX — Modèle physique MySQL (SQLAlchemy)
+================================================================================
+
+Ce fichier décrit le modèle de données à représenter dans le diagramme de classes
+de la Release 1. Il sert de consigne pour dessiner le diagramme (PlantUML, StarUML,
+draw.io) ou pour le chapitre rapport PFE.
+
+Release 1 = Sprint 1 « Gérer Compte » + Sprint 2 « Gérer Expéditions & Produits »
+
+  • Sprint 1 : table users
+  • Sprint 2 : tables shipments, products, shipment_products
+
+Total à ce stade : 4 tables (+ énumérations métier)
+
+
+--------------------------------------------------------------------------------
+1. COMMENT LIRE CE DOCUMENT
+--------------------------------------------------------------------------------
+
+  • Chaque TABLE = une entité du diagramme (nom = nom de table MySQL).
+  • PK = clé primaire | FK = clé étrangère | UK = unique
+  • Les cardinalités sont indiquées en notation rapport :
+        users (1) ──────< (0..*) shipments
+        signifie : un utilisateur possède zéro ou plusieurs expéditions.
+
+  • Les énumérations (UserRole, ShipmentStatus, etc.) peuvent être dessinées
+    comme des types énumérés reliés par dépendance (..>) à la colonne concernée.
+
+
+--------------------------------------------------------------------------------
+2. ÉNUMÉRATIONS (Release 1)
+--------------------------------------------------------------------------------
+
+UserRole (colonne users.role)
+  • admin | importateur | exportateur | transitaire | courtier
+
+CargoType (colonne shipments.cargo_type)
+  • general | fragile | dangerous | perishable | oversized
+
+TransportMode (colonne shipments.transport_mode)
+  • air | sea | road | rail
+
+ShipmentStatus (colonne shipments.status)
+  • pending | in_transit | customs_hold | delivered | delayed | cancelled
+
+
+--------------------------------------------------------------------------------
+3. TABLES ET ATTRIBUTS
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : users                          │ Sprint 1 — Comptes utilisateurs │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut                  | Type SQL              | Contraintes              |
+|---------------------------|-----------------------|--------------------------|
+| id                        | INT                   | PK, auto_increment       |
+| full_name                 | VARCHAR(100)          | NOT NULL                 |
+| email                     | VARCHAR(150)          | NOT NULL, UK, index      |
+| password_hash             | VARCHAR(255)          | NOT NULL                 |
+| role                      | ENUM (UserRole)       | NOT NULL, défaut importateur |
+| phone                     | VARCHAR(20)           | NULL                     |
+| notification_preferences  | JSON                  | NULL                     |
+| is_active                 | BOOLEAN               | NOT NULL, défaut true    |
+| email_verified            | BOOLEAN               | NOT NULL, défaut false   |
+| created_at                | DATETIME (timezone)   | défaut now()             |
+
+Rôle métier : inscription, authentification JWT, profil (Sprint 1).
+Note : pas de table séparée pour les tokens e-mail / JWT (stateless).
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : shipments                      │ Sprint 2 — Dossiers d'expédition │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut              | Type SQL            | Contraintes                    |
+|-----------------------|---------------------|--------------------------------|
+| id                    | INT                 | PK, auto_increment             |
+| owner_id              | INT                 | FK → users.id, CASCADE, index  |
+| exporter_user_id      | INT                 | FK → users.id, SET NULL, index |
+| reference             | VARCHAR(50)         | NOT NULL, UK (ex. GTX-YYYYMMDD-#####) |
+| origin                | VARCHAR(200)        | NOT NULL                       |
+| destination           | VARCHAR(200)        | NOT NULL                       |
+| cargo_type            | ENUM (CargoType)    | NOT NULL                       |
+| transport_mode        | ENUM (TransportMode)| NOT NULL                       |
+| status                | ENUM (ShipmentStatus)| NOT NULL, défaut pending      |
+| weight_kg             | DECIMAL(10,2)       | NULL                           |
+| volume_m3             | DECIMAL(10,3)       | NULL                           |
+| estimated_value       | DECIMAL(15,2)       | NULL                           |
+| currency              | VARCHAR(10)         | NOT NULL, défaut USD           |
+| freight_estimate_usd  | DECIMAL(15,2)       | NULL                           |
+| departure_date        | DATE                | NULL                           |
+| arrival_date          | DATE                | NULL                           |
+| vessel_name           | VARCHAR(200)        | NULL                           |
+| voyage_number         | VARCHAR(100)        | NULL                           |
+| eta_update            | DATE                | NULL                           |
+| notes                 | TEXT                | NULL                           |
+| created_at            | DATETIME            | défaut now()                   |
+| updated_at            | DATETIME            | défaut now(), on update        |
+
+Hors Release 1 (ajoutés Release 3 / Sprint 5 — GPS) :
+  origin_lat, origin_lng, dest_lat, dest_lng, current_lat, current_lng,
+  tracking_status, tracking_progress, location_history, estimated_delivery_at,
+  simulation_state  → ne pas dessiner sur le diagramme Release 1 seul.
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : products                       │ Sprint 2 — Catalogue exportateur │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut        | Type SQL          | Contraintes                          |
+|-----------------|-------------------|--------------------------------------|
+| id              | INT               | PK, auto_increment                   |
+| user_id         | INT               | FK → users.id, CASCADE, index        |
+| name            | VARCHAR(255)      | NOT NULL                             |
+| hs_code         | VARCHAR(32)       | NOT NULL, défaut ''                  |
+| description     | TEXT              | NULL                                 |
+| unit_price      | DECIMAL(15,2)     | NOT NULL, défaut 0                   |
+| quantity        | INT               | NOT NULL, défaut 1                   |
+| unit            | VARCHAR(32)       | NOT NULL, défaut pcs                 |
+| origin_country  | VARCHAR(100)      | NOT NULL, défaut ''                  |
+| created_at      | DATETIME          | défaut now()                         |
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : shipment_products              │ Sprint 2 — Lignes produit / GTX │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut      | Type SQL | Contraintes                                           |
+|---------------|----------|-------------------------------------------------------|
+| id            | INT      | PK, auto_increment                                    |
+| shipment_id   | INT      | FK → shipments.id, CASCADE, index                     |
+| product_id    | INT      | FK → products.id, CASCADE, index                      |
+| quantity      | INT      | NOT NULL, défaut 1                                    |
+|               |          | UK composite (shipment_id, product_id)                |
+
+
+--------------------------------------------------------------------------------
+4. LIENS ENTRE TABLES (Release 1)
+--------------------------------------------------------------------------------
+
+  (A) users ──< shipments  (propriétaire importateur)
+      • shipments.owner_id → users.id
+      • Cardinalité : 1 utilisateur → 0..* expéditions (owner)
+      • ON DELETE CASCADE
+
+  (B) users ──< shipments  (exportateur lié)
+      • shipments.exporter_user_id → users.id
+      • Cardinalité : 0..1 exportateur → 0..* expéditions
+      • ON DELETE SET NULL
+
+  (C) users ──< products
+      • products.user_id → users.id
+      • Cardinalité : 1 exportateur → 0..* produits catalogue
+      • ON DELETE CASCADE
+
+  (D) shipments ──< shipment_products ──> products
+      • Table associative (many-to-many avec quantité)
+      • 1 expédition → 0..* lignes ; 1 produit → 0..* lignes
+      • Permet de lier le catalogue à une expédition sortante (exportateur)
+
+
+--------------------------------------------------------------------------------
+5. SCHÉMA ASCII (Release 1 — à reproduire en diagramme UML)
+--------------------------------------------------------------------------------
+
+                    ┌─────────────┐
+                    │    users    │
+                    │  (PK: id)   │
+                    └──────┬──────┘
+           ┌───────────────┼───────────────┐
+           │               │               │
+           │ 1         0..*│ 1         0..*│
+           ▼               ▼               ▼
+    ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+    │  shipments  │ │  products   │ │ (pas d'autre│
+    │ owner_id    │ │  user_id    │ │  table R1)  │
+    │ exporter_id │ └──────┬──────┘ └─────────────┘
+    └──────┬──────┘        │
+           │               │
+           │    ┌──────────┴──────────┐
+           └───>│  shipment_products  │
+                │ shipment_id         │
+                │ product_id          │
+                │ quantity            │
+                └─────────────────────┘
+
+
+--------------------------------------------------------------------------------
+6. SYNTHÈSE RELEASE 1
+--------------------------------------------------------------------------------
+
+  Tables : users | shipments | products | shipment_products
+  Sprints couverts : 1 (compte) + 2 (expéditions & produits)
+  Diagramme cumulé : release-01/diagramme-classes/Diagramme_Classes_Release1_Cumul.puml
+
+  Release suivante : reprendre TOUT ce modèle et AJOUTER les tables Release 2.
+
+================================================================================
+Fin — Diagramme de classes textuel Release 1
+================================================================================

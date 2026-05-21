@@ -1,0 +1,26 @@
+================================================================================
+Diagramme de classes cumulé FINAL — Sprint 6 « Administration & Soutenance »
+Fichier source : Diagramme_Classes_Sprint6_Cumul_Final.puml
+================================================================================
+
+Tables introduites dans ce sprint :
+  • assistant_avatars (+ AssistantAvatarStatus)
+  • assistant_config
+
+DIAGRAMME COMPLET DU PROJET (cumul sprints 1 à 6) :
+
+  Sprint 1 : users
+  Sprint 2 : shipments, products, shipment_products
+  Sprint 3 : documents
+  Sprint 4 : notifications, message_threads, thread_participants, messages
+  Sprint 5 : assistant_sessions, assistant_messages
+  Sprint 6 : assistant_avatars, assistant_config
+
+Total : 13 tables + énumérations (UserRole, ShipmentStatus, CargoType,
+        TransportMode, TradeDocumentType, NotificationType, AssistantAvatarStatus)
+
+Ce fichier est la version finale à insérer dans le rapport (chapitre
+implémentation / modèle de données). Le diagramme global chapitre 2 reste
+la vue conceptuelle ; ce diagramme est la vue physique cumulée par sprint.
+
+================================================================================

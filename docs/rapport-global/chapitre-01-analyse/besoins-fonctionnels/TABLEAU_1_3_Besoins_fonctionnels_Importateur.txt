@@ -1,0 +1,95 @@
+================================================================================
+TABLEAU 1.3 – Besoins fonctionnels de l'acteur « Importateur »
+Projet : GlobalTradeX — Plateforme de pilotage du commerce international
+================================================================================
+
++----------------------------------+----------------------------------------------------------+
+| Fonctionnalité                   | Description                                              |
++----------------------------------+----------------------------------------------------------+
+| S'authentifier                   | Pour accéder à son espace, l'importateur s'authentifie   |
+|                                  | avec son adresse e-mail et son mot de passe. L'accès     |
+|                                  | n'est accordé qu'après vérification de l'adresse e-mail. |
+|                                  | Un jeton JWT sécurisé ouvre le cockpit importateur       |
+|                                  | (/dashboard/importateur).                                |
++----------------------------------+----------------------------------------------------------+
+| Récupérer mot de passe           | En cas d'oubli, l'importateur demande un lien de         |
+|                                  | réinitialisation par e-mail (SMTP). Il définit alors un  |
+|                                  | nouveau mot de passe via une page dédiée sécurisée.      |
++----------------------------------+----------------------------------------------------------+
+| Gérer profil                     | L'importateur peut consulter et mettre à jour ses        |
+|                                  | informations personnelles (nom complet, téléphone,       |
+|                                  | avatar) depuis l'espace Profil.                        |
++----------------------------------+----------------------------------------------------------+
+| Consulter cockpit importateur    | Permet d'afficher un tableau de bord métier : indicateurs|
+|                                  | (commandes actives, dossiers en douane, exceptions),     |
+|                                  | liste des expéditions en cours et panneau de détail      |
+|                                  | pour le dossier sélectionné (ex. GTX-20240315-00042).    |
++----------------------------------+----------------------------------------------------------+
+| Créer une expédition             | Permet de lancer un assistant multi-étapes : saisie de   |
+|                                  | l'itinéraire (origine, destination, date, mode de          |
+|                                  | transport), caractéristiques du fret (poids, volume,      |
+|                                  | valeur, type de marchandise), suggestion d'itinéraires   |
+|                                  | par l'IA (TradeFlow) et validation finale. L'importateur |
+|                                  | est enregistré comme propriétaire (owner) du dossier.    |
++----------------------------------+----------------------------------------------------------+
+| Suivre ses expéditions           | Permet de consulter, filtrer et rechercher les           |
+|                                  | expéditions dont il est commanditaire : référence GTX,   |
+|                                  | statut (pending, in_transit, customs_hold, delivered,   |
+|                                  | etc.), parties prenantes (exportateur, transitaire) et   |
+|                                  | historique des changements de statut.                    |
++----------------------------------+----------------------------------------------------------+
+| Consulter détail d'expédition    | Permet d'ouvrir la fiche complète d'une expédition :     |
+|                                  | route, dates, navire / voyage, documents associés,       |
+|                                  | notifications liées et indicateurs de progression.       |
++----------------------------------+----------------------------------------------------------+
+| Optimiser itinéraire             | Lors de la création d'expédition, permet de solliciter   |
+|                                  | l'assistant IA pour obtenir des propositions de routes     |
+|                                  | (modes air, mer, route, rail) avec estimation de fret    |
+|                                  | et niveau de risque associé.                             |
++----------------------------------+----------------------------------------------------------+
+| Utiliser calculateur logistique  | Permet d'estimer les droits de douane (code SH, pays     |
+|                                  | d'origine / destination, valeur déclarée) et le coût de  |
+|                                  | fret (poids, dimensions) via le module calculateur       |
+|                                  | (/dashboard/calculator), en appui à la décision d'achat. |
++----------------------------------+----------------------------------------------------------+
+| Consulter documents              | Permet de visualiser les pièces jointes au dossier       |
+|                                  | d'expédition déposées par l'exportateur ou le transitaire|
+|                                  | (facture commerciale, packing list, certificat d'origine,|
+|                                  | connaissement, etc.) sans pouvoir valider au nom du      |
+|                                  | courtier en douane.                                      |
++----------------------------------+----------------------------------------------------------+
+| Suivi GPS en direct              | Permet de suivre sur une carte les expéditions en        |
+|                                  | mouvement (positions simulées / démo) rattachées à ses   |
+|                                  | dossiers ou à l'ensemble du réseau selon les droits.     |
++----------------------------------+----------------------------------------------------------+
+| Consulter liste notifications    | Permet de consulter les alertes liées à ses expéditions :|
+|                                  | changement de statut, blocage douanier (customs_hold), |
+|                                  | messages des partenaires et rappels système.             |
++----------------------------------+----------------------------------------------------------+
+| Gérer préférences notifications  | Permet de configurer les canaux et types d'alertes       |
+|                                  | (e-mail, SMS si activé) depuis les paramètres du compte. |
++----------------------------------+----------------------------------------------------------+
+| Messagerie collaborative         | Permet d'échanger avec l'exportateur, le transitaire ou  |
+|                                  | le courtier sur un fil de discussion lié au dossier,     |
+|                                  | afin de coordonner les opérations et lever les blocages. |
++----------------------------------+----------------------------------------------------------+
+| Procurer aide (assistant IA)     | Un assistant conversationnel (TradeFlow) interagit avec  |
+|                                  | l'importateur pour répondre aux questions sur les        |
+|                                  | expéditions, les documents requis et les procédures      |
+|                                  | d'importation.                                           |
++----------------------------------+----------------------------------------------------------+
+| Se déconnecter                   | Permet de clôturer la session en supprimant le jeton     |
+|                                  | d'authentification (cookie) depuis le profil ou la barre |
+|                                  | latérale.                                                |
++----------------------------------+----------------------------------------------------------+
+
+Remarques :
+- L'importateur ne peut pas modifier le statut logistique d'une expédition (réservé au
+  transitaire) ni valider les documents douaniers (réservé au courtier).
+- L'étape « Produits » du wizard de création est réservée à l'exportateur ; l'importateur
+  crée la commande et associe ultérieurement l'exportateur via le dossier partagé.
+- Référence de démonstration : expédition GTX-20240315-00042 (TunisOlive → FreshMart).
+
+================================================================================
+Fin du tableau 1.3
+================================================================================

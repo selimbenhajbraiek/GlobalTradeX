@@ -1,0 +1,74 @@
+================================================================================
+3.3 Sprint 3 : « Gérer Documents & Douane (IA) »
+Projet : GlobalTradeX — Plateforme de pilotage du commerce international
+Durée du sprint : 12 jours (Release 2)
+================================================================================
+
+3.3.1 Organisation
+
+Le tableau 3.9 présente le backlog du troisième sprint, centré sur le dépôt et le
+contrôle documentaire, la validation douanière assistée par IA, et les actions
+transitaire / courtier sur les expéditions.
+
+Périmètre retenu :
+  • Gérer Documents      — téléversement, consultation, téléchargement (exportateur,
+                          transitaire, parties au dossier)
+  • Douane (IA)          — file d'attente courtier, vérification OpenAI, validation /
+                          rejet avec motif
+  • Expéditions (suite)  — vue transitaire, mise à jour de statut (moteur de transitions)
+  • Cockpits             — transitaire (8.3), courtier en douane (8.4)
+
+Reporté : notifications automatiques sur documents → Sprint 4 ; messagerie → Sprint 4.
+
+
+TABLEAU 3.9 – Backlog du sprint 3 : « Gérer Documents & Douane (IA) »
+================================================================================
+
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| ID   | User Story                                               | ID     | Tâche                                                            | Durée /j |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « GÉRER DOCUMENTS »                                      |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 5.1  | En tant qu'Exportateur, je téléverse des documents       | 5.1.1  | Interface workspace documents (/dashboard/documents) : upload, | 2        |
+|      | commerciaux sur un dossier d'expédition.                 |        | type (facture, packing list, certificat…), liaison shipment.     |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 5.1.2  | API POST /api/documents/upload (stockage uploads/, 10 Mo,      | 1        |
+|      |                                                          |        | PDF/JPG/PNG), modèle Document.                                   |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 5.3  | En tant qu'Importateur, Exportateur et Transitaire, je   | 5.3.1  | Consultation liste par expédition GET /api/documents/shipment/   | 1        |
+|      | consulte les pièces rattachées.                          |        | {id} et intégration fiche expédition.                            |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 5.4  | En tant qu'acteur autorisé, je télécharge un document. | 5.4.1  | API GET /api/documents/{id}/download + bouton téléchargement.    | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « DOUANE (IA) »                                          |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 5.6  | En tant qu'Courtier en douane, je consulte la file       | 5.6.1  | File documents en attente GET /api/documents/pending-review      | 1        |
+|      | des documents en attente de validation.                  |        | et cockpit courtier (/dashboard/courtier).                       |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 5.7  | En tant qu'Courtier, je lance une vérification IA.     | 5.7.1  | API POST /api/documents/{id}/ai-verify (OpenAIService, résultat  | 2        |
+|      |                                                          |        | JSON stocké dans ai_result).                                     |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 5.8  | En tant qu'Courtier, je valide ou rejette un document.   | 5.8.1  | API PATCH /api/documents/{id}/verify (is_verified, motif rejet)  | 2        |
+|      |                                                          |        | et notification exportateur (préparation Sprint 4).            |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « EXPÉDITIONS — TRANSITAIRE »                            |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 3.7  | En tant qu'Transitaire, je consulte et mets à jour le    | 3.7.1  | Cockpit transitaire + PATCH /api/shipments/{id}/status           | 2        |
+|      | statut des expéditions actives.                          |        | (transitions, navire, voyage, ETA, notes).                       |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+
+Synthèse (durée / j) :
+  Gérer Documents (5.1, 5.3, 5.4)     : 6 j
+  Douane IA (5.6, 5.7, 5.8)           : 5 j
+  Transitaire (3.7)                   : 2 j
+  ─────────────────────────────────────
+  Total sprint 3                      : 12 j
+
+Descriptions textuelles (tableaux 3.10 à 3.12) :
+  • 3.10 — Téléverser un document commercial
+  • 3.11 — Vérifier un document par intelligence artificielle
+  • 3.12 — Mettre à jour le statut d'une expédition (Transitaire)
+
+================================================================================
+Fin du tableau 3.9
+================================================================================

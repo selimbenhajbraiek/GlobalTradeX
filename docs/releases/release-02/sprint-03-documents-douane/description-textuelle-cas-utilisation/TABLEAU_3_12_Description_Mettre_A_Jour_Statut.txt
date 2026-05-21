@@ -1,0 +1,49 @@
+================================================================================
+TABLEAU 3.12 – Description textuelle de cas d'utilisation « Mettre à jour le statut »
+Sprint 3 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Mettre à jour le statut d'une expédition »                     |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Transitaire, Administrateur                                      |
++------------------+------------------------------------------------------------------+
+| Résumé           | Le transitaire fait progresser une expédition dans le cycle      |
+|                  | logistique (pending → in_transit → delivered, customs_hold, etc.)|
+|                  | en renseignant les informations de transport.                    |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur est authentifié en tant que transitaire ou admin.        |
+|                  | L'expédition existe et est visible dans le cockpit transitaire.  |
+|                  | La transition demandée est autorisée par le moteur métier.     |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le système affiche la liste des expéditions actives du réseau
+    (/dashboard/transitaire ou /dashboard/shipments).
+ 2. Le transitaire ouvre la fiche d'une expédition (référence GTX).
+ 3. Le transitaire sélectionne le nouveau statut parmi les valeurs autorisées
+    (ex. pending, customs_hold, in_transit, delivered, cancelled).
+ 4. Le transitaire renseigne optionnellement : navire, numéro de voyage, ETA, notes.
+ 5. Le transitaire valide la mise à jour.
+ 6. Le système appelle PATCH /api/shipments/{id}/status, vérifie la transition,
+    met à jour Shipment et enregistre l'historique si applicable.
+ 7. Le système notifie les parties prenantes (importateur / exportateur — Sprint 4).
+
+Enchaînements alternatifs
+-------------------------
+ 6.1  Transition interdite (ex. delivered → pending) :
+      le système refuse (HTTP 400) avec le détail des statuts permis.
+
+ 6.2  Expédition introuvable :
+      le système retourne HTTP 404.
+
+Post-conditions
+---------------
+ Le statut de l'expédition reflète l'état réel du transport.
+ Les cockpits et la barre de progression affichent la nouvelle étape.
+ Les notifications de changement de statut sont émises (Sprint 4).
+
+================================================================================
+Fin du tableau 3.12
+================================================================================

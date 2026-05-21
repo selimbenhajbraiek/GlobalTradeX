@@ -1,0 +1,48 @@
+================================================================================
+TABLEAU 3.22 – Description textuelle de cas d'utilisation « Gérer les utilisateurs »
+Sprint 6 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Gérer les utilisateurs »                                       |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Administrateur                                                   |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'administrateur supervise les comptes de la plateforme :        |
+|                  | consultation, création, modification de rôle, activation,      |
+|                  | suppression (sauf son propre compte).                            |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur est authentifié avec le rôle administrateur.              |
+|                  | L'acteur accède à /dashboard/admin/users.                        |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal — Consulter et créer
+-------------------------------------
+ 1. Le système affiche la liste paginée des utilisateurs (nom, e-mail, rôle, actif).
+ 2. L'administrateur clique sur « Créer un utilisateur ».
+ 3. L'administrateur saisit e-mail, mot de passe, nom complet et rôle métier.
+ 4. Le système valide et crée le compte (is_verified selon politique admin).
+ 5. Le système rafraîchit la liste.
+
+Scénario nominal — Modifier ou désactiver
+-----------------------------------------
+ 6. L'administrateur sélectionne un utilisateur et modifie le rôle ou désactive
+    le compte (is_active = false).
+ 7. Le système enregistre via PATCH ; l'utilisateur concerné ne peut plus se connecter
+    si désactivé.
+
+Enchaînements alternatifs
+-------------------------
+ 4.1  E-mail déjà utilisé : le système refuse (HTTP 409).
+
+ 7.1  Tentative de suppression de son propre compte :
+      le système refuse pour éviter le verrouillage admin.
+
+Post-conditions
+---------------
+ Le parc utilisateurs reflète l'organisation de démonstration (importateur, exportateur,
+ transitaire, courtier, admin).
+
+================================================================================
+Fin du tableau 3.22
+================================================================================

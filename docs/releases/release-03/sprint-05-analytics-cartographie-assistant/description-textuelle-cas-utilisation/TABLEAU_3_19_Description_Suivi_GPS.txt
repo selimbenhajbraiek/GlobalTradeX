@@ -1,0 +1,42 @@
+================================================================================
+TABLEAU 3.19 – Description textuelle de cas d'utilisation « Suivre sur carte GPS »
+Sprint 5 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Suivre une expédition sur carte GPS »                            |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Importateur, Exportateur, Transitaire, Courtier, Administrateur  |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'acteur visualise la position simulée ou réelle d'une           |
+|                  | expédition en transit sur une carte interactive.                 |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'expédition est au statut compatible avec le suivi (ex. in_transit).|
+|                  | Le tracking a été initialisé (POST …/tracking/init ou start).    |
+|                  | L'acteur ouvre /dashboard/shipments/tracking ou la fiche tracking  |
+|                  | /dashboard/shipments/[id]/tracking.                              |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le système charge GET /api/tracking/active ou GET …/shipments/{id}/tracking.
+ 2. Le système affiche la carte (marqueur origine / destination, position courante).
+ 3. L'acteur sélectionne une expédition dans la liste des flux actifs.
+ 4. Le système met à jour la position selon l'état du simulateur (progression %).
+ 5. L'acteur peut mettre en pause ou réinitialiser le suivi (transitaire / admin).
+
+Enchaînements alternatifs
+-------------------------
+ 1.1  Aucune expédition en suivi actif :
+      le système propose d'initialiser le tracking depuis la fiche expédition.
+
+ 4.1  Erreur réseau carte :
+      le système affiche les coordonnées textuelles en secours.
+
+Post-conditions
+---------------
+ L'acteur dispose d'une vision géographique du transit pour la soutenance et le pilotage.
+
+================================================================================
+Fin du tableau 3.19
+================================================================================

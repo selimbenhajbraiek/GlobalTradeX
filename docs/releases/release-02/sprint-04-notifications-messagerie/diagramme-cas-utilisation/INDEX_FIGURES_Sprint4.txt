@@ -1,0 +1,17 @@
+================================================================================
+INDEX — Figures diagrammes de cas d'utilisation (Sprint 4)
+================================================================================
+
+FIGURE 4.4.0 — Vue d'ensemble « Notifications & Messagerie »
+  → Diagramme_CU_Sprint4_Vue_Ensemble.png
+
+FIGURE 4.4.1 — « Consulter ses notifications » (TABLEAU 3.14)
+  → Diagramme_CU_Sprint4_Consulter_Notifications.png
+
+FIGURE 4.4.2 — « Recevoir une alerte de changement de statut » (TABLEAU 3.15)
+  → Diagramme_CU_Sprint4_Alerte_Statut.png
+
+FIGURE 4.4.3 — « Échanger des messages sur un dossier d'expédition » (TABLEAU 3.16)
+  → Diagramme_CU_Sprint4_Messagerie_Expedition.png
+
+================================================================================

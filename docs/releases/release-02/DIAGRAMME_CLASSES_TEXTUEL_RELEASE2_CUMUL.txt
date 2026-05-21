@@ -1,0 +1,216 @@
+================================================================================
+DIAGRAMME DE CLASSES — RELEASE 2 CUMULÉ (texte d'instructions)
+Projet : GlobalTradeX — Modèle physique MySQL
+================================================================================
+
+Ce diagramme = **Release 1 complète** + **nouvelles tables Release 2**.
+
+Release 2 = Sprint 3 « Documents & Douane (IA) » + Sprint 4 « Notifications & Messagerie »
+
+  • Reprise Release 1 : users, shipments, products, shipment_products
+  • Sprint 3 : documents
+  • Sprint 4 : notifications, message_threads, thread_participants, messages
+
+Total cumulé : 9 tables
+
+
+--------------------------------------------------------------------------------
+1. RAPPEL — MODÈLE RELEASE 1 (inchangé, à garder sur le diagramme)
+--------------------------------------------------------------------------------
+
+Voir fichier : docs/releases/release-01/DIAGRAMME_CLASSES_TEXTUEL_RELEASE1.txt
+
+Tables conservées :
+  users | shipments | products | shipment_products
+
+Liens conservés : (A) à (D) du document Release 1.
+
+
+--------------------------------------------------------------------------------
+2. NOUVELLES ÉNUMÉRATIONS (Release 2)
+--------------------------------------------------------------------------------
+
+TradeDocumentType (documents.file_type)
+  • commercial_invoice | packing_list | certificate_of_origin
+  • bill_of_lading | customs_declaration | other
+
+NotificationType (notifications.type — colonne SQL nommée « type »)
+  • info | success | warning | error
+
+
+--------------------------------------------------------------------------------
+3. NOUVELLES TABLES — SPRINT 3 (Documents & Douane)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : documents                      │ Pièces jointes expédition        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut       | Type SQL              | Contraintes                         |
+|----------------|-----------------------|-------------------------------------|
+| id             | INT                   | PK, auto_increment                  |
+| shipment_id    | INT                   | FK → shipments.id, SET NULL, index  |
+| uploaded_by    | INT                   | FK → users.id, CASCADE, index       |
+| filename       | VARCHAR(512)          | NOT NULL (nom stocké)               |
+| original_name  | VARCHAR(512)          | NOT NULL (nom upload)               |
+| file_type      | ENUM (TradeDocumentType) | NOT NULL, défaut other           |
+| file_size      | INT                   | NOT NULL, défaut 0                  |
+| file_path      | VARCHAR(1024)         | NOT NULL (chemin uploads/)          |
+| is_verified    | BOOLEAN               | NOT NULL, défaut false              |
+| ai_result      | JSON                  | NULL (résultat vérification OpenAI) |
+| uploaded_at    | DATETIME              | défaut now()                        |
+| verified_at    | DATETIME              | NULL                                |
+
+
+--------------------------------------------------------------------------------
+4. NOUVELLES TABLES — SPRINT 4 (Notifications & Messagerie)
+--------------------------------------------------------------------------------
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : notifications                  │ Alertes utilisateur              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut           | Type SQL            | Contraintes                       |
+|--------------------|---------------------|-----------------------------------|
+| id                 | INT                 | PK, auto_increment                |
+| user_id            | INT                 | FK → users.id, CASCADE, index     |
+| title              | VARCHAR(200)        | NOT NULL                          |
+| message            | TEXT                | NOT NULL                          |
+| type               | ENUM (NotificationType) | NOT NULL, défaut info (col. « type ») |
+| is_read            | BOOLEAN               | NOT NULL, défaut false            |
+| shipment_id        | INT                 | FK → shipments.id, SET NULL, index|
+| created_at         | DATETIME            | défaut now()                      |
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : message_threads                │ Fil de discussion                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut     | Type SQL | Contraintes                                    |
+|--------------|----------|------------------------------------------------|
+| id           | INT      | PK, auto_increment                             |
+| shipment_id  | INT      | FK → shipments.id, SET NULL, index           |
+| subject      | TEXT     | NULL                                           |
+| created_at   | DATETIME | défaut now()                                   |
+| updated_at   | DATETIME | défaut now(), on update                        |
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : thread_participants            │ Participants au fil              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut      | Type SQL | Contraintes                                   |
+|---------------|----------|-----------------------------------------------|
+| id            | INT      | PK, auto_increment                            |
+| thread_id     | INT      | FK → message_threads.id, CASCADE, index       |
+| user_id       | INT      | FK → users.id, CASCADE, index                 |
+| last_read_at  | DATETIME | NULL (suivi lecture)                          |
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ TABLE : messages                       │ Messages du fil                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+| Attribut    | Type SQL | Contraintes                                      |
+|-------------|----------|--------------------------------------------------|
+| id          | INT      | PK, auto_increment                               |
+| thread_id   | INT      | FK → message_threads.id, CASCADE, index          |
+| sender_id   | INT      | FK → users.id, CASCADE, index                    |
+| body        | TEXT     | NOT NULL                                         |
+| created_at  | DATETIME | défaut now()                                     |
+
+
+--------------------------------------------------------------------------------
+5. NOUVEAUX LIENS (Release 2, en plus de Release 1)
+--------------------------------------------------------------------------------
+
+  (E) users ──< documents
+      • documents.uploaded_by → users.id
+      • 1 utilisateur dépose 0..* documents | CASCADE
+
+  (F) shipments ──< documents
+      • documents.shipment_id → shipments.id
+      • 1 expédition contient 0..* documents | SET NULL si expédition supprimée
+
+  (G) users ──< notifications
+      • notifications.user_id → users.id
+      • 1 utilisateur reçoit 0..* notifications | CASCADE
+
+  (H) shipments ──< notifications  (optionnel)
+      • notifications.shipment_id → shipments.id
+      • Lien contexte alerte (changement statut, document validé…)
+
+  (I) shipments ──< message_threads
+      • message_threads.shipment_id → shipments.id
+      • 1 expédition peut avoir 0..* fils de discussion
+
+  (J) message_threads ──< thread_participants ──> users
+      • N participants par fil (table de liaison)
+      • thread_participants.thread_id → message_threads.id | CASCADE
+      • thread_participants.user_id → users.id | CASCADE
+
+  (K) message_threads ──< messages ──> users (expéditeur)
+      • messages.thread_id → message_threads.id | CASCADE
+      • messages.sender_id → users.id | CASCADE
+
+
+--------------------------------------------------------------------------------
+6. SCHÉMA ASCII CUMULÉ (Release 1 + Release 2)
+--------------------------------------------------------------------------------
+
+                         ┌─────────────┐
+                         │    users    │
+                         └──────┬──────┘
+        ┌────────────────────┼────────────────────┬─────────────────┐
+        │                    │                    │                 │
+        ▼                    ▼                    ▼                 ▼
+ ┌─────────────┐    ┌─────────────┐    ┌──────────────┐   ┌────────────────┐
+ │  shipments  │    │  products   │    │  documents   │   │ notifications  │
+ └──────┬──────┘    └──────┬──────┘    └──────────────┘   └────────────────┘
+        │                  │                  ▲                  ▲
+        │                  │                  │                  │
+        ├──────────────────┤                  │                  │
+        ▼                  ▼                  │                  │
+ ┌─────────────────┐                          │                  │
+ │shipment_products│                          │                  │
+ └─────────────────┘                          │                  │
+        │                                     │                  │
+        └──────────────┬──────────────────────┴──────────────────┘
+                       │
+                       ▼
+              ┌─────────────────┐
+              │ message_threads │
+              └────────┬────────┘
+                       │
+           ┌───────────┴───────────┐
+           ▼                       ▼
+  ┌──────────────────┐    ┌─────────────┐
+  │thread_participants│───>│   users     │
+  └──────────────────┘    └─────────────┘
+           │
+           ▼
+      ┌──────────┐
+      │ messages │───> users (sender_id)
+      └──────────┘
+
+
+--------------------------------------------------------------------------------
+7. SYNTHÈSE RELEASE 2 CUMULÉ
+--------------------------------------------------------------------------------
+
+  | Release / Sprint      | Tables ajoutées                                      |
+  |-----------------------|------------------------------------------------------|
+  | R1 — S1               | users                                                |
+  | R1 — S2               | shipments, products, shipment_products               |
+  | R2 — S3               | documents                                            |
+  | R2 — S4               | notifications, message_threads, thread_participants, messages |
+
+  Total : 9 tables
+
+  Diagramme cumulé : release-02/diagramme-classes/Diagramme_Classes_Release2_Cumul.puml
+
+  Release 3 : reprendre ce cumul et ajouter assistant + config admin + GPS.
+
+================================================================================
+Fin — Diagramme de classes textuel Release 2 (cumulé)
+================================================================================

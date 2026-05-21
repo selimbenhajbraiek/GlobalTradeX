@@ -1,0 +1,94 @@
+================================================================================
+3.2 Sprint 2 : « Gérer Expéditions & Produits »
+Projet : GlobalTradeX — Plateforme de pilotage du commerce international
+Durée du sprint : 14 jours (Release 1)
+================================================================================
+
+3.2.1 Organisation
+
+Le tableau 3.5 donne un aperçu détaillé sur le backlog du deuxième sprint, qui prend en
+charge les fonctionnalités « Gérer Expéditions », « Gérer Produits » et la consultation
+des expéditions créées.
+
+Périmètre retenu pour ce sprint :
+  • Gérer Expéditions   — création multi-étapes (importateur / exportateur), suggestions
+                          d'itinéraire IA, suivi et fiche détail (référence GTX)
+  • Gérer Produits      — catalogue exportateur (CRUD, recherche)
+
+Reporté aux sprints suivants :
+  • Mise à jour de statut par le transitaire, documents, douane → Sprint 3
+  • Notifications et messagerie sur dossier → Sprint 4
+  • Calculateur droits de douane avancé → fin Sprint 2 si marge ou Sprint 5
+
+
+TABLEAU 3.5 – Backlog du sprint 2 : « Gérer Expéditions & Produits »
+================================================================================
+
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| ID   | User Story                                               | ID     | Tâche                                                            | Durée /j |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « GÉRER EXPÉDITIONS »                                    |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 3.1  | En tant qu'Importateur, je peux créer une expédition     | 3.1.1  | Réalisation de l'assistant multi-étapes (/dashboard/shipments/new) :| 2        |
+|      | entrante (route, fret, suggestion IA, validation) via un   |        | étapes Route, Cargo & AI, Review (sans catalogue produits).       |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 3.1.2  | Développement de l'API POST /api/shipments (modèle Shipment,      | 1        |
+|      |                                                          |        | génération référence GTX-YYYYMMDD-#####, statut initial pending).  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 3.1.3  | Intégration des suggestions d'itinéraire IA (POST suggest-routes,   | 1        |
+|      |                                                          |        | sélection mode transport et estimation fret).                      |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 3.2  | En tant qu'Exportateur, je peux créer une expédition       | 3.2.1  | Réalisation de l'étape « Products » du wizard (sélection lignes  | 1        |
+|      | sortante en liant des produits de mon catalogue.         |        | catalogue, quantités) pour le rôle exportateur uniquement.       |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 3.2.2  | Développement de la liaison ShipmentProduct (product_items,        | 1        |
+|      |                                                          |        | contrôle propriété des produits côté API).                         |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 3.3  | En tant qu'Importateur et Exportateur, je peux consulter | 3.3.1  | Réalisation de la liste des expéditions (/dashboard/shipments)     | 2        |
+|      | et suivre mes expéditions (référence, statut, route).    |        | avec filtres selon rôle (owner / exportateur).                     |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 3.3.2  | Fiche détail + API GET /api/shipments et /api/shipments/{id}       | 1        |
+|      |                                                          |        | (route, statut, parties, progression).                             |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « GÉRER PRODUITS »                                       |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 4.1  | En tant qu'Exportateur, je peux ajouter, modifier et     | 4.1.1  | Réalisation des interfaces de gestion du catalogue               | 2        |
+|      | supprimer des produits (nom, code SH, prix, quantité,    |        | (/dashboard/products) : formulaire, tableau paginé.                |          |
+|      | pays d'origine).                                         |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 4.1.2  | Développement des API CRUD /api/products (POST, GET, PATCH,      | 1        |
+|      |                                                          |        | DELETE) et recherche par nom / code SH.                          |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « COCKPITS MÉTIER (aperçu) »                             |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 8.1  | En tant qu'Importateur, je consulte mon cockpit avec     | 8.1.1  | Réalisation du tableau de bord importateur (KPIs, liste           | 1        |
+|      | indicateurs et expéditions actives.                      |        | expéditions liées aux données API).                                |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 8.2  | En tant qu'Exportateur, je consulte mon cockpit export.  | 8.2.1  | Réalisation du tableau de bord exportateur (KPIs, aperçu         | 1        |
+|      |                                                          |        | catalogue / expéditions).                                        |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+
+Synthèse par fonctionnalité (durée / j) :
+  Gérer Expéditions (3.1, 3.2, 3.3) : 9 j  — détail : 3.1 = 4 j, 3.2 = 2 j, 3.3 = 3 j
+  Gérer Produits (4.1)              : 3 j
+  Cockpits métier (8.1, 8.2)        : 2 j
+  ───────────────────────────────────
+  Total sprint 2                    : 14 j
+
+Cas d'utilisation documentés (descriptions textuelles — tableau 3.6 à 3.8) :
+  • 3.6 — Créer une expédition (Importateur)
+  • 3.7 — Gérer catalogue produits (Exportateur)
+  • 3.8 — Suivre ses expéditions (Importateur et Exportateur)
+
+Livrables en fin de sprint 2 :
+  • Modèles Shipment, Product, ShipmentProduct + migrations Alembic
+  • Parcours création GTX complet (importateur et exportateur)
+  • Catalogue produits opérationnel
+  • Liste et fiche détail expédition
+  • Cockpits importateur / exportateur alimentés par l'API
+
+================================================================================
+Fin du tableau 3.5
+================================================================================

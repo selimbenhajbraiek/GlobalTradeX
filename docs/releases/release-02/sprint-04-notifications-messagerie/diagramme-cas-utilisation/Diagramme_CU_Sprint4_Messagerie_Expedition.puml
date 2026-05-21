@@ -1,0 +1,58 @@
+@startuml Diagramme_CU_Sprint4_Messagerie_Expedition
+' TABLEAU 3.16 — Messagerie sur dossier d'expédition
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 4\nCas d'utilisation : Messagerie sur une expedition
+
+actor "Importateur" as IMP
+actor "Exportateur" as EXP
+actor "Transitaire" as TR
+actor "Courtier" as BRK
+
+rectangle "GlobalTradeX\n(Messagerie par reference GTX)" {
+
+  usecase "Echanger des messages\nsur un dossier" as UC_MAIN
+
+  usecase "Voir la liste des fils" as UC_LIST <<option>>
+
+  usecase "Creer un fil lie a\nune expedition" as UC_NEW <<option>>
+
+  usecase "Lire la conversation" as UC_READ <<option>>
+
+  usecase "Envoyer un message" as UC_SEND <<option>>
+
+  usecase "Notifier les autres\nparticipants" as UC_NOTIF <<option>>
+}
+
+usecase "S'authentifier" as UC_AUTH
+
+IMP --> UC_MAIN
+EXP --> UC_MAIN
+TR --> UC_MAIN
+BRK --> UC_MAIN
+UC_MAIN ..> UC_AUTH : <<include>>
+
+UC_LIST .> UC_MAIN : <<extend>>
+UC_NEW .> UC_MAIN : <<extend>>
+UC_READ .> UC_LIST : <<extend>>
+UC_SEND .> UC_READ : <<extend>>
+UC_NOTIF ..> UC_SEND : <<include>>
+
+note bottom of UC_MAIN
+  Page : /dashboard/messages
+  Tables : message_threads, messages, thread_participants
+end note
+
+@enduml

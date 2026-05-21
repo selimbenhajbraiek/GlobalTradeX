@@ -1,0 +1,43 @@
+================================================================================
+TABLEAU 3.15 – Description textuelle de cas d'utilisation « Recevoir une alerte de statut »
+Sprint 4 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Recevoir une alerte de changement de statut »                    |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Importateur, Exportateur (destinataires) ; Transitaire (émetteur)|
++------------------+------------------------------------------------------------------+
+| Résumé           | Lorsqu'une expédition change de statut, les parties prenantes    |
+|                  | concernées reçoivent automatiquement une notification in-app.  |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | Une expédition existe avec importateur (owner) et/ou exportateur |
+|                  | rattaché.                                                         |
+|                  | Le transitaire (ou admin) a effectué une mise à jour de statut   |
+|                  | (cas d'utilisation Sprint 3 — Mettre à jour le statut).          |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le transitaire valide PATCH /api/shipments/{id}/status avec un nouveau statut.
+ 2. Le système enregistre le nouveau statut sur Shipment.
+ 3. Le système crée une Notification pour l'importateur (owner_id) et l'exportateur
+    (exporter_user_id) si présents, avec titre du type « Statut mis à jour » et
+    référence GTX dans le message.
+ 4. L'importateur ou l'exportateur ouvre le centre de notifications et voit l'alerte.
+ 5. L'acteur clique sur la notification ; le système le redirige vers la fiche
+    expédition concernée.
+
+Enchaînements alternatifs
+-------------------------
+ 3.1  Préférences utilisateur shipment_alerts désactivées (paramètres — 2.2) :
+      le système peut supprimer l'émission de notification (évolution optionnelle).
+
+Post-conditions
+---------------
+ Les parties prenantes sont informées sans rechargement manuel de la fiche.
+ La traçabilité du changement reste visible sur la fiche expédition.
+
+================================================================================
+Fin du tableau 3.15
+================================================================================

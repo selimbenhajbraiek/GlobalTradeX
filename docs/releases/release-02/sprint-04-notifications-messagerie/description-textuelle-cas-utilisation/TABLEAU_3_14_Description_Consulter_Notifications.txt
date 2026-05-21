@@ -1,0 +1,40 @@
+================================================================================
+TABLEAU 3.14 – Description textuelle de cas d'utilisation « Consulter ses notifications »
+Sprint 4 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Consulter ses notifications »                                  |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Importateur, Exportateur, Transitaire, Courtier, Administrateur  |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'acteur consulte l'historique des alertes système (statut,      |
+|                  | documents, messages) et marque les notifications comme lues.     |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur est authentifié.                                         |
+|                  | Au moins une notification peut exister pour son compte.          |
+|                  | L'acteur ouvre /dashboard/notifications.                         |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le système appelle GET /api/notifications et affiche la liste triée par date.
+ 2. Chaque entrée présente : titre, message, type (info, alert, success), lien
+    optionnel vers expédition (shipment_id).
+ 3. L'acteur ouvre une notification ; le système peut marquer l'élément comme lu
+    (PATCH /api/notifications/{id}/read).
+ 4. L'acteur peut utiliser « Tout marquer comme lu » (POST mark-all-read).
+ 5. Le badge du menu latéral se met à jour (compteur non lus).
+
+Enchaînements alternatifs
+-------------------------
+ 1.1  Aucune notification :
+      le système affiche un état vide informatif.
+
+Post-conditions
+---------------
+ Les notifications consultées sont marquées lues selon l'action de l'acteur.
+
+================================================================================
+Fin du tableau 3.14
+================================================================================

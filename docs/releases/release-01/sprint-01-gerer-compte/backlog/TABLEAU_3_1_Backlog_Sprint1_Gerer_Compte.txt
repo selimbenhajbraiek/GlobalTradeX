@@ -1,0 +1,110 @@
+================================================================================
+3.1 Sprint 1 : « Gérer Compte »
+Projet : GlobalTradeX — Plateforme de pilotage du commerce international
+Durée du sprint : 12 jours (Release 1)
+================================================================================
+
+3.1.1 Organisation
+
+Le tableau 3.1 donne un aperçu détaillé sur le backlog du premier sprint, qui prend en
+charge les fonctionnalités « S'inscrire », « S'authentifier » et « Gérer Profil ».
+
+Périmètre aligné sur le rapport de référence (SmartChain) :
+  • S'inscrire        — inscription, vérification d'e-mail, validation des données
+  • S'authentifier    — connexion JWT, récupération du mot de passe
+  • Gérer Profil      — mise à jour des informations personnelles et déconnexion
+
+Hors tableau 3.1 (traité en parallèle ou sprint suivant) : page vitrine (landing),
+préférences de notification avancées, migration de rôle (non applicable à GlobalTradeX).
+
+
+TABLEAU 3.1 – Backlog du sprint 1 : « Gérer Compte »
+================================================================================
+
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| ID   | User Story                                               | ID     | Tâche                                                            | Durée /j |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « S'INSCRIRE »                                           |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 1.1  | En tant qu'Internaute, je dois m'inscrire à travers un     | 1.1.1  | Réalisation des interfaces d'inscription (formulaire, choix du   | 2        |
+|      | formulaire d'inscription en choisissant mon rôle métier  |        | rôle importateur / exportateur / transitaire / courtier,         |          |
+|      | (importateur par défaut).                                |        | redirection vers la page « Vérifiez votre e-mail »).             |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 1.1.2  | Développement d'une API de vérification de l'adresse             | 1        |
+|      |                                                          |        | électronique (token signé, envoi SMTP MailerSend).                 |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 1.1.3  | Développement d'une API de vérification de la cohérence des    | 1        |
+|      |                                                          |        | données (unicité e-mail, force du mot de passe, rôle valide).      |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 1.2  | En tant qu'Internaute, je dois valider mon inscription   | 1.2.1  | Réalisation des pages check-email et verify-email (lien          | 1        |
+|      | via le lien reçu par e-mail avant ma première connexion. |        | sécurisé dans l'e-mail).                                         |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 1.2.2  | Développement des API verify-email et resend-verification.       |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « S'AUTHENTIFIER »                                       |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 1.3  | En tant qu'Importateur, Exportateur, Transitaire,        | 1.3.1  | Développement des interfaces d'authentification (page login,     |          |
+|      | Courtier en douane et Administrateur, je dois            |        | messages d'erreur, accès mot de passe oublié).                   |          |
+|      | m'authentifier avec mon e-mail et mon mot de passe.      |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 1.3.2  | Développement d'une API de vérification et de validation des     |          |
+|      |                                                          |        | données pour l'authentification (JWT, e-mail vérifié obligatoire).|          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 1.3.3  | Mise en place du middleware Next.js, cookie token et RoleGuard   |          |
+|      |                                                          |        | (redirection vers le cockpit selon le rôle).                     |          |
+|      |                                                          |        |                                                                  |          |
+|      |                                                          |        | Durée cumulée user story 1.3 :                                 | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 1.3.4  | Tester « S'authentifier ».                                       | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 1.4  | En tant qu'Importateur, Exportateur, Transitaire,        | 1.4.1  | Développement des interfaces de récupération du mot de passe     | 1        |
+|      | Courtier en douane et Administrateur, je peux récupérer  |        | (forgot-password, reset-password).                               |          |
+|      | mon mot de passe par e-mail pour me réauthentifier.      |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 1.4.2  | Développement d'une API de vérification et de validation des     | 1        |
+|      |                                                          |        | données pour la réinitialisation (token, hash bcrypt).           |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 1.4.3  | Tester « Récupérer mot de passe ».                                 | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « GÉRER PROFIL »                                         |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 2.1  | En tant qu'Importateur, Exportateur, Transitaire,        | 2.1.1  | Réalisation des interfaces de modification des données           | 2        |
+|      | Courtier en douane et Administrateur, je peux mettre à   |        | (page Profil : nom complet, téléphone).                          |          |
+|      | jour mes informations personnelles.                      |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 2.1.2  | Développement d'une API de modification des données              | 1        |
+|      |                                                          |        | (GET/PATCH /api/users/me).                                       |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 2.1.3  | Tester « Modifier informations » (Gérer Profil).                 | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 2.2  | En tant qu'Importateur, Exportateur, Transitaire,        | 2.2.1  | Implémentation de la déconnexion (suppression du cookie JWT,   | 1        |
+|      | Courtier en douane et Administrateur, je peux me         |        | bouton Déconnexion — barre latérale et profil).                  |          |
+|      | déconnecter après authentification.                      |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+
+Synthèse par fonctionnalité (durée / j) :
+  S'inscrire (1.1 + 1.2)     : 6 j
+  S'authentifier (1.3 + 1.4) : 5 j
+  Gérer Profil (2.1 + 2.2)   : 4 j
+  ─────────────────────────────
+  Total sprint 1             : 12 j  (arrondi planning ; certaines tâches API/UI menées en parallèle)
+
+Correspondance TABLEAU 2.1 (backlog produit global) :
+  • S'inscrire        → user stories 1.1, 1.2
+  • S'authentifier    → user stories 1.3, 1.4
+  • Gérer Profil      → user stories 2.1, 2.3 (déconnexion)
+
+Non inclus dans ce sprint (cf. organisation § 3.1.1) :
+  • 2.2 Préférences de notification → sprint 4
+  • 14.1 Page vitrine (landing) → aménagement minimal en fin de sprint 1 si marge
+  • 6.2 Migration de rôle « Développeur » (SmartChain) → non applicable ; rôle fixé
+    à l'inscription ou modifié par l'administrateur (sprint 6)
+
+Livrables en fin de sprint 1 :
+  • Parcours complet : inscription → e-mail → connexion → profil → déconnexion
+  • Modèle User, migrations (email_verified), auth JWT, e-mails transactionnels
+  • Squelette des routes dashboard par rôle (sans fonctionnalités métier)
+
+================================================================================
+Fin du tableau 3.1
+================================================================================

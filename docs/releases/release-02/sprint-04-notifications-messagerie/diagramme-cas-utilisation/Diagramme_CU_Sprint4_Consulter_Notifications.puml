@@ -1,0 +1,49 @@
+@startuml Diagramme_CU_Sprint4_Consulter_Notifications
+' TABLEAU 3.14 — Consulter ses notifications
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 4\nCas d'utilisation : Consulter ses notifications
+
+actor "Utilisateur\n(importateur, exportateur,\ntransitaire, courtier...)" as USER
+
+rectangle "GlobalTradeX" {
+
+  usecase "Consulter mes\nnotifications" as UC_MAIN
+
+  usecase "Afficher la liste" as UC_LIST <<option>>
+
+  usecase "Ouvrir une notification" as UC_OPEN <<option>>
+
+  usecase "Marquer comme lue" as UC_READ <<option>>
+
+  usecase "Tout marquer comme lu" as UC_ALL <<option>>
+}
+
+usecase "S'authentifier" as UC_AUTH
+
+USER --> UC_MAIN
+UC_MAIN ..> UC_AUTH : <<include>>
+
+UC_LIST .> UC_MAIN : <<extend>>
+UC_OPEN .> UC_LIST : <<extend>>
+UC_READ .> UC_OPEN : <<extend>>
+UC_ALL .> UC_MAIN : <<extend>>
+
+note bottom of UC_MAIN
+  Page : /dashboard/notifications
+  API : GET /api/notifications
+end note
+
+@enduml

@@ -1,0 +1,59 @@
+================================================================================
+3.4 Sprint 4 : « Notifications & Messagerie »
+Projet : GlobalTradeX — Plateforme de pilotage du commerce international
+Durée du sprint : 8 jours (Release 2)
+================================================================================
+
+3.4.1 Organisation
+
+Le tableau 3.13 détaille le backlog du quatrième sprint, dédié à la communication
+asynchrone entre acteurs : centre de notifications et fil de messagerie par dossier
+d'expédition.
+
+Périmètre retenu :
+  • Notifications (9.1, 9.2, 9.3) — liste, marquage lu, génération automatique
+  • Messagerie (10.1) — fils de discussion liés à une expédition GTX
+
+Reporté : notification système admin (9.4) → Sprint 6 ; préférences avancées (2.2) → optionnel.
+
+
+TABLEAU 3.13 – Backlog du sprint 4 : « Notifications & Messagerie »
+================================================================================
+
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| ID   | User Story                                               | ID     | Tâche                                                            | Durée /j |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « NOTIFICATIONS »                                          |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 9.1  | En tant qu'acteur métier, je consulte mes notifications. | 9.1.1  | Page /dashboard/notifications (liste, badge non lus, filtres).     | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 9.1.2  | API GET /api/notifications, PATCH read, POST mark-all-read.      | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 9.2  | En tant qu'Importateur / Exportateur, je reçois une        | 9.2.1  | Création automatique Notification lors du changement de statut   | 2        |
+|      | notification sur changement de statut expédition.        |        | (shipment_alerts, lien vers fiche GTX).                          |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 9.3  | En tant qu'Exportateur, je reçois une notification       | 9.3.1  | Notification lors validation / rejet document (PATCH verify).    | 1        |
+|      | lors de la décision du courtier sur un document.         |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « MESSAGERIE »                                             |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 10.1 | En tant qu'acteur métier, j'échange des messages sur un  | 10.1.1 | Page /dashboard/messages : liste fils, détail conversation.      | 2        |
+|      | dossier d'expédition.                                      |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 10.1.2 | API threads POST/GET, messages POST (MessageThread, shipment_id).| 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+
+Synthèse (durée / j) :
+  Notifications (9.1, 9.2, 9.3) : 6 j
+  Messagerie (10.1)             : 3 j
+  ───────────────────────────────
+  Total sprint 4                : 8 j  (intégration transversale incluse dans les tâches)
+
+Descriptions textuelles (tableaux 3.14 à 3.16) :
+  • 3.14 — Consulter ses notifications
+  • 3.15 — Recevoir une alerte de changement de statut
+  • 3.16 — Échanger des messages sur un dossier d'expédition
+
+================================================================================
+Fin du tableau 3.13
+================================================================================

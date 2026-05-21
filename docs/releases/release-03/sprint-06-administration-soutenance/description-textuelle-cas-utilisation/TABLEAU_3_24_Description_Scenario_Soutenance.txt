@@ -1,0 +1,43 @@
+================================================================================
+TABLEAU 3.24 – Description textuelle de cas d'utilisation « Scénario soutenance »
+Sprint 6 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Préparer le scénario de démonstration soutenance »             |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Administrateur, Équipe projet (opération technique)              |
++------------------+------------------------------------------------------------------+
+| Résumé           | Le système est alimenté avec un jeu de données cohérent permettant|
+|                  | de dérouler la démo PFE : TunisOlive → FreshMart, GTX-20240315-  |
+|                  | 00042, documents, statuts et suivi GPS.                          |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | Environnement MySQL et backend opérationnels.                     |
+|                  | Script seed ou commande admin disponible (seed GTX, tracking demo).|
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. L'administrateur exécute le script de seed (utilisateurs, produits huile d'olive,
+    expédition référencée GTX-20240315-00042).
+ 2. Le système crée les liaisons ShipmentProduct, documents types facture / certificat,
+    statuts progressifs et données de tracking.
+ 3. L'administrateur se connecte successivement en importateur, exportateur, courtier
+    et transitaire pour valider chaque écran du parcours.
+ 4. L'administrateur ouvre la landing (/) pour la présentation d'introduction.
+ 5. Lors de la soutenance, le jury suit le scénario documenté dans
+    docs/rapport-global/annexes/GRADUATION_PRESENTATION_SCENARIO.md.
+
+Enchaînements alternatifs
+-------------------------
+ 1.1  Échec connexion base :
+      l'équipe corrige .env et relance le seed.
+
+Post-conditions
+---------------
+ La plateforme est prête pour une démonstration bout-en-bout sans saisie manuelle longue.
+ Tous les sprints 1 à 5 sont illustrables en 15–20 minutes.
+
+================================================================================
+Fin du tableau 3.24
+================================================================================

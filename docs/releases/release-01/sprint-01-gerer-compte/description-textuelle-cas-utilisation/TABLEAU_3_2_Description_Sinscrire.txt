@@ -1,0 +1,66 @@
+================================================================================
+TABLEAU 3.2 – Description textuelle de cas d'utilisation « S'inscrire »
+Sprint 1 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « S'inscrire »                                                   |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Internaute                                                       |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'internaute s'inscrit afin d'accéder aux fonctionnalités de la   |
+|                  | plateforme GlobalTradeX (cockpit importateur, exportateur,       |
+|                  | transitaire, courtier ou administration selon le rôle attribué).|
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'internaute accède à la page d'inscription (/register) ou       |
+|                  | clique sur « Créer un compte » depuis la page de connexion.       |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le système affiche l'interface d'inscription « Create workspace » (nom complet,
+    adresse e-mail professionnelle, mot de passe).
+ 2. L'internaute remplit le formulaire et clique sur « Create workspace ».
+ 3. Le système vérifie la cohérence des données saisies (champs obligatoires, format
+    e-mail, longueur minimale du mot de passe).
+ 4. Le système vérifie l'unicité de l'adresse e-mail dans le modèle User (table users).
+ 5. Le système enregistre l'utilisateur avec le rôle par défaut « importateur »,
+    email_verified = false, et hache le mot de passe (bcrypt).
+ 6. Le système envoie un e-mail de vérification contenant un lien sécurisé (token JWT
+    à usage unique, relais SMTP MailerSend).
+ 7. Le système affiche la page « Vérifiez votre e-mail » (/check-email) invitant
+    l'internaute à consulter sa boîte de réception.
+ 8. L'internaute ouvre sa boîte de réception et clique sur le lien de vérification.
+ 9. Le système valide le token, met à jour email_verified = true et affiche un message
+    de confirmation sur la page /verify-email.
+10. Le système redirige l'internaute vers la page de connexion (/login) après quelques
+    secondes.
+
+Enchaînements alternatifs
+-------------------------
+ 3.1  Les données introduites par l'internaute sont incohérentes ou incomplètes :
+      le système affiche un message d'erreur sur le formulaire et reprend à l'étape 1
+      du scénario nominal.
+
+ 4.1  L'adresse e-mail figure déjà dans la base de données :
+      le système affiche le message « Email already registered » et reprend à l'étape 1
+      du scénario nominal.
+
+ 8.1  Le lien de vérification est invalide ou expiré :
+      le système affiche un message d'erreur sur /verify-email ; l'internaute peut
+      demander un nouvel e-mail depuis /check-email (resend-verification) et reprendre
+      à l'étape 7.
+
+ 8.2  L'internaute ne valide pas son adresse e-mail :
+      le compte reste non vérifié ; la connexion sera refusée jusqu'à validation
+      (voir cas d'utilisation « S'authentifier », enchaînement alternatif).
+
+Post-conditions
+---------------
+ L'internaute dispose d'un compte GlobalTradeX vérifié et peut s'authentifier ; il est
+ reconnu par le système selon son rôle métier (ex. Importateur) et accédera au cockpit
+ correspondant après connexion.
+
+================================================================================
+Fin du tableau 3.2
+================================================================================

@@ -1,0 +1,48 @@
+@startuml Diagramme_CU_Sprint6_Gerer_Utilisateurs
+' TABLEAU 3.22
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 6\nCas d'utilisation : Gerer les utilisateurs
+
+actor "Administrateur" as ADM
+
+rectangle "GlobalTradeX" {
+
+  usecase "Gerer les comptes\nutilisateurs" as UC_MAIN
+
+  usecase "Voir la liste des comptes" as UC1 <<option>>
+  usecase "Creer un compte" as UC2 <<option>>
+  usecase "Modifier le role" as UC3 <<option>>
+  usecase "Activer ou desactiver" as UC4 <<option>>
+  usecase "Supprimer un compte" as UC5 <<option>>
+}
+
+usecase "S'authentifier" as UC_AUTH
+
+ADM --> UC_MAIN
+UC_MAIN ..> UC_AUTH : <<include>>
+
+UC1 .> UC_MAIN : <<extend>>
+UC2 .> UC_MAIN : <<extend>>
+UC3 .> UC1 : <<extend>>
+UC4 .> UC1 : <<extend>>
+UC5 .> UC1 : <<extend>>
+
+note bottom of UC_MAIN
+  Page : /dashboard/admin/users
+  Table : users
+end note
+
+@enduml

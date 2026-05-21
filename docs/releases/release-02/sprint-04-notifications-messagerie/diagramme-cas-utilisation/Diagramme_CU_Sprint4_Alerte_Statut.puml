@@ -1,0 +1,74 @@
+@startuml Diagramme_CU_Sprint4_Alerte_Statut
+' TABLEAU 3.15 — Recevoir une alerte de changement de statut
+' Legende : trait plein = action utilisateur | pointille <<include>> = etape obligatoire du systeme
+'            pointille <<extend>> = action optionnelle
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+skinparam actor {
+  FontSize 11
+}
+skinparam arrow {
+  FontSize 9
+}
+
+title FIGURE — Sprint 4\nCas d'utilisation : Recevoir une alerte de changement de statut
+
+actor "Transitaire" as TR
+actor "Importateur" as IMP
+actor "Exportateur" as EXP
+
+rectangle "GlobalTradeX\n(Notification automatique)" {
+
+  usecase "1. Mettre a jour\nle statut de l'expedition" as UC1
+
+  usecase "2. Le systeme cree\nune notification" as UC2 <<option>>
+
+  usecase "3. Consulter la\nnotification recue" as UC3
+
+  usecase "4. Ouvrir la fiche\nexpedition (GTX)" as UC4 <<option>>
+}
+
+TR --> UC1
+IMP --> UC3
+EXP --> UC3
+
+UC1 ..> UC2 : <<include>>
+UC4 .> UC3 : <<extend>>
+
+note right of UC1
+  **Qui :** Transitaire (Sprint 3)
+  **Action :** change le statut sur la fiche GTX
+  (ex. en transit, en douane...)
+end note
+
+note right of UC2
+  **Automatique** apres la mise a jour
+  API : PATCH /api/shipments/{id}/status
+  puis insertion dans la table **notifications**
+end note
+
+note right of UC3
+  **Qui :** Importateur ou Exportateur concerne
+  **Ou :** menu Notifications
+end note
+
+legend bottom
+  |= Etape |= Signification |
+  | 1 | Le transitaire modifie le statut |
+  | 2 | GlobalTradeX envoie l'alerte (obligatoire) |
+  | 3 | L'importateur ou l'exportateur lit l'alerte |
+  | 4 | Option : aller sur la fiche expedition |
+endlegend
+
+@enduml

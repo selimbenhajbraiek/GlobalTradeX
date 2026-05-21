@@ -1,0 +1,48 @@
+@startuml Diagramme_CU_Sprint5_Calculateur
+' TABLEAU 3.18
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 5\nCas d'utilisation : Estimer droits de douane et fret
+
+actor "Importateur" as IMP
+actor "Administrateur" as ADM
+
+rectangle "GlobalTradeX" {
+
+  usecase "Utiliser le calculateur\nlogistique" as UC_MAIN
+
+  usecase "Estimer les droits\nde douane" as UC_DUTY <<option>>
+  usecase "Estimer le cout\nde fret" as UC_FREIGHT <<option>>
+  usecase "Afficher le resultat" as UC_OUT <<option>>
+}
+
+usecase "S'authentifier" as UC_AUTH
+
+IMP --> UC_MAIN
+ADM --> UC_MAIN
+UC_MAIN ..> UC_AUTH : <<include>>
+
+UC_DUTY .> UC_MAIN : <<extend>>
+UC_FREIGHT .> UC_MAIN : <<extend>>
+UC_OUT .> UC_DUTY : <<extend>>
+UC_OUT .> UC_FREIGHT : <<extend>>
+
+note bottom of UC_MAIN
+  Page : /dashboard/calculator
+  Saisie : code SH, pays, valeur, poids...
+  Pas de table dediee (calcul via API)
+end note
+
+@enduml

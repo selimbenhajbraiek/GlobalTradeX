@@ -1,0 +1,47 @@
+@startuml Diagramme_CU_Sprint3_Televerser_Document
+' TABLEAU 3.10
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 3\nCas d'utilisation : Televerser un document commercial
+
+actor "Exportateur" as EXP
+actor "Transitaire" as TR
+
+rectangle "GlobalTradeX" {
+
+  usecase "Televerser un document\nsur une expedition" as UC_MAIN
+
+  usecase "Choisir l'expedition GTX" as UC1 <<option>>
+  usecase "Choisir le type de piece\n(facture, BL, certificat...)" as UC2 <<option>>
+  usecase "Envoyer le fichier\n(PDF, JPG, PNG)" as UC3 <<option>>
+}
+
+usecase "S'authentifier" as UC_AUTH
+
+EXP --> UC_MAIN
+TR --> UC_MAIN
+UC_MAIN ..> UC_AUTH : <<include>>
+
+UC1 .> UC_MAIN : <<extend>>
+UC2 .> UC3 : <<extend>>
+UC3 .> UC_MAIN : <<extend>>
+
+note bottom of UC_MAIN
+  API : POST /api/documents/upload
+  Page : /dashboard/documents
+  Max 10 Mo
+end note
+
+@enduml

@@ -1,0 +1,201 @@
+================================================================================
+TABLEAU 2.1 – Backlog de « GlobalTradeX »
+Projet : Plateforme de pilotage du commerce international
+Format : ID | Fonctionnalité | User Story | Priorité
+================================================================================
+
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| ID  | Fonctionnalité                 | ID   | User Story                                               | Priorité |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 1   | S'inscrire / S'authentifier    | 1.1  | En tant qu'Internaute, je dois m'inscrire à travers un   | Élevée   |
+|     |                                |      | formulaire d'inscription en choisissant mon rôle métier  |          |
+|     |                                |      | (importateur par défaut).                                |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 1.2  | En tant qu'Internaute, je dois vérifier mon adresse     | Élevée   |
+|     |                                |      | e-mail via un lien sécurisé avant ma première connexion. |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 1.3  | En tant qu'Importateur, Exportateur, Transitaire,        | Élevée   |
+|     |                                |      | Courtier en douane et Administrateur, je dois            |          |
+|     |                                |      | m'authentifier avec mon e-mail et mon mot de passe.      |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 1.4  | En tant qu'Importateur, Exportateur, Transitaire,        | Élevée   |
+|     |                                |      | Courtier en douane et Administrateur, je peux récupérer  |          |
+|     |                                |      | mon mot de passe par e-mail pour me réauthentifier.      |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 2   | Gérer Profil                   | 2.1  | En tant qu'Importateur, Exportateur, Transitaire,        | Élevée   |
+|     |                                |      | Courtier en douane et Administrateur, je peux mettre à   |          |
+|     |                                |      | jour mes informations personnelles (nom, téléphone).       |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 2.2  | En tant qu'Importateur, Exportateur, Transitaire,        | Élevée   |
+|     |                                |      | Courtier en douane et Administrateur, je peux gérer mes  |          |
+|     |                                |      | préférences de notification depuis les paramètres.       |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 2.3  | En tant qu'Importateur, Exportateur, Transitaire,        | Moyenne  |
+|     |                                |      | Courtier en douane et Administrateur, je peux me         |          |
+|     |                                |      | déconnecter de la plateforme en toute sécurité.          |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 3   | Gérer Expéditions              | 3.1  | En tant qu'Importateur, je peux créer une expédition     | Élevée   |
+|     |                                |      | entrante via un assistant multi-étapes (route, fret,     |          |
+|     |                                |      | suggestion IA d'itinéraire, validation).                 |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 3.2  | En tant qu'Exportateur, je peux créer une expédition     | Élevée   |
+|     |                                |      | sortante en liant des lignes de mon catalogue produits.  |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 3.3  | En tant qu'Importateur et Exportateur, je peux consulter | Élevée   |
+|     |                                |      | et suivre la liste de mes expéditions (référence GTX,    |          |
+|     |                                |      | statut, route, progression).                             |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 3.4  | En tant qu'Importateur, Exportateur, Transitaire et       | Élevée   |
+|     |                                |      | Courtier en douane, je peux ouvrir le détail d'une       |          |
+|     |                                |      | expédition (documents, notifications, parties prenantes).|          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 3.5  | En tant qu'Importateur, je peux solliciter des           | Élevée   |
+|     |                                |      | propositions d'itinéraire et d'estimation de fret via    |          |
+|     |                                |      | l'assistant IA lors de la création d'expédition.         |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 3.6  | En tant qu'Transitaire, je peux consulter l'ensemble des | Élevée   |
+|     |                                |      | expéditions actives du réseau pour prioriser mon travail.|          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 3.7  | En tant qu'Transitaire, je peux mettre à jour le statut  | Élevée   |
+|     |                                |      | d'une expédition selon les transitions autorisées par le   |          |
+|     |                                |      | moteur métier (ex. customs_hold → in_transit).           |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 3.8  | En tant qu'Transitaire, je peux renseigner navire,       | Élevée   |
+|     |                                |      | numéro de voyage, ETA et notes lors d'une mise à jour.   |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 3.9  | En tant qu'Courtier en douane et Administrateur, je peux | Élevée   |
+|     |                                |      | consulter toutes les expéditions du réseau GlobalTradeX. |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 3.10 | En tant qu'Administrateur, je peux créer une expédition  | Moyenne  |
+|     |                                |      | au nom du réseau à des fins de démonstration ou support. |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 4   | Gérer Produits                 | 4.1  | En tant qu'Exportateur, je peux ajouter, modifier et     | Élevée   |
+|     |                                |      | supprimer des produits dans mon catalogue (nom, code SH, |          |
+|     |                                |      | prix, quantité, pays d'origine).                         |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 4.2  | En tant qu'Exportateur, je peux rechercher et filtrer    | Moyenne  |
+|     |                                |      | mon catalogue par nom ou code douanier.                  |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 4.3  | En tant qu'Administrateur, je peux gérer le catalogue    | Moyenne  |
+|     |                                |      | produits de n'importe quel exportateur pour le support.  |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 5   | Gérer Documents                | 5.1  | En tant qu'Exportateur, je peux téléverser des documents | Élevée   |
+|     |                                |      | commerciaux (facture, packing list, certificat d'origine)|          |
+|     |                                |      | sur un dossier d'expédition.                             |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 5.2  | En tant qu'Transitaire, je peux téléverser des documents | Élevée   |
+|     |                                |      | logistiques (connaissement B/L, déclaration, etc.).      |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 5.3  | En tant qu'Importateur, Exportateur et Transitaire, je   | Élevée   |
+|     |                                |      | peux consulter les pièces rattachées à une expédition.   |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 5.4  | En tant qu'Importateur, Exportateur, Transitaire,        | Élevée   |
+|     |                                |      | Courtier en douane et Administrateur, je peux télécharger  |          |
+|     |                                |      | un document pour archivage ou contrôle.                  |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 5.5  | En tant qu'Exportateur et Transitaire, je peux supprimer | Moyenne  |
+|     |                                |      | un document que j'ai moi-même déposé.                    |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 5.6  | En tant qu'Courtier en douane, je peux consulter la file | Élevée   |
+|     |                                |      | des documents en attente de validation.                  |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 5.7  | En tant qu'Courtier en douane, je peux lancer une        | Élevée   |
+|     |                                |      | vérification automatique d'un document par intelligence  |          |
+|     |                                |      | artificielle (OpenAI).                                   |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 5.8  | En tant qu'Courtier en douane, je peux valider ou        | Élevée   |
+|     |                                |      | rejeter un document en enregistrant un motif de rejet.   |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 5.9  | En tant qu'Courtier en douane, je peux consulter les     | Moyenne  |
+|     |                                |      | documents validés dans la journée.                       |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 6   | Calculateur logistique         | 6.1  | En tant qu'Importateur, je peux estimer les droits de    | Élevée   |
+|     |                                |      | douane et le coût de fret via le module calculateur.     |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 6.2  | En tant qu'Administrateur, je peux utiliser le           | Moyenne  |
+|     |                                |      | calculateur pour assister les utilisateurs du réseau.    |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 7   | Suivi & Cartographie           | 7.1  | En tant qu'Importateur, Exportateur, Transitaire,        | Moyenne  |
+|     |                                |      | Courtier en douane et Administrateur, je peux suivre les |          |
+|     |                                |      | expéditions en mouvement sur une carte GPS en direct.      |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 7.2  | En tant qu'Administrateur, je peux visualiser une carte  | Moyenne  |
+|     |                                |      | mondiale des flux et l'activité récente du réseau.       |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 8   | Cockpits métier                | 8.1  | En tant qu'Importateur, je peux consulter mon cockpit    | Élevée   |
+|     |                                |      | (KPIs commandes, douane, exceptions, expéditions actives). |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 8.2  | En tant qu'Exportateur, je peux consulter mon cockpit    | Élevée   |
+|     |                                |      | (revenus, clients, recommandations commerciales).        |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 8.3  | En tant qu'Transitaire, je peux consulter mon cockpit    | Élevée   |
+|     |                                |      | fret (transit, retards, livraisons, onglets actif/terminé).|        |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 8.4  | En tant qu'Courtier en douane, je peux consulter mon     | Élevée   |
+|     |                                |      | cockpit douane (déclarations, alertes, juridictions).    |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 9   | Notifications                  | 9.1  | En tant qu'Importateur, Exportateur, Transitaire,        | Élevée   |
+|     |                                |      | Courtier en douane et Administrateur, je peux consulter  |          |
+|     |                                |      | la liste de mes notifications.                           |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 9.2  | En tant qu'Importateur et Exportateur, je reçois         | Élevée   |
+|     |                                |      | automatiquement une notification lors d'un changement  |          |
+|     |                                |      | de statut sur mon expédition.                            |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 9.3  | En tant qu'Exportateur, je reçois une notification       | Élevée   |
+|     |                                |      | lorsque le courtier valide ou rejette un document déposé.|          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 9.4  | En tant qu'Administrateur, je peux envoyer une           | Moyenne  |
+|     |                                |      | notification système à un ou plusieurs utilisateurs.     |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 10  | Messagerie                     | 10.1 | En tant qu'Importateur, Exportateur, Transitaire,        | Moyenne  |
+|     |                                |      | Courtier en douane et Administrateur, je peux échanger |          |
+|     |                                |      | des messages avec les autres acteurs sur un fil lié au   |          |
+|     |                                |      | dossier d'expédition.                                    |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 11  | Procurer Aide                  | 11.1 | En tant qu'Importateur, Exportateur, Transitaire,        | Moyenne  |
+|     |                                |      | Courtier en douane et Administrateur, je peux interagir   |          |
+|     |                                |      | avec l'assistant intelligent TradeFlow pour obtenir de   |          |
+|     |                                |      | l'aide sur les expéditions, documents et procédures.     |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 11.2 | En tant qu'Administrateur, je peux configurer l'assistant | Moyenne  |
+|     |                                |      | vidéo (avatar HeyGen, voix, message d'accueil) et tester |          |
+|     |                                |      | la génération de réponses.                               |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 12  | Gérer Utilisateurs             | 12.1 | En tant qu'Administrateur, je peux consulter la liste des  | Élevée   |
+|     |                                |      | comptes inscrits sur GlobalTradeX.                       |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 12.2 | En tant qu'Administrateur, je peux créer un compte       | Élevée   |
+|     |                                |      | utilisateur (e-mail, mot de passe, rôle, profil).        |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 12.3 | En tant qu'Administrateur, je peux modifier le rôle ou   | Élevée   |
+|     |                                |      | activer / désactiver un compte utilisateur.              |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 12.4 | En tant qu'Administrateur, je peux supprimer un compte   | Élevée   |
+|     |                                |      | utilisateur (sauf le mien).                              |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 13  | Analytics                      | 13.1 | En tant qu'Administrateur, je peux consulter les         | Élevée   |
+|     |                                |      | statistiques globales du réseau (expéditions, documents, |          |
+|     |                                |      | délais, indicateurs agrégés).                            |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 13.2 | En tant qu'Importateur, Exportateur, Transitaire et       | Moyenne  |
+|     |                                |      | Courtier en douane, je peux consulter les analytics      |          |
+|     |                                |      | liées à mon périmètre d'activité.                        |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+| 14  | Vitrine publique               | 14.1 | En tant qu'Internaute, je peux consulter la page vitrine  | Faible   |
+|     |                                |      | (landing) présentant les capacités de GlobalTradeX.      |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+
+Synthèse des priorités :
+  - Élevée  : 35 user stories
+  - Moyenne : 11 user stories
+  - Faible  : 1 user story
+
+Répartition par release (indicative, alignée TABLEAU 2.2) :
+  - Release 1 (Sprints 1-2) : modules 1, 2, 3 (partie), 4, 14
+  - Release 2 (Sprints 3-4) : modules 5, 9, 10
+  - Release 3 (Sprints 5-6) : modules 6, 7, 8, 11, 12, 13
+
+================================================================================
+Fin du tableau 2.1
+================================================================================

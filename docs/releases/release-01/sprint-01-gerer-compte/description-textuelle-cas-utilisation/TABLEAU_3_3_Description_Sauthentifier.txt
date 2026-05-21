@@ -1,0 +1,70 @@
+================================================================================
+TABLEAU 3.3 – Description textuelle de cas d'utilisation « S'authentifier »
+Sprint 1 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « S'authentifier »                                               |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Importateur, Exportateur, Transitaire, Courtier en douane,       |
+|                  | Administrateur                                                   |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'acteur authentifié doit se connecter pour accéder à son cockpit  |
+|                  | métier et aux fonctionnalités offertes par GlobalTradeX.          |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur a déjà créé un compte et validé son adresse e-mail.       |
+|                  | L'acteur accède à la page de connexion (/login) ou est redirigé   |
+|                  | par le middleware depuis une route protégée du tableau de bord. |
+|                  | Le système affiche le formulaire d'authentification (e-mail,     |
+|                  | mot de passe).                                                   |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. L'acteur saisit son adresse e-mail et son mot de passe, puis clique sur « Sign in ».
+ 2. Le système vérifie que les champs ne sont pas vides et que le format de l'e-mail
+    est valide.
+ 3. Le système recherche l'utilisateur dans le modèle User à partir de l'adresse e-mail.
+ 4. Le système vérifie la compatibilité entre l'e-mail et le mot de passe (bcrypt).
+ 5. Le système vérifie que le compte est actif (is_active) et que l'e-mail est vérifié
+    (email_verified = true).
+ 6. Le système génère un jeton JWT (access_token) contenant l'identifiant et le rôle.
+ 7. Le système enregistre le jeton dans un cookie côté client et charge le profil
+    utilisateur (GET /api/users/me).
+ 8. Le système redirige l'acteur vers le cockpit adapté à son rôle :
+      • importateur  → /dashboard/importateur
+      • exportateur  → /dashboard/exportateur
+      • transitaire  → /dashboard/transitaire
+      • courtier     → /dashboard/courtier
+      • admin        → /dashboard/admin
+
+Enchaînements alternatifs
+-------------------------
+ 2.1  Les données introduites par l'acteur sont vides ou non valides :
+      le système affiche un message d'erreur sur le formulaire et reprend à l'étape 1
+      du scénario nominal.
+
+ 3.1  L'adresse e-mail n'existe pas dans la base :
+      le système affiche le message « Invalid email or password » (réponse HTTP 401)
+      et reprend à l'étape 1 du scénario nominal.
+
+ 4.1  Le mot de passe ne correspond pas à l'e-mail :
+      le système affiche le message « Invalid email or password » et reprend à l'étape 1
+      du scénario nominal.
+
+ 5.1  L'e-mail n'est pas encore vérifié (email_verified = false) :
+      le système affiche un message invitant à vérifier la boîte mail ou à renvoyer
+      le lien (HTTP 403) et propose un lien vers la page de renvoi ; reprend à l'étape 1.
+
+ 5.2  Le compte est désactivé par l'administrateur (is_active = false) :
+      le système affiche « Account is inactive » et reprend à l'étape 1.
+
+Post-conditions
+---------------
+ L'acteur est authentifié par le système.
+ L'interface du cockpit métier correspondant à son rôle s'affiche.
+ Les requêtes ultérieures vers l'API incluent le jeton JWT dans l'en-tête Authorization.
+
+================================================================================
+Fin du tableau 3.3
+================================================================================

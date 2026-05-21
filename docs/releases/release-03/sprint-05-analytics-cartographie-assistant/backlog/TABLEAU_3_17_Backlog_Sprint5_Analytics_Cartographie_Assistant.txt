@@ -1,0 +1,70 @@
+================================================================================
+3.5 Sprint 5 : « Analytics, Cartographie & Assistant »
+Projet : GlobalTradeX — Plateforme de pilotage du commerce international
+Durée du sprint : 12 jours (Release 3)
+================================================================================
+
+3.5.1 Organisation
+
+Le tableau 3.17 couvre le cinquième sprint : outils d'aide à la décision (calculateur
+douanier et fret), suivi cartographique GPS, assistant conversationnel TradeFlow et
+analytics par rôle.
+
+Périmètre retenu :
+  • Calculateur logistique (6.1) — droits de douane et estimation fret
+  • Suivi & Cartographie (7.1, 7.2 partiel) — carte temps réel, routes démo
+  • Procurer Aide (11.1) — assistant IA sur expéditions et procédures
+  • Analytics métier (13.2) — indicateurs par rôle
+
+Reporté : configuration avatar HeyGen admin (11.2) → Sprint 6 ; analytics admin global (13.1) → Sprint 6.
+
+
+TABLEAU 3.17 – Backlog du sprint 5 : « Analytics, Cartographie & Assistant »
+================================================================================
+
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| ID   | User Story                                               | ID     | Tâche                                                            | Durée /j |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « CALCULATEUR LOGISTIQUE »                                 |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 6.1  | En tant qu'Importateur, j'estime droits et fret.         | 6.1.1  | Page /dashboard/calculator (formulaires HS, pays, valeur,        | 2        |
+|      |                                                          |        | dimensions fret) et affichage résultats.                         |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 6.1.2  | API calculateur (droits + fret) via calculatorApi / ai.          | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « SUIVI & CARTOGRAPHIE »                                   |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 7.1  | En tant qu'acteur métier, je suis les expéditions sur    | 7.1.1  | Carte GPS /dashboard/shipments/tracking et fiche tracking par id.| 3        |
+|      | une carte en direct.                                       |        | API tracking init/start/pause, positions simulées.                 |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 7.2  | En tant qu'Administrateur, je visualise l'activité       | 7.2.1  | Vue carte mondiale flux récents (intégration analytics/map).     | 1        |
+|      | réseau sur carte.                                        |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « ASSISTANT TRADEFLOW »                                    |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 11.1 | En tant qu'acteur métier, j'interagis avec l'assistant.  | 11.1.1 | Page /dashboard/assistant : sessions, envoi messages, réponses.  | 2        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      |                                                          | 11.1.2 | API POST /api/assistant/sessions et …/message (OpenAI).          | 2        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « ANALYTICS MÉTIER »                                       |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 13.2 | En tant qu'acteur métier, je consulte mes analytics.     | 13.2.1 | Widgets analytics par rôle (GET /api/analytics/summary,          | 1        |
+|      |                                                          |        | shipments-by-status) dans les cockpits.                          |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+
+Synthèse (durée / j) :
+  Calculateur (6.1)           : 3 j
+  Cartographie (7.1, 7.2)     : 4 j
+  Assistant (11.1)            : 4 j
+  Analytics métier (13.2)     : 1 j
+  ─────────────────────────────
+  Total sprint 5              : 12 j
+
+Descriptions textuelles (tableaux 3.18 à 3.20) :
+  • 3.18 — Estimer droits de douane et fret (Calculateur)
+  • 3.19 — Suivre une expédition sur carte GPS
+  • 3.20 — Interagir avec l'assistant TradeFlow
+
+================================================================================
+Fin du tableau 3.17
+================================================================================

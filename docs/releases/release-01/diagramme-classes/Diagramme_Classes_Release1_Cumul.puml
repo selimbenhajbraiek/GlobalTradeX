@@ -1,0 +1,132 @@
+@startuml Diagramme_Classes_Release1_Cumul
+' Release 1 cumul — Sprint 1 (users) + Sprint 2 (shipments, products, shipment_products)
+
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam classFontSize 9
+skinparam defaultFontSize 9
+skinparam class<<Table>> BackgroundColor #E8F4FC
+skinparam class<<New>> BackgroundColor #D4EDDA
+skinparam class<<New>> BorderColor #28A745
+
+title Diagramme de classes cumulé — Release 1\n(Sprints 1–2 : Compte + Expéditions & Produits)
+
+enum UserRole <<enumeration>> {
+  admin
+  importateur
+  exportateur
+  transitaire
+  courtier
+}
+
+enum ShipmentStatus <<enumeration>> {
+  pending
+  in_transit
+  customs_hold
+  delivered
+  delayed
+  cancelled
+}
+
+enum CargoType <<enumeration>> {
+  general
+  fragile
+  dangerous
+  perishable
+  oversized
+}
+
+enum TransportMode <<enumeration>> {
+  air
+  sea
+  road
+  rail
+}
+
+class users <<Table>> {
+  **id** : INT <<PK>>
+  --
+  full_name : VARCHAR(100)
+  email : VARCHAR(150) <<UK>>
+  password_hash : VARCHAR(255)
+  role : UserRole
+  phone : VARCHAR(20)
+  notification_preferences : JSON
+  is_active : BOOLEAN
+  email_verified : BOOLEAN
+  created_at : DATETIME
+}
+
+class shipments <<Table>> <<New>> {
+  **id** : INT <<PK>>
+  --
+  owner_id : INT <<FK>>
+  exporter_user_id : INT <<FK?>>
+  reference : VARCHAR(50) <<UK>>
+  origin : VARCHAR(200)
+  destination : VARCHAR(200)
+  cargo_type : CargoType
+  transport_mode : TransportMode
+  status : ShipmentStatus
+  weight_kg : DECIMAL
+  volume_m3 : DECIMAL
+  estimated_value : DECIMAL
+  currency : VARCHAR(10)
+  freight_estimate_usd : DECIMAL
+  departure_date : DATE
+  arrival_date : DATE
+  vessel_name : VARCHAR(200)
+  voyage_number : VARCHAR(100)
+  eta_update : DATE
+  notes : TEXT
+  created_at : DATETIME
+  updated_at : DATETIME
+}
+
+class products <<Table>> <<New>> {
+  **id** : INT <<PK>>
+  --
+  user_id : INT <<FK>>
+  name : VARCHAR(255)
+  hs_code : VARCHAR(32)
+  description : TEXT
+  unit_price : DECIMAL
+  quantity : INT
+  unit : VARCHAR(32)
+  origin_country : VARCHAR(100)
+  created_at : DATETIME
+}
+
+class shipment_products <<Table>> <<New>> {
+  **id** : INT <<PK>>
+  --
+  shipment_id : INT <<FK>>
+  product_id : INT <<FK>>
+  quantity : INT
+  ..
+  <<unique>> (shipment_id, product_id)
+}
+
+users "1" --> "0..*" shipments : owner_id
+users "0..1" --> "0..*" shipments : exporter_user_id
+users "1" --> "0..*" products : user_id
+shipments "1" --> "0..*" shipment_products
+products "1" --> "0..*" shipment_products
+
+users ..> UserRole
+shipments ..> ShipmentStatus
+shipments ..> CargoType
+shipments ..> TransportMode
+
+note bottom of shipments
+  Colonnes GPS (origin_lat, tracking_progress, …)
+  présentes sur shipments ; exploitées au Sprint 5.
+end note
+
+legend right
+  |= Couleur |= Signification |
+  | <#D4EDDA> | Nouveau sprint 2 |
+  | <#E8F4FC> | Sprint 1 |
+endlegend
+
+@enduml

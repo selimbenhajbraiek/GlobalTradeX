@@ -1,0 +1,64 @@
+================================================================================
+TABLEAU 3.4 – Description textuelle de cas d'utilisation « Récupérer Mot de Passe »
+Sprint 1 — GlobalTradeX (fonctionnalité rattachée à « S'authentifier »)
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Récupérer Mot de Passe »                                       |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Importateur, Exportateur, Transitaire, Courtier en douane,       |
+|                  | Administrateur                                                   |
++------------------+------------------------------------------------------------------+
+| Résumé           | Les acteurs peuvent récupérer leur mot de passe afin de se       |
+|                  | réauthentifier sur GlobalTradeX.                                 |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur accède à la page de connexion (/login).                 |
+|                  | L'acteur clique sur le lien « Mot de passe oublié » (/forgot-     |
+|                  | password).                                                       |
+|                  | Le système affiche le formulaire de demande de réinitialisation. |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le système affiche l'interface « Reset password » (saisie de l'adresse e-mail).
+ 2. L'acteur saisit son adresse e-mail professionnelle et clique sur « Send reset link ».
+ 3. Le système vérifie le format de l'adresse et, si un compte actif existe, envoie un
+    e-mail contenant un lien de réinitialisation (token signé, durée de validité limitée).
+ 4. Le système affiche un message générique confirmant l'envoi éventuel du lien (sans
+    révéler si l'e-mail est enregistré — sécurité).
+ 5. L'acteur accède à sa boîte de réception et clique sur le lien reçu.
+ 6. Le système redirige l'acteur vers l'interface « Nouveau mot de passe »
+    (/reset-password?token=…).
+ 7. L'acteur saisit et confirme son nouveau mot de passe, puis valide le formulaire.
+ 8. Le système vérifie le token, valide la force du nouveau mot de passe, met à jour
+    password_hash dans le modèle User et affiche un message de succès.
+ 9. Le système invite l'acteur à se connecter avec le nouveau mot de passe (/login).
+
+Enchaînements alternatifs
+-------------------------
+ 2.1  L'adresse saisie est vide ou au format invalide :
+      le système affiche un message d'erreur et reprend à l'étape 2 du scénario nominal.
+
+ 3.1  L'adresse e-mail n'est pas associée à un compte actif :
+      le système affiche le même message générique qu'en cas de succès (pas d'énumération
+      des comptes) et ne renvoie pas d'e-mail ; le flux s'arrête pour l'acteur.
+
+ 5.1  L'acteur n'ouvre pas l'e-mail ou le lien a expiré :
+      l'acteur peut relancer une demande depuis /forgot-password ; reprend à l'étape 1.
+
+ 6.1  Le token est invalide ou manquant sur /reset-password :
+      le système affiche un message d'erreur et invite à demander un nouveau lien ;
+      reprend à l'étape 1.
+
+ 7.1  Le nouveau mot de passe ne respecte pas les règles de complexité :
+      le système affiche un message d'erreur et reprend à l'étape 7.
+
+Post-conditions
+---------------
+ Le mot de passe de l'acteur a été modifié dans la base de données.
+ L'acteur peut s'authentifier avec le nouveau mot de passe (cas d'utilisation
+ « S'authentifier »).
+
+================================================================================
+Fin du tableau 3.4
+================================================================================

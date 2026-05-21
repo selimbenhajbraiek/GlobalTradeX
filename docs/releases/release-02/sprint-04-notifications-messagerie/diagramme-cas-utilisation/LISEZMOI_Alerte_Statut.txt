@@ -1,0 +1,22 @@
+================================================================================
+Comment lire le diagramme « Alerte changement de statut » (TABLEAU 3.15)
+================================================================================
+
+Histoire en 4 etapes :
+
+  1. Le TRANSITAIRE met a jour le statut d'une expedition (ex. « en transit »).
+  2. Le SYSTEME cree automatiquement une notification (obligatoire, fleche <<include>>).
+  3. L'IMPORTATEUR ou l'EXPORTATEUR concerne consulte la notification.
+  4. (Option) Il ouvre la fiche expedition GTX depuis l'alerte.
+
+Acteurs :
+  - Transitaire : declenche l'etape 1
+  - Importateur / Exportateur : etapes 3 et 4
+
+Couleurs :
+  - Jaune : action principale
+  - Rose : sous-etape optionnelle ou automatique du systeme
+
+Fichier source : Diagramme_CU_Sprint4_Alerte_Statut.puml
+
+================================================================================

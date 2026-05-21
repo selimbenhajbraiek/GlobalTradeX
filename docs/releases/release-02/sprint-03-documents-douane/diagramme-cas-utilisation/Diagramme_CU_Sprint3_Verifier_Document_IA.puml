@@ -1,0 +1,52 @@
+@startuml Diagramme_CU_Sprint3_Verifier_Document_IA
+' TABLEAU 3.11
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 3\nCas d'utilisation : Verifier un document par IA
+
+actor "Courtier en douane" as BRK
+actor "Administrateur" as ADM
+
+rectangle "GlobalTradeX" {
+
+  usecase "Verifier un document\npar intelligence artificielle" as UC_MAIN
+
+  usecase "Consulter la file\nd'attente" as UC1 <<option>>
+  usecase "Selectionner un document" as UC2 <<option>>
+  usecase "Lancer l'analyse IA" as UC3 <<option>>
+  usecase "Lire le rapport IA" as UC4 <<option>>
+  usecase "Valider le document" as UC5 <<option>>
+  usecase "Rejeter avec motif" as UC6 <<option>>
+}
+
+BRK --> UC_MAIN
+ADM --> UC_MAIN
+
+UC1 .> UC_MAIN : <<extend>>
+UC2 .> UC1 : <<extend>>
+UC3 .> UC2 : <<extend>>
+UC4 .> UC3 : <<extend>>
+UC5 .> UC4 : <<extend>>
+UC6 .> UC4 : <<extend>>
+
+UC3 --> OPENAI : appel API
+rectangle "OpenAI" as OPENAI #E3F2FD
+
+note bottom of UC3
+  POST /api/documents/{id}/ai-verify
+  Resultat stocke dans documents.ai_result
+end note
+
+@enduml

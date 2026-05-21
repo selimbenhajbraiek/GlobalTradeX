@@ -1,0 +1,64 @@
+================================================================================
+3.6 Sprint 6 : « Administration & Scénario soutenance »
+Projet : GlobalTradeX — Plateforme de pilotage du commerce international
+Durée du sprint : 7 jours (Release 3)
+================================================================================
+
+3.6.1 Organisation
+
+Le tableau 3.21 présente le backlog du sprint final : gouvernance des comptes,
+tableaux de bord administrateur, données de démonstration pour la soutenance PFE
+(scénario GTX-20240315-00042, TunisOlive → FreshMart) et finitions.
+
+Périmètre retenu :
+  • Gérer Utilisateurs (12.1 – 12.4)
+  • Analytics réseau (13.1)
+  • Seed scénario soutenance + landing (14.1 optionnel)
+  • Configuration assistant admin (11.2) si marge
+
+Reporté après soutenance : évolutions mineures landing, notifications admin (9.4).
+
+
+TABLEAU 3.21 – Backlog du sprint 6 : « Administration & Scénario soutenance »
+================================================================================
+
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| ID   | User Story                                               | ID     | Tâche                                                            | Durée /j |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « GÉRER UTILISATEURS »                                     |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 12.1 | En tant qu'Administrateur, je consulte la liste des      | 12.1.1 | Page /dashboard/admin/users (tableau, recherche, rôles).         | 1        |
+|      | comptes inscrits.                                        |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 12.2 | En tant qu'Administrateur, je crée un compte utilisateur.| 12.2.1 | Formulaire création + API admin users POST.                        | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 12.3 | En tant qu'Administrateur, je modifie rôle ou statut.    | 12.3.1 | PATCH utilisateur (rôle, is_active).                               | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « ANALYTICS RÉSEAU »                                       |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 13.1 | En tant qu'Administrateur, je consulte les statistiques  | 13.1.1 | Page /dashboard/admin/analytics (GET /api/analytics/global,      | 2        |
+|      | globales du réseau.                                      |        | documents, délais, agrégats).                                    |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+|      | « SCÉNARIO SOUTENANCE »                                    |        |                                                                  |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| —    | Jeu de données démo cohérent pour la soutenance.         | S.6.1  | Script seed : utilisateurs rôles, produits TunisOlive, expédition| 1        |
+|      |                                                          |        | GTX-20240315-00042, documents, statuts, tracking.                |          |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+| 14.1 | En tant qu'Internaute, je consulte la landing vitrine.   | 14.1.1 | Finitions page publique (/, présentation capacités GlobalTradeX).  | 1        |
++------+----------------------------------------------------------+--------+------------------------------------------------------------------+----------+
+
+Synthèse (durée / j) :
+  Gérer Utilisateurs (12.1 – 12.3) : 3 j
+  Analytics admin (13.1)           : 2 j
+  Seed soutenance + landing (S.6.1, 14.1) : 2 j
+  ─────────────────────────────────
+  Total sprint 6                   : 7 j
+
+Descriptions textuelles (tableaux 3.22 à 3.24) :
+  • 3.22 — Gérer les utilisateurs (Administrateur)
+  • 3.23 — Consulter les analytics réseau (Administrateur)
+  • 3.24 — Préparer le scénario de démonstration soutenance
+
+================================================================================
+Fin du tableau 3.21
+================================================================================

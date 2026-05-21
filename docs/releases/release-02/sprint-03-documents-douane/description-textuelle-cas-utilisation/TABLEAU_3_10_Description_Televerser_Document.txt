@@ -1,0 +1,50 @@
+================================================================================
+TABLEAU 3.10 – Description textuelle de cas d'utilisation « Téléverser un document »
+Sprint 3 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Téléverser un document commercial »                            |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Exportateur, Transitaire (documents logistiques), Administrateur |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'acteur dépose une pièce justificative (facture, packing list,  |
+|                  | certificat d'origine, connaissement…) sur le dossier d'une      |
+|                  | expédition pour alimenter le contrôle douanier.                  |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur est authentifié avec un rôle autorisé au dépôt.         |
+|                  | Une expédition existe et l'acteur y a accès (propriétaire,       |
+|                  | exportateur lié, ou transitaire selon règles métier).            |
+|                  | L'acteur ouvre l'espace documents (/dashboard/documents) ou la  |
+|                  | section documents de la fiche expédition.                      |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le système affiche le formulaire de téléversement (sélection expédition GTX,
+    type de document, fichier).
+ 2. L'acteur choisit l'expédition cible et le type de pièce (invoice, packing_list,
+    certificate_of_origin, bill_of_lading, other).
+ 3. L'acteur sélectionne un fichier (PDF, JPG ou PNG, taille ≤ 10 Mo).
+ 4. L'acteur valide l'envoi.
+ 5. Le système contrôle le format et la taille, enregistre le fichier dans
+    backend/uploads/ et crée l'entité Document (is_verified = false).
+ 6. Le système affiche le document dans la liste de l'expédition ; le courtier
+    le voit dans la file « pending-review ».
+
+Enchaînements alternatifs
+-------------------------
+ 5.1  Fichier trop volumineux ou extension non autorisée :
+      le système refuse (HTTP 400) et affiche un message d'erreur.
+
+ 5.2  Expédition inaccessible pour l'acteur :
+      le système refuse (HTTP 403).
+
+Post-conditions
+---------------
+ Le document est stocké et rattaché au shipment_id.
+ Il est en attente de vérification IA et/ou validation manuelle par le courtier.
+
+================================================================================
+Fin du tableau 3.10
+================================================================================

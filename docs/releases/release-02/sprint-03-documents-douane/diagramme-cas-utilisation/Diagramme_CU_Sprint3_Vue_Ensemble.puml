@@ -1,0 +1,42 @@
+@startuml Diagramme_CU_Sprint3_Vue_Ensemble
+' Sprint 3 — Vue d'ensemble
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title Sprint 3 — Vue d'ensemble : Documents et Douane (IA)
+
+actor "Exportateur" as EXP
+actor "Transitaire" as TR
+actor "Courtier" as BRK
+
+rectangle "GlobalTradeX — Sprint 3" {
+
+  usecase "Gerer les documents" as UC_DOC
+  usecase "Controler la douane\n(IA + validation)" as UC_CUST
+  usecase "Piloter le statut\ndes expeditions" as UC_STAT
+}
+
+EXP --> UC_DOC
+TR --> UC_DOC
+TR --> UC_STAT
+BRK --> UC_CUST
+
+note bottom
+  **3 cas principaux documentes** (tableaux 3.10 a 3.12) :
+  1. Televerser un document
+  2. Verifier par IA (courtier)
+  3. Mettre a jour le statut (transitaire)
+end note
+
+@enduml

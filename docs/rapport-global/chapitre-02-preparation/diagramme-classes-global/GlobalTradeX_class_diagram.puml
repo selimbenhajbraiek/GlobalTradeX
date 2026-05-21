@@ -1,0 +1,264 @@
+@startuml GlobalTradeX_Class_Diagram
+' Diagramme de classes global — GlobalTradeX
+' Structure inspirée du modèle SmartChain (Utilisateur, rôles, Administrateur, entités associées)
+
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam classFontSize 10
+skinparam defaultFontSize 10
+
+title Figure — Diagramme de classes global (GlobalTradeX)
+
+' ── Énumérations métier ──
+enum UserRole {
+  admin
+  importateur
+  exportateur
+  transitaire
+  courtier
+}
+
+enum ShipmentStatus {
+  pending
+  in_transit
+  customs_hold
+  delivered
+  delayed
+  cancelled
+}
+
+enum CargoType {
+  general
+  fragile
+  dangerous
+  perishable
+  oversized
+}
+
+enum TransportMode {
+  air
+  sea
+  road
+  rail
+}
+
+enum TradeDocumentType {
+  commercial_invoice
+  packing_list
+  certificate_of_origin
+  bill_of_lading
+  customs_declaration
+  other
+}
+
+enum NotificationType {
+  info
+  success
+  warning
+  error
+}
+
+' ── Hiérarchie utilisateurs (vue conceptuelle du rapport) ──
+abstract class Utilisateur {
+  - id : int
+  - nomComplet : String
+  - email : String
+  - motDePasse : String
+  - telephone : String
+  - role : UserRole
+  - emailVerifie : boolean
+  - actif : boolean
+  - preferencesNotification : JSON
+  - dateCreation : DateTime
+  --
+  +connecter()
+  +deconnecter()
+  +modifierProfil()
+  +recupererMotDePasse()
+  +consulterProfil()
+  +getUserByEmail()
+  +getEmailByPassword()
+}
+
+class Importateur {
+  +creerExpedition()
+  +suivreExpeditions()
+  +optimiserItineraire()
+}
+
+class Exportateur {
+  +gererCatalogueProduits()
+  +creerExpeditionSortante()
+  +televerserDocumentsCommerciaux()
+}
+
+class Transitaire {
+  +mettreAJourStatut()
+  +enrichirTransport()
+  +televerserConnaissement()
+}
+
+class CourtierEnDouane {
+  +consulterFileRevue()
+  +verifierDocumentIA()
+  +validerDocument()
+  +rejeterDocument()
+}
+
+Utilisateur <|-- Importateur
+Utilisateur <|-- Exportateur
+Utilisateur <|-- Transitaire
+Utilisateur <|-- CourtierEnDouane
+
+class Administrateur {
+  - email : String
+  - motDePasse : String
+  --
+  +connecter()
+  +deconnecter()
+  +recupererMotDePasse()
+  +gererUtilisateurs()
+  +creerUtilisateur()
+  +modifierRole()
+  +desactiverUtilisateur()
+  +envoyerNotificationSysteme()
+  +configurerAssistant()
+}
+
+Administrateur "1" --> "0..*" Utilisateur : <<gérer>>
+
+' ── Entité centrale : expédition ──
+class Expedition {
+  - id : int
+  - reference : String
+  - origine : String
+  - destination : String
+  - typeMarchandise : CargoType
+  - modeTransport : TransportMode
+  - statut : ShipmentStatus
+  - poidsKg : Decimal
+  - volumeM3 : Decimal
+  - valeurEstimee : Decimal
+  - devise : String
+  - dateDepart : Date
+  - dateArrivee : Date
+  - navire : String
+  - numeroVoyage : String
+  - eta : Date
+  - notes : String
+  - latOrigine / lngOrigine : Float
+  - latCourante / lngCourante : Float
+  - progressionSuivi : Float
+  --
+  +changerStatut()
+  +enrichirInfosTransport()
+  +initialiserSuiviGPS()
+  +getReference()
+}
+
+class LigneProduit {
+  - id : int
+  - quantite : int
+}
+
+class Produit {
+  - id : int
+  - nom : String
+  - codeSH : String
+  - description : String
+  - prixUnitaire : Decimal
+  - quantiteStock : int
+  - unite : String
+  - paysOrigine : String
+  --
+  +ajouter()
+  +modifier()
+  +supprimer()
+  +rechercher()
+}
+
+class Document {
+  - id : int
+  - nomFichier : String
+  - nomOriginal : String
+  - typePiece : TradeDocumentType
+  - tailleOctets : int
+  - cheminFichier : String
+  - verifie : boolean
+  - resultatIA : JSON
+  - dateDepot : DateTime
+  - dateValidation : DateTime
+  --
+  +televerser()
+  +telecharger()
+  +analyserParIA()
+  +valider()
+  +rejeter()
+}
+
+class Notification {
+  - id : int
+  - titre : String
+  - message : String
+  - type : NotificationType
+  - lu : boolean
+  - dateCreation : DateTime
+  --
+  +marquerCommeLu()
+  +envoyer()
+}
+
+class FilDiscussion {
+  - id : int
+  - sujet : String
+  - dateCreation : DateTime
+  --
+  +ajouterParticipant()
+  +envoyerMessage()
+}
+
+class Message {
+  - id : int
+  - corps : String
+  - dateEnvoi : DateTime
+}
+
+class ParticipantFil {
+  - id : int
+  - derniereLecture : DateTime
+}
+
+class AssistantAvatar {
+  - id : int
+  - tokenPublic : String
+  - statut : String
+  - actif : boolean
+  --
+  +configurerHeyGen()
+}
+
+' ── Associations principales ──
+Importateur "1" --> "0..*" Expedition : commande >
+Exportateur "0..1" --> "0..*" Expedition : exporte >
+Utilisateur "1" --> "0..*" Notification : reçoit >
+Expedition "1" *-- "0..*" Document : contient >
+Expedition "1" *-- "0..*" LigneProduit
+LigneProduit "0..*" --> "1" Produit
+Exportateur "1" --> "0..*" Produit : possède >
+Utilisateur "1" --> "0..*" Document : dépose >
+Expedition "1" o-- "0..*" FilDiscussion
+FilDiscussion "1" *-- "1..*" ParticipantFil
+ParticipantFil "0..*" --> "1" Utilisateur
+FilDiscussion "1" *-- "0..*" Message
+Message "0..*" --> "1" Utilisateur : expéditeur >
+Expedition "0..1" --> "0..*" Notification
+Administrateur "1" --> "0..*" AssistantAvatar : configure >
+
+note bottom of Utilisateur
+  Implémentation : table unique **users**
+  avec colonne **role** (UserRole).
+  Les classes Importateur, Exportateur, etc.
+  matérialisent les rôles métier du rapport.
+end note
+
+@enduml

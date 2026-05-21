@@ -1,0 +1,21 @@
+================================================================================
+INDEX — Figures diagrammes de cas d'utilisation (Sprint 3)
+Release 2 — GlobalTradeX
+================================================================================
+
+FIGURE 4.3.0 (indicative) — Sprint 3 — Vue d'ensemble « Documents & Douane (IA) »
+  → Diagramme_CU_Sprint3_Vue_Ensemble.png
+
+FIGURE 4.3.1 — Sprint 3 — « Téléverser un document commercial »
+  → Diagramme_CU_Sprint3_Televerser_Document.png
+  → Description textuelle : TABLEAU 3.10
+
+FIGURE 4.3.2 — Sprint 3 — « Vérifier un document par intelligence artificielle »
+  → Diagramme_CU_Sprint3_Verifier_Document_IA.png
+  → Description textuelle : TABLEAU 3.11
+
+FIGURE 4.3.3 — Sprint 3 — « Mettre à jour le statut d'une expédition »
+  → Diagramme_CU_Sprint3_Mettre_A_Jour_Statut.png
+  → Description textuelle : TABLEAU 3.12
+
+================================================================================

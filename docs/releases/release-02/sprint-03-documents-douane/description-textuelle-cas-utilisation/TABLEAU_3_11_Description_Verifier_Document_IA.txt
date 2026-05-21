@@ -1,0 +1,48 @@
+================================================================================
+TABLEAU 3.11 – Description textuelle de cas d'utilisation « Vérifier un document par IA »
+Sprint 3 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Vérifier un document par intelligence artificielle »         |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Courtier en douane, Administrateur                               |
++------------------+------------------------------------------------------------------+
+| Résumé           | Le courtier sollicite une analyse automatique du document déposé|
+|                  | (cohérence, champs attendus, alertes) via le service OpenAI avant|
+|                  | validation officielle.                                           |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur est authentifié en tant que courtier ou administrateur.|
+|                  | Au moins un document est en attente (GET /api/documents/         |
+|                  | pending-review).                                                 |
+|                  | La clé API OpenAI est configurée côté serveur.                 |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le système affiche la file des documents en attente (référence GTX, type,
+    déposant, date).
+ 2. Le courtier sélectionne un document et demande « Vérification IA ».
+ 3. Le système appelle POST /api/documents/{document_id}/ai-verify.
+ 4. Le service OpenAI analyse le contenu (métadonnées et extrait texte selon type)
+    et retourne un rapport structuré (conformité, anomalies, recommandations).
+ 5. Le système enregistre le résultat dans Document.ai_result et l'affiche au courtier.
+ 6. Le courtier s'appuie sur ce rapport pour décider de valider ou rejeter (CU suivant).
+
+Enchaînements alternatifs
+-------------------------
+ 4.1  Service OpenAI indisponible ou quota dépassé :
+      le système affiche une erreur ; le courtier peut procéder à une validation
+      manuelle sans IA.
+
+ 4.2  Document déjà vérifié manuellement :
+      le système peut autoriser une nouvelle analyse IA ou afficher le résultat existant.
+
+Post-conditions
+---------------
+ Le champ ai_result est renseigné sur le document.
+ Le statut is_verified reste false tant que le courtier n'a pas validé explicitement.
+
+================================================================================
+Fin du tableau 3.11
+================================================================================

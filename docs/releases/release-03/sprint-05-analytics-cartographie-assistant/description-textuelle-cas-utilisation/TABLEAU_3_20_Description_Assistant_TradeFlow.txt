@@ -1,0 +1,41 @@
+================================================================================
+TABLEAU 3.20 – Description textuelle de cas d'utilisation « Assistant TradeFlow »
+Sprint 5 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Interagir avec l'assistant TradeFlow »                         |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Importateur, Exportateur, Transitaire, Courtier, Administrateur  |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'acteur pose des questions en langage naturel sur les           |
+|                  | expéditions, documents et procédures ; l'assistant répond via IA.|
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur est authentifié.                                         |
+|                  | Le service OpenAI est configuré.                                 |
+|                  | L'acteur ouvre /dashboard/assistant.                             |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le système démarre ou reprend une session (POST /api/assistant/sessions).
+ 2. L'acteur saisit une question (ex. « Quels documents pour exporter vers l'UE ? »).
+ 3. L'acteur envoie le message.
+ 4. Le système appelle POST …/sessions/{session_id}/message avec le contexte rôle
+    et les données métier autorisées.
+ 5. L'assistant génère une réponse structurée (texte, éventuelles références GTX).
+ 6. Le système affiche la réponse dans le fil de conversation ; l'acteur peut enchaîner.
+
+Enchaînements alternatifs
+-------------------------
+ 5.1  Timeout ou erreur OpenAI :
+      le système affiche un message d'indisponibilité temporaire.
+
+Post-conditions
+---------------
+ L'historique de session est conservé pour la durée de la session utilisateur.
+ L'acteur peut applier les conseils dans les modules Expéditions ou Documents.
+
+================================================================================
+Fin du tableau 3.20
+================================================================================

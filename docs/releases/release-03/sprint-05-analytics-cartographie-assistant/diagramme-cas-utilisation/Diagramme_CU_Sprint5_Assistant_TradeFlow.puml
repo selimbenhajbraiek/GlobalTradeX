@@ -1,0 +1,46 @@
+@startuml Diagramme_CU_Sprint5_Assistant_TradeFlow
+' TABLEAU 3.20
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 5\nCas d'utilisation : Assistant TradeFlow
+
+actor "Utilisateur metier" as USER
+
+rectangle "GlobalTradeX" {
+
+  usecase "Poser une question\na l'assistant TradeFlow" as UC_MAIN
+
+  usecase "Demarrer une session" as UC1 <<option>>
+  usecase "Saisir la question" as UC2 <<option>>
+  usecase "Lire la reponse" as UC3 <<option>>
+}
+
+usecase "S'authentifier" as UC_AUTH
+rectangle "OpenAI" as OPENAI #E3F2FD
+
+USER --> UC_MAIN
+UC_MAIN ..> UC_AUTH : <<include>>
+
+UC1 .> UC_MAIN : <<extend>>
+UC2 .> UC1 : <<extend>>
+UC3 .> UC2 : <<extend>>
+UC2 --> OPENAI
+
+note bottom of UC_MAIN
+  Page : /dashboard/assistant
+  Tables : assistant_sessions, assistant_messages
+end note
+
+@enduml

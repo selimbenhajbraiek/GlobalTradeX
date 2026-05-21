@@ -1,0 +1,40 @@
+================================================================================
+TABLEAU 3.23 – Description textuelle de cas d'utilisation « Analytics réseau »
+Sprint 6 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Consulter les analytics réseau »                               |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Administrateur                                                   |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'administrateur visualise les indicateurs agrégés de            |
+|                  | GlobalTradeX (expéditions, documents, délais, répartition statuts).|
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur est authentifié administrateur.                          |
+|                  | Des données existent dans la base (seed ou usage réel).          |
+|                  | L'acteur ouvre /dashboard/admin/analytics.                       |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le système appelle GET /api/analytics/global et endpoints associés
+    (shipments-by-status, documents).
+ 2. Le système affiche les KPIs : nombre d'expéditions, volumes par statut,
+    documents en attente / validés, délais moyens.
+ 3. L'administrateur consulte les graphiques et tableaux de synthèse.
+ 4. L'administrateur peut filtrer par période ou exporter un aperçu (capture écran
+    pour rapport PFE).
+
+Enchaînements alternatifs
+-------------------------
+ 1.1  Base vide :
+      le système affiche des zéros et invite à exécuter le seed de soutenance.
+
+Post-conditions
+---------------
+ L'administrateur dispose d'une vision macro pour le pilotage et la présentation orale.
+
+================================================================================
+Fin du tableau 3.23
+================================================================================

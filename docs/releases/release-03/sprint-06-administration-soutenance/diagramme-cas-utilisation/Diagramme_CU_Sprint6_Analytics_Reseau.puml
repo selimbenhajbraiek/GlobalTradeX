@@ -1,0 +1,44 @@
+@startuml Diagramme_CU_Sprint6_Analytics_Reseau
+' TABLEAU 3.23
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 6\nCas d'utilisation : Consulter les analytics reseau
+
+actor "Administrateur" as ADM
+
+rectangle "GlobalTradeX" {
+
+  usecase "Consulter les statistiques\ndu reseau GlobalTradeX" as UC_MAIN
+
+  usecase "Charger les KPIs globaux" as UC1 <<option>>
+  usecase "Voir repartition\npar statut" as UC2 <<option>>
+  usecase "Voir stats documents" as UC3 <<option>>
+}
+
+usecase "S'authentifier" as UC_AUTH
+
+ADM --> UC_MAIN
+UC_MAIN ..> UC_AUTH : <<include>>
+
+UC1 .> UC_MAIN : <<extend>>
+UC2 .> UC1 : <<extend>>
+UC3 .> UC1 : <<extend>>
+
+note bottom of UC_MAIN
+  Page : /dashboard/admin/analytics
+  API : GET /api/analytics/global
+end note
+
+@enduml

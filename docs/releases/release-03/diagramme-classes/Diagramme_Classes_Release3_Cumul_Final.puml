@@ -1,0 +1,255 @@
+@startuml Diagramme_Classes_Release3_Cumul_Final
+' Release 3 cumul FINAL — tout le projet (13 tables)
+' Release 1+2 + Sprint 5 (assistant, GPS) + Sprint 6 (admin, avatars)
+
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam classFontSize 7
+skinparam defaultFontSize 7
+skinparam class<<Table>> BackgroundColor #E8F4FC
+skinparam class<<New>> BackgroundColor #D4EDDA
+skinparam class<<New>> BorderColor #28A745
+skinparam linetype ortho
+
+title Diagramme de classes cumulé FINAL — Release 3 / Projet complet\n(Sprints 5–6 : Analytics, GPS, Assistant, Administration)
+
+enum UserRole {
+  admin
+  importateur
+  exportateur
+  transitaire
+  courtier
+}
+enum ShipmentStatus {
+  pending
+  in_transit
+  customs_hold
+  delivered
+  delayed
+  cancelled
+}
+enum CargoType {
+  general
+  fragile
+  dangerous
+  perishable
+  oversized
+}
+enum TransportMode {
+  air
+  sea
+  road
+  rail
+}
+enum TradeDocumentType {
+  commercial_invoice
+  packing_list
+  certificate_of_origin
+  bill_of_lading
+  customs_declaration
+  other
+}
+enum NotificationType {
+  info
+  success
+  warning
+  error
+}
+enum AssistantAvatarStatus {
+  not_created
+  processing
+  ready
+  error
+}
+
+package "Comptes (Sprint 1)" #F8F9FA {
+  class users <<Table>> {
+    **id** : INT <<PK>>
+    full_name : VARCHAR(100)
+    email : VARCHAR(150) <<UK>>
+    password_hash : VARCHAR(255)
+    role : UserRole
+    phone : VARCHAR(20)
+    notification_preferences : JSON
+    is_active : BOOLEAN
+    email_verified : BOOLEAN
+    created_at : DATETIME
+  }
+}
+
+package "Expéditions & Produits (Sprint 2)" #F8F9FA {
+  class shipments <<Table>> {
+    **id** : INT <<PK>>
+    owner_id : INT <<FK>>
+    exporter_user_id : INT <<FK?>>
+    reference : VARCHAR(50) <<UK>>
+    origin : VARCHAR(200)
+    destination : VARCHAR(200)
+    cargo_type : CargoType
+    transport_mode : TransportMode
+    status : ShipmentStatus
+    weight_kg : DECIMAL
+    volume_m3 : DECIMAL
+    estimated_value : DECIMAL
+    currency : VARCHAR(10)
+    freight_estimate_usd : DECIMAL
+    vessel_name : VARCHAR(200)
+    voyage_number : VARCHAR(100)
+    tracking_status : VARCHAR(32)
+    tracking_progress : FLOAT
+    location_history : JSON
+    created_at : DATETIME
+    updated_at : DATETIME
+  }
+  class products <<Table>> {
+    **id** : INT <<PK>>
+    user_id : INT <<FK>>
+    name : VARCHAR(255)
+    hs_code : VARCHAR(32)
+    unit_price : DECIMAL
+    quantity : INT
+    unit : VARCHAR(32)
+    origin_country : VARCHAR(100)
+  }
+  class shipment_products <<Table>> {
+    **id** : INT <<PK>>
+    shipment_id : INT <<FK>>
+    product_id : INT <<FK>>
+    quantity : INT
+  }
+}
+
+package "Documents (Sprint 3)" #F8F9FA {
+  class documents <<Table>> {
+    **id** : INT <<PK>>
+    shipment_id : INT <<FK?>>
+    uploaded_by : INT <<FK>>
+    filename : VARCHAR(512)
+    original_name : VARCHAR(512)
+    file_type : TradeDocumentType
+    file_size : INT
+    file_path : VARCHAR(1024)
+    is_verified : BOOLEAN
+    ai_result : JSON
+    uploaded_at : DATETIME
+    verified_at : DATETIME
+  }
+}
+
+package "Communication (Sprint 4)" #F8F9FA {
+  class notifications <<Table>> {
+    **id** : INT <<PK>>
+    user_id : INT <<FK>>
+    title : VARCHAR(200)
+    message : TEXT
+    type : NotificationType
+    is_read : BOOLEAN
+    shipment_id : INT <<FK?>>
+    created_at : DATETIME
+  }
+  class message_threads <<Table>> {
+    **id** : INT <<PK>>
+    shipment_id : INT <<FK?>>
+    subject : TEXT
+    created_at : DATETIME
+    updated_at : DATETIME
+  }
+  class thread_participants <<Table>> {
+    **id** : INT <<PK>>
+    thread_id : INT <<FK>>
+    user_id : INT <<FK>>
+    last_read_at : DATETIME
+  }
+  class messages <<Table>> {
+    **id** : INT <<PK>>
+    thread_id : INT <<FK>>
+    sender_id : INT <<FK>>
+    body : TEXT
+    created_at : DATETIME
+  }
+}
+
+package "Assistant IA (Sprint 5)" #F8F9FA {
+  class assistant_sessions <<Table>> {
+    **id** : VARCHAR(36) <<PK>>
+    user_id : INT <<FK>>
+    user_role : VARCHAR(32)
+    started_at : DATETIME
+    last_activity_at : DATETIME
+    ended_at : DATETIME
+  }
+  class assistant_messages <<Table>> {
+    **id** : INT <<PK>>
+    session_id : VARCHAR(36) <<FK>>
+    role : VARCHAR(16)
+    content : VARCHAR(4000)
+    video_url : VARCHAR(2048)
+    provider : VARCHAR(32)
+    created_at : DATETIME
+  }
+}
+
+package "Administration (Sprint 6)" #E8F5E9 {
+  class assistant_avatars <<Table>> <<New>> {
+    **id** : INT <<PK>>
+    admin_id : INT <<FK>>
+    original_filename : VARCHAR(512)
+    video_path : VARCHAR(1024)
+    public_token : VARCHAR(64) <<UK>>
+    avatar_provider_id : VARCHAR(255)
+    voice_id : VARCHAR(255)
+    status : AssistantAvatarStatus
+    persona : JSON
+    metadata : JSON
+    is_active : BOOLEAN
+    created_at : DATETIME
+    updated_at : DATETIME
+  }
+  class assistant_config <<Table>> <<New>> {
+    **id** : INT <<PK>> (=1)
+    heygen_avatar_id : VARCHAR(128)
+    heygen_voice_id : VARCHAR(128)
+    greeting_message : TEXT
+    is_enabled : BOOLEAN
+    updated_at : DATETIME
+  }
+}
+
+' --- Relations FK principales ---
+users "1" --> "0..*" shipments : owner_id
+users "0..1" --> "0..*" shipments : exporter_user_id
+users "1" --> "0..*" products
+shipments "1" --> "0..*" shipment_products
+products "1" --> "0..*" shipment_products
+shipments "1" --> "0..*" documents
+users "1" --> "0..*" documents : uploaded_by
+users "1" --> "0..*" notifications
+shipments "0..1" --> "0..*" notifications
+shipments "1" --> "0..*" message_threads
+message_threads "1" --> "1..*" thread_participants
+users "1" --> "0..*" thread_participants
+message_threads "1" --> "0..*" messages
+users "1" --> "0..*" messages : sender
+users "1" --> "0..*" assistant_sessions
+assistant_sessions "1" --> "0..*" assistant_messages
+users "1" --> "0..*" assistant_avatars : admin_id
+
+note as NFinal
+  **13 tables** relationnelles MySQL
+  + 7 énumérations métier
+  Diagramme final du projet GlobalTradeX
+  (cumul sprints 1 → 6)
+end note
+
+legend bottom
+  |= Sprint |= Tables ajoutées |
+  | 1 | users |
+  | 2 | shipments, products, shipment_products |
+  | 3 | documents |
+  | 4 | notifications, message_threads, thread_participants, messages |
+  | 5 | assistant_sessions, assistant_messages (+ GPS sur shipments) |
+  | 6 | assistant_avatars, assistant_config |
+  | <#D4EDDA> | Nouveau au sprint 6 |
+endlegend
+
+@enduml

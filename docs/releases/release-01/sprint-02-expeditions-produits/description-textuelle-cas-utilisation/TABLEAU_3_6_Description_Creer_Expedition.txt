@@ -1,0 +1,71 @@
+================================================================================
+TABLEAU 3.6 – Description textuelle de cas d'utilisation « Créer une expédition »
+Sprint 2 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Créer une expédition »                                         |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Importateur, Exportateur (avec étape Produits), Administrateur   |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'acteur crée un dossier d'expédition international afin de      |
+|                  | lancer une commande import ou export ; le système attribue une   |
+|                  | référence unique GTX et initialise le suivi logistique.        |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur est authentifié avec le rôle importateur ou exportateur.|
+|                  | L'acteur accède au menu « Nouvelle expédition »                  |
+|                  | (/dashboard/shipments/new).                                      |
+|                  | Pour l'exportateur : au moins un produit dans le catalogue est   |
+|                  | recommandé avant l'étape Produits.                               |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal (Importateur)
+------------------------------
+ 1. Le système affiche l'assistant « New shipment » — étape 1 « Route » (origine,
+    destination, date de départ, mode de transport, type de marchandise).
+ 2. L'acteur renseigne les champs et clique sur « Next ».
+ 3. Le système vérifie la cohérence des données de l'étape 1.
+ 4. Le système affiche l'étape 2 « Cargo & AI » (poids, volume, valeur estimée, devise,
+    urgence, bouton « Suggest routes »).
+ 5. L'acteur peut solliciter l'assistant IA : le système propose jusqu'à trois
+    itinéraires (mode, coût estimé, niveau de risque) ; l'acteur en sélectionne un.
+ 6. L'acteur complète les données de fret et clique sur « Next ».
+ 7. Le système affiche l'étape « Review » récapitulant route, cargo et fret.
+ 8. L'acteur valide ; le système vérifie les données et crée l'entité Shipment
+    (owner_id = acteur, statut = pending, référence GTX générée automatiquement).
+ 9. Le système notifie l'importateur (e-mail / SMS si configuré) et redirige vers
+    le cockpit importateur avec un message de succès.
+
+Scénario nominal (Exportateur) — extension
+----------------------------------------
+ Aux étapes 6–7 : après « Cargo & AI », le système affiche l'étape 3 « Products »
+ (liste du catalogue avec cases à cocher et quantités).
+ L'acteur sélectionne les lignes produit, puis passe à « Review » et valide.
+ Le système crée Shipment et les enregistrements ShipmentProduct associés ;
+ exporter_user_id est renseigné sur le dossier.
+
+Enchaînements alternatifs
+-------------------------
+ 3.1  Données d'une étape invalides (champs vides, valeurs négatives) :
+      le système affiche un message d'erreur et maintient l'acteur sur l'étape courante.
+
+ 5.1  L'appel IA « Suggest routes » échoue (service indisponible) :
+      le système affiche l'erreur ; l'acteur peut saisir manuellement le mode et le fret
+      et poursuivre le scénario nominal.
+
+ 8.1  L'exportateur joint un produit qui ne lui appartient pas :
+      le système refuse la création (HTTP 403) et affiche un message d'erreur.
+
+ 8.2  Échec de génération de référence ou contrainte base de données :
+      le système affiche une erreur technique ; aucune expédition partielle n'est conservée.
+
+Post-conditions
+---------------
+ Une expédition est enregistrée avec le statut « pending » et une référence GTX unique.
+ L'acteur peut la retrouver dans la liste « Mes expéditions » et la partager avec les
+ autres rôles (exportateur, transitaire, courtier) lors des sprints ultérieurs.
+ Les documents et changements de statut ne sont pas encore traités (Sprint 3).
+
+================================================================================
+Fin du tableau 3.6
+================================================================================

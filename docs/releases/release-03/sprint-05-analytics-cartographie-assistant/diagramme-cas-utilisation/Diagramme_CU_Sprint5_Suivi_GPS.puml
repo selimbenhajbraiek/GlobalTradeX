@@ -1,0 +1,47 @@
+@startuml Diagramme_CU_Sprint5_Suivi_GPS
+' TABLEAU 3.19
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 5\nCas d'utilisation : Suivre une expedition sur carte GPS
+
+actor "Utilisateur metier" as USER
+
+rectangle "GlobalTradeX" {
+
+  usecase "Suivre une expedition\nsur carte GPS" as UC_MAIN
+
+  usecase "Voir les expeditions\nen transit" as UC1 <<option>>
+  usecase "Initialiser le suivi" as UC2 <<option>>
+  usecase "Afficher la carte\n(origine, destination, position)" as UC3 <<option>>
+  usecase "Mettre en pause ou\nreinitialiser" as UC4 <<option>>
+}
+
+usecase "S'authentifier" as UC_AUTH
+
+USER --> UC_MAIN
+UC_MAIN ..> UC_AUTH : <<include>>
+
+UC1 .> UC_MAIN : <<extend>>
+UC2 .> UC1 : <<extend>>
+UC3 .> UC_MAIN : <<extend>>
+UC4 .> UC_MAIN : <<extend>>
+
+note bottom of UC_MAIN
+  Pages : /dashboard/shipments/tracking
+  Donnees sur la table **shipments**
+  (latitude, longitude, progression %)
+end note
+
+@enduml

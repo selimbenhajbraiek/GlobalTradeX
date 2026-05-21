@@ -1,0 +1,47 @@
+================================================================================
+TABLEAU 3.16 – Description textuelle de cas d'utilisation « Messagerie sur expédition »
+Sprint 4 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Échanger des messages sur un dossier d'expédition »            |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Importateur, Exportateur, Transitaire, Courtier, Administrateur  |
++------------------+------------------------------------------------------------------+
+| Résumé           | Les acteurs d'une même chaîne logistique échangent des messages  |
+|                  | contextualisés par référence GTX pour coordonner le dossier.   |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | Les acteurs sont authentifiés.                                    |
+|                  | Une expédition existe ; un fil MessageThread peut être créé ou   |
+|                  | déjà ouvert avec les participants du dossier.                    |
+|                  | L'acteur accède à /dashboard/messages.                           |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal
+----------------
+ 1. Le système affiche la liste des fils de discussion (aperçu dernier message,
+    participants, compteur non lus).
+ 2. L'acteur ouvre un fil lié à une expédition (shipment_id, référence GTX visible).
+ 3. L'acteur saisit un message et l'envoie.
+ 4. Le système enregistre le Message (POST thread message) et met à jour le fil.
+ 5. Le système crée une Notification pour chaque autre participant
+    (« New message from … »).
+ 6. Les autres acteurs consultent le fil et répondent ; le scénario se poursuit.
+
+Enchaînements alternatifs
+-------------------------
+ 2.1  Aucun fil existant pour l'expédition :
+      l'acteur crée un nouveau fil (POST thread) en sélectionnant l'expédition et
+      les participants autorisés.
+
+ 4.1  Message vide ou trop long :
+      le système refuse l'envoi avec un message de validation.
+
+Post-conditions
+---------------
+ L'historique de conversation est conservé et rattaché au dossier GTX.
+ Les participants sont notifiés des nouveaux messages.
+
+================================================================================
+Fin du tableau 3.16
+================================================================================

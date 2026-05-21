@@ -1,0 +1,43 @@
+================================================================================
+TABLEAU 3.18 – Description textuelle de cas d'utilisation « Estimer droits et fret »
+Sprint 5 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Estimer droits de douane et coût de fret »                     |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Importateur, Administrateur                                      |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'importateur obtient une estimation des droits de douane et du  |
+|                  | fret à partir du code SH, des pays et des caractéristiques cargo.|
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur est authentifié (importateur ou admin).                   |
+|                  | L'acteur ouvre /dashboard/calculator.                            |
++------------------+------------------------------------------------------------------+
+
+Scénario nominal — Droits de douane
+------------------------------------
+ 1. Le système affiche le formulaire « Duty estimate » (code SH, pays origine,
+    pays destination, valeur déclarée USD).
+ 2. L'acteur renseigne les champs et lance le calcul.
+ 3. Le système appelle l'API calculateur et retourne taux, montant estimé et détail.
+ 4. Le système affiche le résultat (pourcentage, montant USD, notes explicatives).
+
+Scénario nominal — Fret
+-----------------------
+ 5. L'acteur bascule sur l'onglet fret (poids, dimensions, mode transport).
+ 6. Le système calcule et affiche l'estimation de coût de transport.
+
+Enchaînements alternatifs
+-------------------------
+ 3.1  Code SH invalide ou pays manquant :
+      le système affiche une erreur de validation.
+
+Post-conditions
+---------------
+ L'acteur dispose d'une estimation indicative pour affiner sa commande ou
+ compléter une expédition (sans enregistrement automatique dans GTX).
+
+================================================================================
+Fin du tableau 3.18
+================================================================================

@@ -1,0 +1,51 @@
+@startuml Diagramme_CU_Sprint3_Mettre_A_Jour_Statut
+' TABLEAU 3.12
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 3\nCas d'utilisation : Mettre a jour le statut d'une expedition
+
+actor "Transitaire" as TR
+actor "Administrateur" as ADM
+
+rectangle "GlobalTradeX" {
+
+  usecase "Mettre a jour le statut\nde l'expedition" as UC_MAIN
+
+  usecase "Choisir la liste des\nexpeditions actives" as UC1 <<option>>
+  usecase "Ouvrir la fiche GTX" as UC2 <<option>>
+  usecase "Selectionner le nouveau statut" as UC3 <<option>>
+  usecase "Saisir navire, voyage,\nETA, notes" as UC4 <<option>>
+  usecase "Enregistrer" as UC5 <<option>>
+}
+
+usecase "S'authentifier" as UC_AUTH
+
+TR --> UC_MAIN
+ADM --> UC_MAIN
+UC_MAIN ..> UC_AUTH : <<include>>
+
+UC1 .> UC_MAIN : <<extend>>
+UC2 .> UC1 : <<extend>>
+UC3 .> UC2 : <<extend>>
+UC4 .> UC3 : <<extend>>
+UC5 .> UC4 : <<extend>>
+
+note bottom of UC_MAIN
+  API : PATCH /api/shipments/{id}/status
+  Statuts : pending, customs_hold, in_transit, delivered...
+  Cockpit : /dashboard/transitaire
+end note
+
+@enduml

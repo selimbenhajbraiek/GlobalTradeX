@@ -1,0 +1,17 @@
+================================================================================
+INDEX — Figures diagrammes de cas d'utilisation (Sprint 5)
+================================================================================
+
+FIGURE 5.5.0 — Vue d'ensemble « Analytics, Cartographie & Assistant »
+  → Diagramme_CU_Sprint5_Vue_Ensemble.png
+
+FIGURE 5.5.1 — « Estimer droits de douane et fret » (TABLEAU 3.18)
+  → Diagramme_CU_Sprint5_Calculateur.png
+
+FIGURE 5.5.2 — « Suivre une expédition sur carte GPS » (TABLEAU 3.19)
+  → Diagramme_CU_Sprint5_Suivi_GPS.png
+
+FIGURE 5.5.3 — « Interagir avec l'assistant TradeFlow » (TABLEAU 3.20)
+  → Diagramme_CU_Sprint5_Assistant_TradeFlow.png
+
+================================================================================

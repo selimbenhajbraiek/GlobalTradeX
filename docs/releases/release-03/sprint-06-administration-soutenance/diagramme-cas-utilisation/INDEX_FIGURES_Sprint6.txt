@@ -1,0 +1,17 @@
+================================================================================
+INDEX — Figures diagrammes de cas d'utilisation (Sprint 6)
+================================================================================
+
+FIGURE 6.6.0 — Vue d'ensemble « Administration & Soutenance »
+  → Diagramme_CU_Sprint6_Vue_Ensemble.png
+
+FIGURE 6.6.1 — « Gérer les utilisateurs » (TABLEAU 3.22)
+  → Diagramme_CU_Sprint6_Gerer_Utilisateurs.png
+
+FIGURE 6.6.2 — « Consulter les analytics réseau » (TABLEAU 3.23)
+  → Diagramme_CU_Sprint6_Analytics_Reseau.png
+
+FIGURE 6.6.3 — « Préparer le scénario de démonstration soutenance » (TABLEAU 3.24)
+  → Diagramme_CU_Sprint6_Scenario_Soutenance.png
+
+================================================================================

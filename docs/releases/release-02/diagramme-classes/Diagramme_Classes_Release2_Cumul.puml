@@ -1,0 +1,126 @@
+@startuml Diagramme_Classes_Release2_Cumul
+' Release 2 cumul — Release 1 + Sprint 3 (documents) + Sprint 4 (notifications, messagerie)
+
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam classFontSize 8
+skinparam defaultFontSize 8
+skinparam class<<Table>> BackgroundColor #E8F4FC
+skinparam class<<New>> BackgroundColor #D4EDDA
+skinparam class<<New>> BorderColor #28A745
+
+title Diagramme de classes cumulé — Release 2\n(Sprints 3–4 : Documents & Douane + Notifications & Messagerie)
+
+enum UserRole {
+  admin
+  importateur
+  exportateur
+  transitaire
+  courtier
+}
+enum ShipmentStatus {
+  pending
+  in_transit
+  customs_hold
+  delivered
+  delayed
+  cancelled
+}
+enum NotificationType {
+  info
+  success
+  warning
+  error
+}
+enum TradeDocumentType {
+  commercial_invoice
+  packing_list
+  certificate_of_origin
+  bill_of_lading
+  customs_declaration
+  other
+}
+
+class users <<Table>> {
+  **id** : INT <<PK>>
+  ...
+}
+class shipments <<Table>> {
+  **id** : INT <<PK>>
+  reference : VARCHAR(50)
+  ...
+}
+class products <<Table>> {
+  **id** : INT <<PK>>
+  ...
+}
+class shipment_products <<Table>> {
+  **id** : INT <<PK>>
+  ...
+}
+class documents <<Table>> {
+  **id** : INT <<PK>>
+  is_verified : BOOLEAN
+  ...
+}
+
+class notifications <<Table>> <<New>> {
+  **id** : INT <<PK>>
+  --
+  user_id : INT <<FK>>
+  title : VARCHAR(200)
+  message : TEXT
+  type : NotificationType
+  is_read : BOOLEAN
+  shipment_id : INT <<FK?>>
+  created_at : DATETIME
+}
+
+class message_threads <<Table>> <<New>> {
+  **id** : INT <<PK>>
+  --
+  shipment_id : INT <<FK?>>
+  subject : TEXT
+  created_at : DATETIME
+  updated_at : DATETIME
+}
+
+class thread_participants <<Table>> <<New>> {
+  **id** : INT <<PK>>
+  --
+  thread_id : INT <<FK>>
+  user_id : INT <<FK>>
+  last_read_at : DATETIME
+}
+
+class messages <<Table>> <<New>> {
+  **id** : INT <<PK>>
+  --
+  thread_id : INT <<FK>>
+  sender_id : INT <<FK>>
+  body : TEXT
+  created_at : DATETIME
+}
+
+users "1" --> "0..*" shipments
+shipments "1" --> "0..*" shipment_products
+products "1" --> "0..*" shipment_products
+shipments "1" --> "0..*" documents
+users "1" --> "0..*" documents
+
+users "1" --> "0..*" notifications
+shipments "0..1" --> "0..*" notifications
+shipments "1" --> "0..*" message_threads
+message_threads "1" --> "1..*" thread_participants
+users "1" --> "0..*" thread_participants
+message_threads "1" --> "0..*" messages
+users "1" --> "0..*" messages : sender_id
+
+notifications ..> NotificationType
+
+legend right
+  | <#D4EDDA> | Nouveau sprint 4 |
+  | <#E8F4FC> | Sprints 1–3 |
+endlegend
+
+@enduml

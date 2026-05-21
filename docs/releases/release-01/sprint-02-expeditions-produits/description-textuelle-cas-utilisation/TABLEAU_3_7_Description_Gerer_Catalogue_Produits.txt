@@ -1,0 +1,58 @@
+================================================================================
+TABLEAU 3.7 – Description textuelle de cas d'utilisation « Gérer catalogue produits »
+Sprint 2 — GlobalTradeX
+================================================================================
+
++------------------+------------------------------------------------------------------+
+| Nom du CU        | « Gérer catalogue produits »                                     |
++------------------+------------------------------------------------------------------+
+| Acteurs          | Exportateur, Administrateur (support)                            |
++------------------+------------------------------------------------------------------+
+| Résumé           | L'exportateur maintient son catalogue de marchandises (nom, code |
+|                  | SH, prix, stock, origine) pour les rattacher aux expéditions     |
+|                  | sortantes.                                                       |
++------------------+------------------------------------------------------------------+
+| Pré-conditions   | L'acteur est authentifié en tant qu'exportateur.                  |
+|                  | L'acteur accède à la page « Mes produits » (/dashboard/products).|
++------------------+------------------------------------------------------------------+
+
+Scénario nominal — Ajouter un produit
+------------------------------------
+ 1. Le système affiche le tableau paginé du catalogue et le bouton « Add product ».
+ 2. L'exportateur clique sur « Add product » ; le système affiche le formulaire (nom,
+    code SH, description, prix unitaire, quantité, unité, pays d'origine).
+ 3. L'exportateur saisit les informations et valide.
+ 4. Le système vérifie la cohérence des champs (nom obligatoire, prix numérique, etc.).
+ 5. Le système enregistre le produit dans le modèle Product (user_id = exportateur).
+ 6. Le système rafraîchit la liste et affiche le nouveau produit dans le tableau.
+
+Scénario nominal — Modifier ou supprimer
+----------------------------------------
+ 7. L'exportateur sélectionne « Edit » sur une ligne : le système préremplit le formulaire.
+ 8. L'exportateur modifie les champs et enregistre ; le système met à jour via PATCH.
+ 9. L'exportateur peut supprimer un produit : le système demande confirmation puis
+    supprime l'enregistrement (DELETE) s'il n'est pas requis par une contrainte métier.
+
+Scénario nominal — Rechercher
+---------------------------
+10. L'exportateur saisit un terme dans la barre de recherche (nom ou code SH).
+11. Le système appelle GET /api/products?search=… et affiche les résultats filtrés.
+
+Enchaînements alternatifs
+-------------------------
+ 4.1  Données invalides à la création ou modification :
+      le système affiche les erreurs de validation et reprend à l'étape 2 du scénario
+      d'ajout.
+
+ 9.1  Suppression impossible (produit encore lié à une expédition selon règles métier) :
+      le système affiche un message d'erreur et conserve le produit.
+
+Post-conditions
+---------------
+ Le catalogue exportateur est à jour.
+ Les produits sont disponibles à l'étape « Products » lors de la création d'une
+ expédition sortante (cas d'utilisation « Créer une expédition »).
+
+================================================================================
+Fin du tableau 3.7
+================================================================================

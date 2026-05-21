@@ -1,0 +1,45 @@
+@startuml Diagramme_CU_Sprint6_Scenario_Soutenance
+' TABLEAU 3.24
+
+top to bottom direction
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #FFFDE7
+  BorderColor #F9A825
+  FontSize 11
+}
+skinparam usecase<<option>> {
+  BackgroundColor #FCE4EC
+  BorderColor #C62828
+  FontSize 10
+}
+
+title FIGURE — Sprint 6\nCas d'utilisation : Preparer la demonstration de soutenance
+
+actor "Administrateur" as ADM
+actor "Equipe projet" as TEAM
+
+rectangle "GlobalTradeX" {
+
+  usecase "Preparer le scenario\nde demonstration" as UC_MAIN
+
+  usecase "Executer le script seed" as UC1 <<option>>
+  usecase "Verifier les comptes\ndemo (roles)" as UC2 <<option>>
+  usecase "Verifier l'expedition\nGTX-20240315-00042" as UC3 <<option>>
+  usecase "Tester le parcours\nTunisOlive vers FreshMart" as UC4 <<option>>
+}
+
+ADM --> UC_MAIN
+TEAM --> UC1
+
+UC1 .> UC_MAIN : <<extend>>
+UC2 .> UC1 : <<extend>>
+UC3 .> UC1 : <<extend>>
+UC4 .> UC_MAIN : <<extend>>
+
+note bottom of UC_MAIN
+  Donnees de demo : utilisateurs, produits huile d'olive,
+  expedition, documents, statuts, tracking GPS
+end note
+
+@enduml
