@@ -7,7 +7,7 @@
 | `backlog/` | TABLEAU 3.13 |
 | `description-textuelle-cas-utilisation/` | TABLEAU 3.14, 3.15, 3.16 |
 | `diagramme-cas-utilisation/` | Vue ensemble + 3 CU (3.14–3.16) |
-| `diagramme-sequence/` | À compléter |
+| `diagramme-sequence/` | Notifications + Messagerie (PUML + PROMPT) |
 | `diagramme-classes/` | Voir cumul Release 2 : `../../diagramme-classes/` |
 
 ## Cas d'utilisation documentés

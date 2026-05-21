@@ -1,0 +1,33 @@
+@startuml Diagramme_Sequence_Verifier_Document_IA
+title S.D. GlobalTradeX — Vérifier un document par IA (Sprint 3)
+
+actor "Courtier en douane" as ACT
+
+ref over ACT, UI, API, DB
+  ** S'authentifier **
+end ref
+
+boundary "File d'attente courtier" as UI
+control "API documents" as API
+entity "Document" as DB
+participant "Intelligence artificielle" as IA
+
+ACT -> UI : 1. Ouvrir la file d'attente
+UI -> API : 2. Demander les documents en attente
+API -> DB : 3. Lire les documents non vérifiés
+DB --> API : 4. Liste des documents
+API --> UI : 5. Afficher la liste
+ACT -> UI : 6. Lancer l'analyse IA
+UI -> API : 7. Demander l'analyse
+API -> IA : 8. Analyser le document
+IA --> API : 9. Rapport d'analyse
+API -> DB : 10. Enregistrer le rapport
+DB --> API : 11. Enregistrement OK
+API --> UI : 12. Afficher le rapport
+ACT -> UI : 13. Approuver ou refuser
+UI -> API : 14. Enregistrer la décision
+API -> DB : 15. Marquer comme vérifié
+API --> UI : 16. Décision enregistrée
+UI --> ACT : 17. Afficher la confirmation
+
+@enduml

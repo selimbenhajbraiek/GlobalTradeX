@@ -7,7 +7,7 @@
 | `backlog/` | TABLEAU 3.17 |
 | `description-textuelle-cas-utilisation/` | TABLEAU 3.18, 3.19, 3.20 |
 | `diagramme-cas-utilisation/` | Vue ensemble + 3 CU (3.18–3.20) |
-| `diagramme-sequence/` | À compléter |
+| `diagramme-sequence/` | Assistant TradeFlow + Suivi GPS (PUML + PROMPT) |
 | `diagramme-classes/` | Voir cumul Release 3 : `../../diagramme-classes/` |
 
 ## Cas d'utilisation documentés

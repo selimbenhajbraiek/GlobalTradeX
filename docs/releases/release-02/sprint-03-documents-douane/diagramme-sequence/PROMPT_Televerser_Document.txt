@@ -1,0 +1,22 @@
+================================================================================
+PROMPT — Diagramme de séquence « Téléverser un document » (Sprint 3)
+Langue : français simple.
+================================================================================
+
+Titre : « S.D. GlobalTradeX — Téléverser un document (Sprint 3) »
+
+ref : S'authentifier.
+
+Participants : Exportateur, Espace documents, API documents, Document.
+
+Étapes :
+1. Choisir l'expédition et le type de pièce
+2. Choisir le fichier
+3. Envoyer le fichier
+4. Vérifier format et taille
+5. Enregistrer le document
+6. Document enregistré
+7. Téléversement OK
+8. Document visible sur la fiche expédition
+
+================================================================================

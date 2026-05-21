@@ -1,0 +1,26 @@
+@startuml Diagramme_Sequence_Creer_Expedition
+title S.D. GlobalTradeX — Créer une expédition (Sprint 2)
+
+actor "Importateur\nou Exportateur" as ACT
+
+ref over ACT, UI, API, DB
+  ** S'authentifier **
+end ref
+
+boundary "Assistant création expédition" as UI
+control "API expéditions" as API
+control "Service IA itinéraires" as AI
+entity "Expédition" as DB
+
+ACT -> UI : 1. Remplir route, marchandise,\nproduits et récapitulatif
+UI -> AI : 2. Demander des itinéraires\n(optionnel)
+AI --> UI : 3. Propositions reçues
+ACT -> UI : 4. Confirmer la création
+UI -> API : 5. Demander la création
+API -> API : 6. Générer la référence GTX
+API -> DB : 7. Enregistrer l'expédition
+DB --> API : 8. Expédition enregistrée
+API --> UI : 9. Référence GTX créée
+UI --> ACT : 10. Afficher le succès
+
+@enduml

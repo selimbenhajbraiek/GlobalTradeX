@@ -1,0 +1,24 @@
+================================================================================
+PROMPT — Diagramme de séquence « Consulter les statistiques réseau » (Sprint 6)
+Langue : français simple.
+================================================================================
+
+Titre : « S.D. GlobalTradeX — Consulter les statistiques réseau (Sprint 6) »
+
+ref : S'authentifier.
+
+Participants : Administrateur, Tableau de bord admin, API statistiques, Base de données.
+
+Étapes :
+1. Ouvrir les statistiques réseau
+2. Demander les indicateurs globaux
+3. Compter les utilisateurs
+4. Compter les expéditions
+5. Compter les documents
+6. Indicateurs calculés
+7. Envoyer les données
+8. Afficher graphiques et cartes
+
+Lecture seule, messages courts, tout en français.
+
+================================================================================

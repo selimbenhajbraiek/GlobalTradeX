@@ -1,0 +1,35 @@
+@startuml Diagramme_Sequence_Suivi_GPS
+title S.D. GlobalTradeX — Suivi GPS sur carte (Sprint 5)
+
+actor "Transitaire" as ACT
+
+ref over ACT, UI, API, DB
+  ** S'authentifier **
+end ref
+
+boundary "Carte de suivi" as UI
+control "API suivi expédition" as API
+entity "Expédition" as DB
+participant "Simulation GPS" as SIM
+
+ACT -> UI : 1. Ouvrir la carte
+UI -> API : 2. Demander les expéditions suivies
+API -> DB : 3. Lire les positions
+DB --> API : 4. Liste des positions
+API --> UI : 5. Afficher sur la carte
+ACT -> UI : 6. Choisir une expédition\net définir la route
+UI -> API : 7. Initialiser le suivi
+API -> DB : 8. Enregistrer la route
+DB --> API : 9. Suivi prêt
+API --> UI : 10. Route affichée
+ACT -> UI : 11. Démarrer le suivi
+UI -> API : 12. Lancer le suivi
+API -> DB : 13. Mettre l'état « en cours »
+API -> SIM : 14. Démarrer la simulation
+SIM -> DB : 15. Mettre à jour la position
+ACT -> UI : 16. Actualiser la carte
+UI -> API : 17. Demander la position actuelle
+API --> UI : 18. Position actuelle
+UI --> ACT : 19. Déplacer le marqueur
+
+@enduml

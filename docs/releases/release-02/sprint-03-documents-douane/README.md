@@ -7,7 +7,7 @@
 | `backlog/` | TABLEAU 3.9 |
 | `description-textuelle-cas-utilisation/` | TABLEAU 3.10, 3.11, 3.12 |
 | `diagramme-cas-utilisation/` | Vue ensemble + 3 CU (3.10–3.12), voir INDEX_FIGURES_Sprint3.txt |
-| `diagramme-sequence/` | À compléter |
+| `diagramme-sequence/` | Téléverser document + Vérifier IA (PUML + PROMPT) |
 | `diagramme-classes/` | Voir cumul Release 2 : `../../diagramme-classes/` |
 
 ## Cas d'utilisation documentés

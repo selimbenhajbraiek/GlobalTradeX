@@ -1,0 +1,30 @@
+================================================================================
+PROMPT — Diagramme de séquence « S'inscrire » (GlobalTradeX, Sprint 1)
+Langue : français simple. Copier-coller dans Mermaid, PlantUML, Eraser, etc.
+================================================================================
+
+Créer un diagramme de séquence UML en français, style rapport PFE, titre :
+« S.D. GlobalTradeX — S'inscrire (Sprint 1) »
+
+Participants (de gauche à droite) :
+1. Internaute (acteur)
+2. Page inscription (interface — vert)
+3. API authentification (contrôleur — jaune)
+4. Compte utilisateur (base de données — rouge)
+5. Service e-mail (service externe)
+
+Étapes numérotées (phrases courtes) :
+1. Remplir le formulaire
+2. Envoyer l'inscription
+3. Vérifier les données
+4. Créer le compte
+5. Compte créé (retour)
+6. Envoyer l'e-mail de vérification
+7. E-mail envoyé (retour)
+8. Inscription acceptée (retour)
+9. Vérifier votre e-mail (affiché à l'utilisateur)
+
+Flèches pleines = appels. Flèches pointillées = retours.
+Pas d'anglais sur les flèches. Messages courts (3 à 8 mots).
+
+================================================================================

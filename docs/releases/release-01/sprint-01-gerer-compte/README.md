@@ -7,5 +7,5 @@
 | `backlog/` | TABLEAU 3.1 présent |
 | `diagramme-cas-utilisation/` | À compléter (cas choisis) |
 | `description-textuelle-cas-utilisation/` | TABLEAU 3.2, 3.3, 3.4 (S'inscrire, S'authentifier, Récupérer MDP) |
-| `diagramme-sequence/` | À compléter |
+| `diagramme-sequence/` | S'inscrire + S'authentifier (PUML + PROMPT) |
 | `diagramme-classes/` | Voir cumul Release 1 : `../../diagramme-classes/` |

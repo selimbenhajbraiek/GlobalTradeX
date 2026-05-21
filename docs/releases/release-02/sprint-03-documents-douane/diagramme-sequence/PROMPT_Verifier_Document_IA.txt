@@ -1,0 +1,31 @@
+================================================================================
+PROMPT — Diagramme de séquence « Vérifier un document par IA » (Sprint 3)
+Langue : français simple.
+================================================================================
+
+Titre : « S.D. GlobalTradeX — Vérifier un document par IA (Sprint 3) »
+
+ref : S'authentifier.
+
+Participants : Courtier en douane, File d'attente courtier, API documents, Document, Intelligence artificielle.
+
+Étapes :
+1. Ouvrir la file d'attente
+2. Demander les documents en attente
+3. Lire les documents non vérifiés
+4. Liste des documents
+5. Afficher la liste
+6. Lancer l'analyse IA
+7. Demander l'analyse
+8. Analyser le document
+9. Rapport d'analyse
+10. Enregistrer le rapport
+11. Enregistrement OK
+12. Afficher le rapport
+13. Approuver ou refuser
+14. Enregistrer la décision
+15. Marquer comme vérifié
+16. Décision enregistrée
+17. Afficher la confirmation
+
+================================================================================

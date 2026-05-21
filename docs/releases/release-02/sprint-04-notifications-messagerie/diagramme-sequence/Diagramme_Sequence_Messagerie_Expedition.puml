@@ -1,0 +1,32 @@
+@startuml Diagramme_Sequence_Messagerie_Expedition
+title S.D. GlobalTradeX — Messagerie sur une expédition (Sprint 4)
+
+actor "Exportateur" as EXP
+actor "Importateur" as IMP
+
+ref over IMP, EXP, UI, API, DB
+  ** S'authentifier **
+end ref
+
+boundary "Page messages" as UI
+control "API messages" as API
+entity "Fil de discussion\net messages" as DB
+
+EXP -> UI : 1. Ouvrir les messages
+UI -> API : 2. Demander les fils
+API -> DB : 3. Lire les discussions
+DB --> API : 4. Liste des fils
+API --> UI : 5. Afficher les fils
+EXP -> UI : 6. Écrire un message
+UI -> API : 7. Envoyer le message
+API -> DB : 8. Enregistrer le message
+API -> DB : 9. Créer une notification\npour l'autre partie
+DB --> API : 10. Envoi OK
+API --> UI : 11. Afficher le message
+UI --> IMP : 12. Nouvelle notification
+IMP -> UI : 13. Ouvrir la conversation
+UI -> API : 14. Demander l'historique
+API --> UI : 15. Historique affiché
+UI --> IMP : 16. Répondre au message
+
+@enduml

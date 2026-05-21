@@ -7,7 +7,7 @@
 | `backlog/` | TABLEAU 3.5 |
 | `description-textuelle-cas-utilisation/` | TABLEAU 3.6, 3.7, 3.8 |
 | `diagramme-cas-utilisation/` | À compléter (cas choisis) |
-| `diagramme-sequence/` | À compléter |
+| `diagramme-sequence/` | Créer expédition + Gérer produits (PUML + PROMPT) |
 | `diagramme-classes/` | Voir cumul Release 1 : `../../diagramme-classes/` |
 
 ## Cas d'utilisation documentés

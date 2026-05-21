@@ -1,0 +1,28 @@
+@startuml Diagramme_Sequence_Gerer_Produits
+title S.D. GlobalTradeX — Gérer le catalogue produits (Sprint 2)
+
+actor "Exportateur" as ACT
+
+ref over ACT, DB
+  ** S'authentifier **
+end ref
+
+boundary "Page produits" as UI
+control "API produits" as API
+entity "Produit" as DB
+
+ACT -> UI : 1. Cliquer « Ajouter un produit »
+UI -> ACT : 2. Afficher le formulaire
+ACT -> UI : 3. Saisir nom, code SH,\nprix et stock
+UI -> API : 4. Demander l'ajout
+API -> API : 5. Vérifier les champs
+API -> DB : 6. Enregistrer le produit
+DB --> API : 7. Produit enregistré
+API --> UI : 8. Ajout confirmé
+UI -> API : 9. Demander la liste
+API -> DB : 10. Lire les produits
+DB --> API : 11. Liste des produits
+API --> UI : 12. Mettre à jour le tableau
+UI --> ACT : 13. Produit visible dans le catalogue
+
+@enduml

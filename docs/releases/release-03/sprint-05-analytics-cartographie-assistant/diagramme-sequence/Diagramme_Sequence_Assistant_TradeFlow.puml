@@ -1,0 +1,32 @@
+@startuml Diagramme_Sequence_Assistant_TradeFlow
+title S.D. GlobalTradeX — Assistant TradeFlow (Sprint 5)
+
+actor "Utilisateur métier" as ACT
+
+ref over ACT, UI, API, DB
+  ** S'authentifier **
+end ref
+
+boundary "Page assistant" as UI
+control "API assistant" as API
+entity "Session et messages" as DB
+participant "Intelligence artificielle" as IA
+
+ACT -> UI : 1. Ouvrir l'assistant
+UI -> API : 2. Démarrer une session
+API -> DB : 3. Enregistrer la session
+DB --> API : 4. Session créée
+API --> UI : 5. Session prête
+UI --> ACT : 6. Afficher le chat
+
+ACT -> UI : 7. Écrire une question
+UI -> API : 8. Envoyer le message
+API -> DB : 9. Enregistrer la question
+API -> IA : 10. Demander une réponse
+IA --> API : 11. Réponse reçue
+API -> DB : 12. Enregistrer la réponse
+DB --> API : 13. Enregistrement OK
+API --> UI : 14. Réponse complète
+UI --> ACT : 15. Afficher la réponse
+
+@enduml

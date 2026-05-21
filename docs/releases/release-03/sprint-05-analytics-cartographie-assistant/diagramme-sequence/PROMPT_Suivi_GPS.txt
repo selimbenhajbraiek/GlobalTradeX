@@ -1,0 +1,33 @@
+================================================================================
+PROMPT — Diagramme de séquence « Suivi GPS sur carte » (Sprint 5)
+Langue : français simple.
+================================================================================
+
+Titre : « S.D. GlobalTradeX — Suivi GPS sur carte (Sprint 5) »
+
+ref : S'authentifier.
+
+Participants : Transitaire, Carte de suivi, API suivi expédition, Expédition, Simulation GPS.
+
+Étapes :
+1. Ouvrir la carte
+2. Demander les expéditions suivies
+3. Lire les positions
+4. Liste des positions
+5. Afficher sur la carte
+6. Choisir une expédition et définir la route
+7. Initialiser le suivi
+8. Enregistrer la route
+9. Suivi prêt
+10. Route affichée
+11. Démarrer le suivi
+12. Lancer le suivi
+13. Mettre l'état « en cours »
+14. Démarrer la simulation
+15. Mettre à jour la position
+16. Actualiser la carte
+17. Demander la position actuelle
+18. Position actuelle
+19. Déplacer le marqueur
+
+================================================================================

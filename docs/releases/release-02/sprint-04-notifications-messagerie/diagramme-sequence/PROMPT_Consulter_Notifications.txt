@@ -1,0 +1,25 @@
+================================================================================
+PROMPT — Diagramme de séquence « Consulter les notifications » (Sprint 4)
+Langue : français simple.
+================================================================================
+
+Titre : « S.D. GlobalTradeX — Consulter les notifications (Sprint 4) »
+
+ref : S'authentifier.
+
+Participants : Utilisateur, Page notifications, API notifications, Notification.
+
+Étapes :
+1. Ouvrir les notifications
+2. Demander la liste
+3. Lire les notifications
+4. Liste reçue
+5. Afficher la liste
+6. Ouvrir une notification
+7. Marquer comme lue
+8. Mettre à jour
+9. Mise à jour OK
+10. Confirmation
+11. Aller vers l'expédition (si lien disponible)
+
+================================================================================

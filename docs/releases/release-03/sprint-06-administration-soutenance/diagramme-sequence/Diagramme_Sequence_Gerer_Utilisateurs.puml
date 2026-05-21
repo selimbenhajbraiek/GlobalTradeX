@@ -1,0 +1,29 @@
+@startuml Diagramme_Sequence_Gerer_Utilisateurs
+title S.D. GlobalTradeX — Gérer les utilisateurs (Sprint 6)
+
+actor "Administrateur" as ACT
+
+ref over ACT, LISTE, API, DB
+  ** S'authentifier **
+end ref
+
+boundary "Liste des comptes" as LISTE
+control "API utilisateurs" as API
+entity "Compte utilisateur" as DB
+boundary "Fiche utilisateur" as FICHE
+
+ACT -> LISTE : 1. Ouvrir la liste des comptes
+LISTE -> API : 2. Demander la liste
+API -> DB : 3. Lire les utilisateurs
+DB --> API : 4. Liste des utilisateurs
+API --> LISTE : 5. Afficher le tableau
+ACT -> LISTE : 6. Choisir un utilisateur
+LISTE -> FICHE : 7. Ouvrir la fiche
+ACT -> FICHE : 8. Modifier le rôle\nou désactiver le compte
+FICHE -> API : 9. Enregistrer les modifications
+API -> DB : 10. Mettre à jour le compte
+DB --> API : 11. Compte mis à jour
+API --> FICHE : 12. Fiche mise à jour
+FICHE --> ACT : 13. Afficher la confirmation
+
+@enduml

@@ -1,0 +1,26 @@
+================================================================================
+PROMPT — Diagramme de séquence « Créer une expédition » (Sprint 2)
+Langue : français simple.
+================================================================================
+
+Titre : « S.D. GlobalTradeX — Créer une expédition (Sprint 2) »
+
+Cadre ref en haut : S'authentifier.
+
+Participants : Importateur ou Exportateur, Assistant création expédition, API expéditions, Service IA itinéraires, Expédition (BDD).
+
+Étapes :
+1. Remplir route, marchandise, produits et récapitulatif
+2. Demander des itinéraires (optionnel)
+3. Propositions reçues
+4. Confirmer la création
+5. Demander la création
+6. Générer la référence GTX
+7. Enregistrer l'expédition
+8. Expédition enregistrée
+9. Référence GTX créée
+10. Afficher le succès
+
+MVC, messages courts en français uniquement.
+
+================================================================================

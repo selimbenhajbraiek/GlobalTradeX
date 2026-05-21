@@ -1,0 +1,24 @@
+@startuml Diagramme_Sequence_Sauthentifier
+title S.D. GlobalTradeX — S'authentifier (Sprint 1)
+
+actor "Utilisateur" as ACT
+boundary "Page connexion" as UI
+control "API authentification" as API
+entity "Compte utilisateur" as DB
+
+ACT -> UI : 1. Saisir e-mail et mot de passe
+UI -> API : 2. Demander la connexion
+API -> DB : 3. Chercher l'utilisateur
+DB --> API : 4. Données du compte
+API -> API : 5. Vérifier le mot de passe
+
+alt Connexion refusée
+  API --> UI : 6a. Erreur
+  UI --> ACT : Afficher le message d'erreur
+else Connexion réussie
+  API -> API : 6b. Créer la session
+  API --> UI : 7. Connexion OK
+  UI --> ACT : 8. Ouvrir le tableau de bord
+end
+
+@enduml

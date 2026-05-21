@@ -7,7 +7,7 @@
 | `backlog/` | TABLEAU 3.21 |
 | `description-textuelle-cas-utilisation/` | TABLEAU 3.22, 3.23, 3.24 |
 | `diagramme-cas-utilisation/` | Vue ensemble + 3 CU (3.22–3.24) |
-| `diagramme-sequence/` | À compléter |
+| `diagramme-sequence/` | Gérer utilisateurs + Analytics réseau (PUML + PROMPT) |
 | `diagramme-classes/` | Voir cumul Release 3 (final) : `../../diagramme-classes/` |
 
 ## Cas d'utilisation documentés

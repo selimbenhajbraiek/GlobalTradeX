@@ -1,0 +1,23 @@
+@startuml Diagramme_Sequence_Analytics_Reseau
+title S.D. GlobalTradeX — Consulter les statistiques réseau (Sprint 6)
+
+actor "Administrateur" as ACT
+
+ref over ACT, UI, API, DB
+  ** S'authentifier **
+end ref
+
+boundary "Tableau de bord admin" as UI
+control "API statistiques" as API
+entity "Base de données" as DB
+
+ACT -> UI : 1. Ouvrir les statistiques réseau
+UI -> API : 2. Demander les indicateurs globaux
+API -> DB : 3. Compter les utilisateurs
+API -> DB : 4. Compter les expéditions
+API -> DB : 5. Compter les documents
+DB --> API : 6. Indicateurs calculés
+API --> UI : 7. Envoyer les données
+UI --> ACT : 8. Afficher graphiques et cartes
+
+@enduml

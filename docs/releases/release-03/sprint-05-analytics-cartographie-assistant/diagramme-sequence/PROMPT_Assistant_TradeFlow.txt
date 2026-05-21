@@ -1,0 +1,29 @@
+================================================================================
+PROMPT — Diagramme de séquence « Assistant TradeFlow » (Sprint 5)
+Langue : français simple.
+================================================================================
+
+Titre : « S.D. GlobalTradeX — Assistant TradeFlow (Sprint 5) »
+
+ref : S'authentifier.
+
+Participants : Utilisateur métier, Page assistant, API assistant, Session et messages, Intelligence artificielle.
+
+Étapes :
+1. Ouvrir l'assistant
+2. Démarrer une session
+3. Enregistrer la session
+4. Session créée
+5. Session prête
+6. Afficher le chat
+7. Écrire une question
+8. Envoyer le message
+9. Enregistrer la question
+10. Demander une réponse
+11. Réponse reçue
+12. Enregistrer la réponse
+13. Enregistrement OK
+14. Réponse complète
+15. Afficher la réponse
+
+================================================================================

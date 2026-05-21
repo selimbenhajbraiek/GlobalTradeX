@@ -1,0 +1,27 @@
+================================================================================
+PROMPT — Diagramme de séquence « Gérer les utilisateurs » (Sprint 6)
+Langue : français simple.
+================================================================================
+
+Titre : « S.D. GlobalTradeX — Gérer les utilisateurs (Sprint 6) »
+
+ref : S'authentifier.
+
+Participants : Administrateur, Liste des comptes, API utilisateurs, Compte utilisateur, Fiche utilisateur.
+
+Étapes (style liste puis fiche, comme SmartChain) :
+1. Ouvrir la liste des comptes
+2. Demander la liste
+3. Lire les utilisateurs
+4. Liste des utilisateurs
+5. Afficher le tableau
+6. Choisir un utilisateur
+7. Ouvrir la fiche
+8. Modifier le rôle ou désactiver le compte
+9. Enregistrer les modifications
+10. Mettre à jour le compte
+11. Compte mis à jour
+12. Fiche mise à jour
+13. Afficher la confirmation
+
+================================================================================

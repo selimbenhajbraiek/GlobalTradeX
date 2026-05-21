@@ -1,0 +1,26 @@
+@startuml Diagramme_Sequence_Consulter_Notifications
+title S.D. GlobalTradeX — Consulter les notifications (Sprint 4)
+
+actor "Utilisateur" as ACT
+
+ref over ACT, UI, API, DB
+  ** S'authentifier **
+end ref
+
+boundary "Page notifications" as UI
+control "API notifications" as API
+entity "Notification" as DB
+
+ACT -> UI : 1. Ouvrir les notifications
+UI -> API : 2. Demander la liste
+API -> DB : 3. Lire les notifications
+DB --> API : 4. Liste reçue
+API --> UI : 5. Afficher la liste
+ACT -> UI : 6. Ouvrir une notification
+UI -> API : 7. Marquer comme lue
+API -> DB : 8. Mettre à jour
+DB --> API : 9. Mise à jour OK
+API --> UI : 10. Confirmation
+UI --> ACT : 11. Aller vers l'expédition\n(si lien disponible)
+
+@enduml

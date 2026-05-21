@@ -1,0 +1,32 @@
+================================================================================
+PROMPT — Diagramme de séquence « Messagerie sur une expédition » (Sprint 4)
+Langue : français simple.
+================================================================================
+
+Titre : « S.D. GlobalTradeX — Messagerie sur une expédition (Sprint 4) »
+
+ref : S'authentifier.
+
+Participants : Exportateur, Importateur, Page messages, API messages, Fil de discussion et messages.
+
+Étapes :
+1. Ouvrir les messages (exportateur)
+2. Demander les fils
+3. Lire les discussions
+4. Liste des fils
+5. Afficher les fils
+6. Écrire un message
+7. Envoyer le message
+8. Enregistrer le message
+9. Créer une notification pour l'autre partie
+10. Envoi OK
+11. Afficher le message
+12. Nouvelle notification (importateur)
+13. Ouvrir la conversation (importateur)
+14. Demander l'historique
+15. Historique affiché
+16. Répondre au message
+
+Deux acteurs à gauche. Messages courts en français.
+
+================================================================================

@@ -1,0 +1,23 @@
+@startuml Diagramme_Sequence_Televerser_Document
+title S.D. GlobalTradeX — Téléverser un document (Sprint 3)
+
+actor "Exportateur" as ACT
+
+ref over ACT, UI, API, DB
+  ** S'authentifier **
+end ref
+
+boundary "Espace documents" as UI
+control "API documents" as API
+entity "Document" as DB
+
+ACT -> UI : 1. Choisir l'expédition\net le type de pièce
+ACT -> UI : 2. Choisir le fichier
+UI -> API : 3. Envoyer le fichier
+API -> API : 4. Vérifier format et taille
+API -> DB : 5. Enregistrer le document
+DB --> API : 6. Document enregistré
+API --> UI : 7. Téléversement OK
+UI --> ACT : 8. Document visible\nsur la fiche expédition
+
+@enduml

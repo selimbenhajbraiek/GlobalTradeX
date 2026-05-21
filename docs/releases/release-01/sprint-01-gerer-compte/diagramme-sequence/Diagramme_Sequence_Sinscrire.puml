@@ -1,0 +1,25 @@
+@startuml Diagramme_Sequence_Sinscrire
+title S.D. GlobalTradeX — S'inscrire (Sprint 1)
+
+actor "Internaute" as ACT
+boundary "Page inscription" as UI
+control "API authentification" as API
+entity "Compte utilisateur" as DB
+participant "Service e-mail" as MAIL
+
+ACT -> UI : 1. Remplir le formulaire
+UI -> API : 2. Envoyer l'inscription
+API -> API : 3. Vérifier les données
+API -> DB : 4. Créer le compte
+DB --> API : 5. Compte créé
+API -> MAIL : 6. Envoyer l'e-mail de vérification
+MAIL --> API : 7. E-mail envoyé
+API --> UI : 8. Inscription acceptée
+UI --> ACT : 9. Vérifier votre e-mail
+
+note over ACT, MAIL
+  Puis : cliquer le lien reçu
+  puis se connecter
+end note
+
+@enduml

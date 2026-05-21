@@ -1,0 +1,24 @@
+================================================================================
+PROMPT — Diagramme de séquence « S'authentifier » (GlobalTradeX, Sprint 1)
+Langue : français simple.
+================================================================================
+
+Diagramme de séquence UML en français, titre :
+« S.D. GlobalTradeX — S'authentifier (Sprint 1) »
+
+Participants : Utilisateur, Page connexion, API authentification, Compte utilisateur.
+
+Étapes :
+1. Saisir e-mail et mot de passe
+2. Demander la connexion
+3. Chercher l'utilisateur
+4. Données du compte (retour)
+5. Vérifier le mot de passe
+
+Bloc alternatif (alt) :
+- Si connexion refusée : Erreur → Afficher le message d'erreur
+- Sinon : Créer la session → Connexion OK → Ouvrir le tableau de bord
+
+Phrases courtes, tout en français, pas de codes HTTP sur les flèches.
+
+================================================================================
