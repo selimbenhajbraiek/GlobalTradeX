@@ -46,6 +46,11 @@ class Shipment(Base):
         nullable=True,
         index=True,
     )
+    forwarder_user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
     reference: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     origin: Mapped[str] = mapped_column(String(200), nullable=False, default="")
     destination: Mapped[str] = mapped_column(String(200), nullable=False, default="")
@@ -101,6 +106,10 @@ class Shipment(Base):
         "User",
         foreign_keys=[exporter_user_id],
         back_populates="export_shipments",
+    )
+    forwarder: Mapped["User | None"] = relationship(
+        "User",
+        foreign_keys=[forwarder_user_id],
     )
     documents: Mapped[list["Document"]] = relationship(
         back_populates="shipment",

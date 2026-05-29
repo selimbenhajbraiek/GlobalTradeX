@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def synthesize_speech(text: str, *, voice_id: str | None = None) -> dict[str, Any]:
-    """Return base64 MP3 audio using ElevenLabs when configured, otherwise OpenAI TTS."""
+    """Return base64 MP3 audio using ElevenLabs when configured (Gemini has no TTS API)."""
     content = (text or "").strip()
     if not content:
         return {"audio_base64": "", "error": "Text is required"}
@@ -42,22 +42,7 @@ def synthesize_speech(text: str, *, voice_id: str | None = None) -> dict[str, An
         except Exception as exc:
             logger.exception("ElevenLabs TTS failed: %s", exc)
 
-    if not settings.openai_api_key:
-        return {"audio_base64": "", "error": "No TTS provider configured"}
-
-    try:
-        from openai import OpenAI
-
-        client = OpenAI(api_key=settings.openai_api_key)
-        speech = client.audio.speech.create(
-            model="tts-1",
-            voice="nova",
-            input=content[:2500],
-            response_format="mp3",
-        )
-        audio_bytes = speech.read()
-        encoded = base64.standard_b64encode(audio_bytes).decode("ascii")
-        return {"audio_base64": encoded, "mime_type": "audio/mpeg", "provider": "openai"}
-    except Exception as exc:
-        logger.exception("OpenAI TTS failed: %s", exc)
-        return {"audio_base64": "", "error": str(exc)}
+    return {
+        "audio_base64": "",
+        "error": "No TTS provider configured (set ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID)",
+    }

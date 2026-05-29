@@ -228,6 +228,42 @@ export function DocumentsWorkspacePage() {
     setBusyId(docId);
     try {
       await documentsApi.aiVerify(docId);
+      setToast("Analyse IA terminée.");
+      await loadDocs();
+    } catch (e) {
+      setError(apiErrorMessage(e));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  async function onApproveDoc(docId, name) {
+    setBusyId(docId);
+    setError("");
+    try {
+      await documentsApi.verify(docId, { is_verified: true });
+      setToast(`Document « ${name} » approuvé.`);
+      await loadDocs();
+    } catch (e) {
+      setError(apiErrorMessage(e));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  async function onRejectDoc(docId, name) {
+    const reason = window.prompt("Motif de refus :", "");
+    if (reason == null) return;
+    const trimmed = reason.trim();
+    if (!trimmed) {
+      setError("Indiquez un motif de refus.");
+      return;
+    }
+    setBusyId(docId);
+    setError("");
+    try {
+      await documentsApi.verify(docId, { is_verified: false, rejection_reason: trimmed });
+      setToast(`Document « ${name} » refusé.`);
       await loadDocs();
     } catch (e) {
       setError(apiErrorMessage(e));
@@ -416,15 +452,37 @@ export function DocumentsWorkspacePage() {
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-2">
                       <StatusBadge status={status} />
-                      {isCourtier && status !== "verified" && !doc.ai_result ? (
-                        <button
-                          type="button"
-                          className="text-[10px] font-medium text-kinetic hover:underline disabled:opacity-50"
-                          disabled={busyId === doc.id}
-                          onClick={() => onAiVerify(doc.id)}
-                        >
-                          Run AI verify
-                        </button>
+                      {isCourtier && status !== "verified" ? (
+                        <div className="flex flex-col items-end gap-1">
+                          {!doc.ai_result ? (
+                            <button
+                              type="button"
+                              className="text-[10px] font-medium text-kinetic hover:underline disabled:opacity-50"
+                              disabled={busyId === doc.id}
+                              onClick={() => onAiVerify(doc.id)}
+                            >
+                              Lancer l&apos;analyse IA
+                            </button>
+                          ) : null}
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              className="text-[10px] font-medium text-success hover:underline disabled:opacity-50"
+                              disabled={busyId === doc.id}
+                              onClick={() => onApproveDoc(doc.id, doc.original_name)}
+                            >
+                              Approuver
+                            </button>
+                            <button
+                              type="button"
+                              className="text-[10px] font-medium text-destructive hover:underline disabled:opacity-50"
+                              disabled={busyId === doc.id}
+                              onClick={() => onRejectDoc(doc.id, doc.original_name)}
+                            >
+                              Refuser
+                            </button>
+                          </div>
+                        </div>
                       ) : null}
                     </div>
                   </li>

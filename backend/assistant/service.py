@@ -4,7 +4,7 @@ from typing import Any
 
 from assistant.knowledge import build_knowledge_context
 from assistant.sessions import AssistantSession
-from services.openai_service import OpenAIService
+from services.llm_service import LLMService
 
 SYSTEM_PROMPT = (
     "You are the official GlobalTradeX onboarding and support specialist. "
@@ -24,7 +24,7 @@ class AssistantService:
     """LLM-backed support replies with short conversation context."""
 
     def __init__(self) -> None:
-        self._openai = OpenAIService()
+        self._llm = LLMService()
 
     def build_messages(
         self,
@@ -75,7 +75,7 @@ class AssistantService:
             return {"text": demo, "source": "demo"}
 
         messages = self.build_messages(session, text, persona=persona)
-        out = self._openai.chat(messages, model="gpt-4o-mini")
+        out = self._llm.chat(messages)
         reply = (out.get("reply") or "").strip()
         err = out.get("error")
         if err and not reply:

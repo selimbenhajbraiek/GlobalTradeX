@@ -51,9 +51,9 @@ FastAPI (require_role) et miroir côté frontend (RoleGuard, middleware Next.js)
 
 Intelligence artificielle et services externes
 
-L'API OpenAI est intégrée pour deux usages principaux : l'analyse automatique des
-documents douaniers (détection d'anomalies, champs manquants) déclenchée par le courtier,
-et l'assistant conversationnel TradeFlow (suggestions d'itinéraire, aide contextuelle).
+L'API Google Gemini 2.5 Flash (client compatible OpenAI) est intégrée pour l'analyse
+automatique des documents douaniers, l'assistant conversationnel TradeFlow, les
+suggestions d'itinéraire et la synthèse exécutive de la BI prédictive.
 En option, l'API HeyGen permet la génération d'un avatar vidéo pour l'assistant
 administrable depuis le cockpit admin. Les fichiers uploadés (PDF, images) sont stockés
 sur le système de fichiers du serveur (dossier uploads/) avec une taille maximale de
@@ -108,7 +108,29 @@ textes communs, en préparation d'une ouverture internationale de la plateforme.
 
 
 --------------------------------------------------------------------------------
-2.3.3 Outils de conception et de développement
+2.3.4 Stack Business Intelligence (spécialité BI)
+--------------------------------------------------------------------------------
+
+GlobalTradeX intègre la BI dans l'application (pas d'outil BI séparé type Power BI).
+
+Moteur analytique (back-end)
+  - analytics.py : agrégations SQLAlchemy, KPIs réseau, endpoints /api/analytics/*
+  - bi_delay_prediction.py : BI prédictive (score retard, corridors, transitaires)
+  - Gemini 2.5 Flash : synthèse exécutive en langage naturel (optionnelle)
+
+Visualisation (front-end)
+  - Chart.js + react-chartjs-2 : graphiques des cockpits et page analytics
+  - Leaflet : cartographie GPS et flux
+  - PredictiveBiPanel.jsx, TradeAnalyticsPage.jsx : restitution BI prédictive
+
+Non retenu (justification) : Power BI, Apache Superset, Metabase — déploiement et
+licence supplémentaires, dashboards découplés du workflow multi-rôles ; entrepôt DW
+physique reporté (ELT on-demand suffisant en PFE). Détail : 06_STACK_BI_ET_JUSTIFICATION.md
+et TABLEAU 2.4 (technologies/TABLEAU_2_4_Stack_BI_GlobalTradeX.txt).
+
+
+--------------------------------------------------------------------------------
+2.3.5 Outils de conception et de développement
 --------------------------------------------------------------------------------
 
 Pour la réalisation de l'application « GlobalTradeX », nous avons eu recours à
@@ -128,7 +150,7 @@ TABLEAU 2.3 – Outils de conception et de développement
 |                                  | il constitue le langage unique du back-end (API, scripts |
 |                                  | de seed, migrations, génération de rapports PDF). Sa     |
 |                                  | lisibilité et son écosystème de bibliothèques (FastAPI,  |
-|                                  | SQLAlchemy, OpenAI) ont accéléré la mise en œuvre des     |
+|                                  | SQLAlchemy, Gemini) ont accéléré la mise en œuvre des      |
 |                                  | règles métier du commerce international.                 |
 +----------------------------------+----------------------------------------------------------+
 | FastAPI                          | FastAPI est un framework Python pour construire des API   |
@@ -138,7 +160,7 @@ TABLEAU 2.3 – Outils de conception et de développement
 |                                  | shipments, documents, messages, admin) et de gérer       |
 |                                  | proprement les dépendances d'injection (session BDD,       |
 |                                  | utilisateur courant). Son modèle asynchrone est adapté   |
-|                                  | aux appels vers des services externes (OpenAI, SMTP).      |
+|                                  | aux appels vers des services externes (Gemini, SMTP).      |
 +----------------------------------+----------------------------------------------------------+
 | Next.js                          | Next.js est un framework React open-source maintenu par   |
 |                                  | Vercel. Il simplifie le routage, le découpage en pages    |
@@ -194,17 +216,22 @@ TABLEAU 2.3 – Outils de conception et de développement
 |                                  | dans backend/migrations/versions/, ce qui garantit un       |
 |                                  | déploiement reproductible entre machines de développement.  |
 +----------------------------------+----------------------------------------------------------+
+| Chart.js & react-chartjs-2         | Bibliothèques de visualisation : graphiques linéaires,     |
+|                                  | barres et aires dans les cockpits KPI et la page analytics  |
+|                                  | admin. Couche **présentation BI** (cf. TABLE 2.4).          |
++----------------------------------+----------------------------------------------------------+
+| bi_delay_prediction (Python)       | Moteur **BI prédictive** propriétaire : scoring retard,    |
+|                                  | performance transitaire, risque par corridor — couche       |
+|                                  | analytique OLAP (§2.4, §2.5.2 CQRS).                        |
++----------------------------------+----------------------------------------------------------+
 | MailerSend                       | MailerSend est un service d'envoi d'e-mails transactionnels |
 |                                  | via SMTP. GlobalTradeX l'utilise pour les messages de       |
 |                                  | vérification d'inscription et de réinitialisation de mot de   |
 |                                  | passe, sans implémenter un serveur mail local.              |
 +----------------------------------+----------------------------------------------------------+
-| OpenAI API                       | L'API OpenAI fournit des modèles de langage et de vision     |
-|                                  | utilisés pour l'analyse de documents douaniers (courtier)   |
-|                                  | et l'assistant TradeFlow (chat, suggestions d'itinéraire).  |
-|                                  | Elle remplace une chaîne blockchain dans l'ancien projet    |
-|                                  | SmartChain par une IA génératrice adaptée au commerce        |
-|                                  | international.                                              |
+| Google Gemini API                | Gemini 2.5 Flash (endpoint compatible OpenAI) : vision       |
+|                                  | documentaire, chat TradeFlow, synthèse BI. Couche OLAP     |
+|                                  | décrite au §2.3 Architecture des données.                   |
 +----------------------------------+----------------------------------------------------------+
 | HeyGen API                       | HeyGen est une plateforme de génération d'avatars vidéo     |
 |                                  | parlants. Configurée depuis l'espace administrateur, elle     |
@@ -226,6 +253,10 @@ TABLEAU 2.3 – Outils de conception et de développement
 |                                  | livrables académiques avec une présentation professionnelle   |
 |                                  | (sommaire, figures, bibliographie).                           |
 +----------------------------------+----------------------------------------------------------+
+| Trello                           | Tableau visuel de suivi des tâches (colonnes To Do / In   |
+|                                  | Progress / Done), complémentaire aux cérémonies **Scrum**.|
+|                                  | Ne remplace pas Sprint Planning ni Sprint Review.         |
++----------------------------------+----------------------------------------------------------+
 | ReportLab                        | ReportLab est une bibliothèque Python de génération PDF.     |
 |                                  | Le script generate_pfe_report_globaltradex.py s'en sert     |
 |                                  | pour produire des livrables documentaires (rapport PFE)      |
@@ -236,9 +267,12 @@ Récapitulatif de la stack GlobalTradeX :
 
   Couche présentation : Next.js 14, React 18, Tailwind CSS, Axios, Leaflet, Chart.js
   Couche métier/API   : FastAPI, Pydantic v2, Uvicorn
-  Couche données      : SQLAlchemy 2, MySQL, Alembic
+  Couche données OLTP : SQLAlchemy 2, MySQL, Alembic
+  Couche données OLAP : analytics.py, bi_delay_prediction.py (ELT applicatif)
+  Stack BI viz       : Chart.js, react-chartjs-2, Leaflet, PredictiveBiPanel
+  Patterns archi.    : MVC, Repository (ORM), CQRS léger (OLTP/OLAP), Service Layer
   Sécurité            : JWT (python-jose), bcrypt
-  Services externes   : MailerSend (SMTP), OpenAI, HeyGen (optionnel)
+  Services externes   : MailerSend (SMTP), Gemini, HeyGen (optionnel)
   Outils dev          : VS Code / Cursor, Git, Postman, PlantUML, LaTeX
 
 ================================================================================

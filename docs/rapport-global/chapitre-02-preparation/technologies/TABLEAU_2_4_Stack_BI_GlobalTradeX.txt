@@ -1,0 +1,34 @@
+================================================================================
+TABLEAU 2.4 – Stack Business Intelligence (GlobalTradeX)
+Projet : GlobalTradeX — §2.3.4 Spécialité BI
+================================================================================
+
++----------------------------+--------------------------------------------------+
+| Couche BI                  | Outil / composant retenu                         |
++----------------------------+--------------------------------------------------+
+| Source de données          | MySQL (OLTP) — schéma relationnel, Alembic       |
++----------------------------+--------------------------------------------------+
+| Extraction / chargement    | SQLAlchemy — requêtes typées depuis l'API        |
++----------------------------+--------------------------------------------------+
+| Transformation (ELT)       | Python — analytics.py, bi_delay_prediction.py    |
++----------------------------+--------------------------------------------------+
+| BI prédictive              | DelayPredictionEngine (score retard explicable)  |
++----------------------------+--------------------------------------------------+
+| Synthèse décisionnelle IA  | Gemini 2.5 Flash (narratif exécutif optionnel)   |
++----------------------------+--------------------------------------------------+
+| Exposition indicateurs     | API REST /api/analytics/* (JSON)                 |
++----------------------------+--------------------------------------------------+
+| Visualisation              | Chart.js + react-chartjs-2 ; Leaflet (cartes)    |
++----------------------------+--------------------------------------------------+
+| Présentation métier        | PredictiveBiPanel, TradeAnalyticsPage, cockpits  |
++----------------------------+--------------------------------------------------+
+
+Outils BI classiques NON retenus (justification courte) :
+  - Power BI     : licence, hors stack FastAPI/React, dashboards découplés du métier
+  - Superset     : serveur BI supplémentaire, redondant avec SPA intégrée
+  - Metabase     : idem — second produit à maintenir en PFE 65 jours
+  - Data Warehouse physique : volume PFE modéré ; ELT on-demand + évolution v2
+
+================================================================================
+Fin du tableau 2.4
+================================================================================

@@ -295,7 +295,7 @@ function ProductsPageInner() {
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-700">Quantity</label>
+                <label className="text-xs font-medium text-slate-700">Stock catalogue (quantité)</label>
                 <input
                   type="number"
                   min="0"
@@ -304,6 +304,7 @@ function ProductsPageInner() {
                   value={form.quantity}
                   onChange={(e) => setForm((f) => ({ ...f, quantity: e.target.value }))}
                   required
+                  title="Quantité disponible dans le catalogue (champ quantity)"
                 />
               </div>
               <div>
@@ -368,7 +369,7 @@ function ProductsPageInner() {
                     <th className="px-4 py-3 font-semibold text-slate-800">Name</th>
                     <th className="px-4 py-3 font-semibold text-slate-800">HS Code</th>
                     <th className="px-4 py-3 font-semibold text-slate-800">Unit Price</th>
-                    <th className="px-4 py-3 font-semibold text-slate-800">Quantity</th>
+                    <th className="px-4 py-3 font-semibold text-slate-800">Stock</th>
                     <th className="px-4 py-3 font-semibold text-slate-800">Unit</th>
                     <th className="px-4 py-3 font-semibold text-slate-800">Origin</th>
                     <th className="px-4 py-3 font-semibold text-slate-800">Actions</th>

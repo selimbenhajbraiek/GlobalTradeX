@@ -16,7 +16,7 @@ from models.notification import Notification, NotificationType
 from models.shipment import Shipment
 from models.user import User, UserRole
 from schemas.document import DocumentBrokerRow, DocumentResponse, DocumentVerifyBody
-from services.openai_service import OpenAIService
+from services.llm_service import LLMService
 
 router = APIRouter()
 
@@ -359,7 +359,7 @@ def ai_verify_document(
             detail="Stored file not found on disk",
         )
 
-    svc = OpenAIService()
+    svc = LLMService()
     result = svc.analyze_customs_document(abs_path)
     doc.ai_result = result
     db.commit()

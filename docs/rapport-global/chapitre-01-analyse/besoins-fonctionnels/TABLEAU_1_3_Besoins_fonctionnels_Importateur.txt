@@ -9,33 +9,37 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 | S'authentifier                   | Pour accéder à son espace, l'importateur s'authentifie   |
 |                                  | avec son adresse e-mail et son mot de passe. L'accès     |
 |                                  | n'est accordé qu'après vérification de l'adresse e-mail. |
-|                                  | Un jeton JWT sécurisé ouvre le cockpit importateur       |
-|                                  | (/dashboard/importateur).                                |
+|                                  | Après authentification, il est redirigé vers son         |
+|                                  | tableau de bord importateur sécurisé.                    |
 +----------------------------------+----------------------------------------------------------+
 | Récupérer mot de passe           | En cas d'oubli, l'importateur demande un lien de         |
-|                                  | réinitialisation par e-mail (SMTP). Il définit alors un  |
-|                                  | nouveau mot de passe via une page dédiée sécurisée.      |
+|                                  | réinitialisation reçu par e-mail et définit un nouveau   |
+|                                  | mot de passe sur une page sécurisée.                     |
 +----------------------------------+----------------------------------------------------------+
 | Gérer profil                     | L'importateur peut consulter et mettre à jour ses        |
 |                                  | informations personnelles (nom complet, téléphone,       |
 |                                  | avatar) depuis l'espace Profil.                        |
 +----------------------------------+----------------------------------------------------------+
-| Consulter cockpit importateur    | Permet d'afficher un tableau de bord métier : indicateurs|
-|                                  | (commandes actives, dossiers en douane, exceptions),     |
-|                                  | liste des expéditions en cours et panneau de détail      |
-|                                  | pour le dossier sélectionné (ex. GTX-20240315-00042).    |
+| Consulter cockpit importateur    | Cockpit **Data-Driven** : KPIs métiers sur le périmètre   |
+| (KPIs)                           | importateur — (1) **taux de retard à l'arrivée** sur ses |
+|                                  | expéditions, (2) **temps moyen de dédouanement**, (3) **taux de conformité documentaire**   |
+|                                  | des pièces reçues, (4) **coût estimé vs coût réel**      |
+|                                  | (calculateur / dossier). Vue opérationnelle : commandes  |
+|                                  | actives, exceptions, liste GTX et fiche détail (ex.      |
+|                                  | GTX-20240315-00042).                                     |
 +----------------------------------+----------------------------------------------------------+
 | Créer une expédition             | Permet de lancer un assistant multi-étapes : saisie de   |
 |                                  | l'itinéraire (origine, destination, date, mode de          |
 |                                  | transport), caractéristiques du fret (poids, volume,      |
 |                                  | valeur, type de marchandise), suggestion d'itinéraires   |
-|                                  | par l'IA (TradeFlow) et validation finale. L'importateur |
-|                                  | est enregistré comme propriétaire (owner) du dossier.    |
+|                                  | par l'assistant TradeFlow et validation finale.          |
+|                                  | L'importateur est enregistré comme commanditaire du      |
+|                                  | dossier.                                                 |
 +----------------------------------+----------------------------------------------------------+
 | Suivre ses expéditions           | Permet de consulter, filtrer et rechercher les           |
 |                                  | expéditions dont il est commanditaire : référence GTX,   |
-|                                  | statut (pending, in_transit, customs_hold, delivered,   |
-|                                  | etc.), parties prenantes (exportateur, transitaire) et   |
+|                                  | statut (en attente, en transit, blocage douanier, livré),|
+|                                  | parties prenantes (exportateur, transitaire) et          |
 |                                  | historique des changements de statut.                    |
 +----------------------------------+----------------------------------------------------------+
 | Consulter détail d'expédition    | Permet d'ouvrir la fiche complète d'une expédition :     |
@@ -49,8 +53,8 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 +----------------------------------+----------------------------------------------------------+
 | Utiliser calculateur logistique  | Permet d'estimer les droits de douane (code SH, pays     |
 |                                  | d'origine / destination, valeur déclarée) et le coût de  |
-|                                  | fret (poids, dimensions) via le module calculateur       |
-|                                  | (/dashboard/calculator), en appui à la décision d'achat. |
+|                                  | fret (poids, dimensions) via le **module calculateur**,  |
+|                                  | en appui à la décision d'achat.                          |
 +----------------------------------+----------------------------------------------------------+
 | Consulter documents              | Permet de visualiser les pièces jointes au dossier       |
 |                                  | d'expédition déposées par l'exportateur ou le transitaire|
@@ -63,8 +67,8 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 |                                  | dossiers ou à l'ensemble du réseau selon les droits.     |
 +----------------------------------+----------------------------------------------------------+
 | Consulter liste notifications    | Permet de consulter les alertes liées à ses expéditions :|
-|                                  | changement de statut, blocage douanier (customs_hold), |
-|                                  | messages des partenaires et rappels système.             |
+|                                  | changement de statut, blocage douanier, messages des     |
+|                                  | partenaires et rappels système.                          |
 +----------------------------------+----------------------------------------------------------+
 | Gérer préférences notifications  | Permet de configurer les canaux et types d'alertes       |
 |                                  | (e-mail, SMS si activé) depuis les paramètres du compte. |
@@ -78,9 +82,8 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 |                                  | expéditions, les documents requis et les procédures      |
 |                                  | d'importation.                                           |
 +----------------------------------+----------------------------------------------------------+
-| Se déconnecter                   | Permet de clôturer la session en supprimant le jeton     |
-|                                  | d'authentification (cookie) depuis le profil ou la barre |
-|                                  | latérale.                                                |
+| Se déconnecter                   | Permet de clôturer la session utilisateur de manière     |
+|                                  | sécurisée depuis le profil ou le menu de navigation.    |
 +----------------------------------+----------------------------------------------------------+
 
 Remarques :

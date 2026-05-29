@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
-from fastapi import APIRouter, Depends
-from sqlalchemy import func, select, text
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy import func, or_, select, text
 from sqlalchemy.orm import Session, joinedload
 
 from auth.dependencies import get_current_user, require_role
@@ -11,10 +11,12 @@ from models.document import Document
 from models.product import Product
 from models.shipment import Shipment, ShipmentStatus
 from models.user import User, UserRole
+from services.bi_delay_prediction import DelayPredictionEngine, generate_ai_executive_summary
 
 router = APIRouter()
 
 _admin_only = Depends(require_role(["admin"]))
+_bi_roles = Depends(require_role(["admin", "transitaire", "importateur", "exportateur"]))
 
 
 def _month_start_utc(year: int, month: int) -> datetime:
@@ -512,3 +514,59 @@ def analytics_documents(
         "verified": int(verified),
         "pending_review": pending_review,
     }
+
+
+def _shipments_for_bi(db: Session, current: User) -> list[Shipment]:
+    """Scope shipments for predictive BI (historical + active)."""
+    q = select(Shipment).options(
+        joinedload(Shipment.documents),
+        joinedload(Shipment.forwarder),
+        joinedload(Shipment.owner),
+    )
+    if current.role == UserRole.admin or current.role == UserRole.transitaire:
+        return list(db.scalars(q.order_by(Shipment.created_at.desc())).unique().all())
+    if current.role == UserRole.exportateur:
+        return list(
+            db.scalars(
+                q.where(
+                    or_(
+                        Shipment.owner_id == current.id,
+                        Shipment.exporter_user_id == current.id,
+                    )
+                ).order_by(Shipment.created_at.desc())
+            )
+            .unique()
+            .all()
+        )
+    return list(
+        db.scalars(q.where(Shipment.owner_id == current.id).order_by(Shipment.created_at.desc()))
+        .unique()
+        .all()
+    )
+
+
+@router.get("/predictive-bi")
+def analytics_predictive_bi(
+    include_ai_summary: bool = Query(True, description="Enrichir avec synthèse Gemini"),
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+    _: User = _bi_roles,
+) -> dict:
+    """
+    BI prédictif : risque de retard par expédition, performance transitaires, corridors.
+    IA documentaire (Gemini) + scoring historique transparent.
+    """
+    shipments = _shipments_for_bi(db, current)
+    engine_bi = DelayPredictionEngine(db)
+    report = engine_bi.build_report(shipments)
+    report["viewer_role"] = current.role.value if hasattr(current.role, "value") else str(current.role)
+
+    if include_ai_summary:
+        report["ai_insights"] = generate_ai_executive_summary(report)
+    else:
+        report["ai_insights"] = {
+            "summary_text": "",
+            "provider": "none",
+            "ai_enhanced": False,
+        }
+    return report

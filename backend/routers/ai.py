@@ -12,7 +12,7 @@ from database import get_db
 from models.document import Document, TradeDocumentType
 from models.user import User
 from sqlalchemy.orm import Session
-from services.openai_service import OpenAIService
+from services.llm_service import LLMService
 
 router = APIRouter()
 
@@ -119,8 +119,8 @@ def ai_chat(
         messages.append({"role": role, "content": content})
     messages.append({"role": "user", "content": payload.message.strip()})
 
-    svc = OpenAIService()
-    out = svc.chat(messages, model="gpt-4o")
+    svc = LLMService()
+    out = svc.chat(messages)
     return ImporterChatResponse(response=out.get("reply", ""), error=out.get("error"))
 
 
@@ -142,7 +142,7 @@ def verify_document(
             detail="Stored file not found on disk",
         )
 
-    svc = OpenAIService()
+    svc = LLMService()
     result = svc.analyze_customs_document(abs_path)
     if not isinstance(result, dict):
         result = {}
@@ -191,14 +191,13 @@ def suggest_routes(
     payload: SuggestRoutesRequest,
     _: User = Depends(get_current_user),
 ) -> SuggestRoutesResponse:
-    svc = OpenAIService()
+    svc = LLMService()
     out = svc.suggest_freight_routes(
         origin=payload.origin.strip() or "unknown origin",
         destination=payload.destination.strip() or "unknown destination",
         cargo_type=(payload.cargo_type or "general").strip(),
         weight_kg=float(payload.weight_kg),
         urgency=payload.urgency,
-        model="gpt-4o",
     )
     err = out.get("error")
     raw_text = out.get("text") or ""

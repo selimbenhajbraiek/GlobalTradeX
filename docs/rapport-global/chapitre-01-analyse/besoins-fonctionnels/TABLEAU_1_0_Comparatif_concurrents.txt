@@ -1,0 +1,41 @@
+================================================================================
+TABLEAU 1.0 – Comparatif des solutions existantes vs GlobalTradeX
+Projet : GlobalTradeX — §1.3 Étude de l'existant
+Concurrents réels : Flexport | Freightos | SAP Global Trade Services
+================================================================================
+
++----------------------------+------------+------------+------------+---------------------+
+| Critère                    | Flexport   | Freightos  | SAP GTS    | GlobalTradeX        |
++----------------------------+------------+------------+------------+---------------------+
+| Suivi GPS / visibilité     | Élevé      | Moyen      | Faible     | Oui — carte temps   |
+|                            |            |            |            | réel, statuts       |
++----------------------------+------------+------------+------------+---------------------+
+| Intelligence douanière     | Élevé      | Faible     | Très élevé | Oui — analyse IA +  |
+|                            |            |            |            | validation courtier |
++----------------------------+------------+------------+------------+---------------------+
+| BI / Analytics             | Élevé      | Faible-    | Élevé      | Oui — 4 KPIs + BI   |
+|                            | (visibilité)| moyen     | (licence)  | prédictive retards  |
++----------------------------+------------+------------+------------+---------------------+
+| Collaboration multi-acteurs| Moyen      | Faible     | Moyen      | Élevé — 5 rôles +   |
+|                            |            |            |            | messagerie dossier  |
++----------------------------+------------+------------+------------+---------------------+
+| Modèle de prix             | Sur devis  | Freemium + | Licence    | Coût marginal faible|
+|                            | (élevé)    | abonnement | SAP (très  | (open source)       |
+|                            |            |            | élevé)     |                     |
++----------------------------+------------+------------+------------+---------------------+
+| Cible principale           | PME/GE     | Importateurs| Grandes   | Réseau collaboratif |
+|                            | externalisant| devis rapides| entreprises SAP| PME / PFE      |
+|                            | le fret    |            |            |                     |
++----------------------------+------------+------------+------------+---------------------+
+
+Synthèse :
+  • Flexport : excellente visibilité transit, modèle forwarder unique, coût élevé.
+  • Freightos : force tarifaire, faible chaîne documentaire multi-parties.
+  • SAP GTS : référence compliance enterprise, déploiement lourd, hors cible PME agile.
+  • GlobalTradeX : combine multi-rôles, 4 KPIs, BI prédictive et douane IA à coût maîtrisé.
+
+Sources : sites officiels Flexport, Freightos, SAP (2024–2025).
+
+================================================================================
+Fin du tableau 1.0
+================================================================================

@@ -12,6 +12,7 @@ const WORKSPACE = [
   { label: "Products", href: "/dashboard/products", iconKey: "Package", roles: ["exportateur", "admin"] },
   { label: "Calculator", href: "/dashboard/calculator", iconKey: "BarChart3", roles: ["importateur", "admin"] },
   { label: "Forwarder", href: "/dashboard/transitaire", iconKey: "Truck", roles: ["transitaire", "admin"] },
+  { label: "BI prédictif", href: "/dashboard/transitaire/predictive", iconKey: "BarChart3", roles: ["transitaire", "admin"] },
 ];
 
 const ROLES = [

@@ -1,35 +1,56 @@
 from __future__ import annotations
 
+import base64
 import logging
-from io import BytesIO
 from typing import Any
 
+import httpx
+
 from config import get_settings
+from services.llm_client import default_llm_model, llm_api_key
 
 logger = logging.getLogger(__name__)
 
 
 def transcribe_audio(data: bytes, *, filename: str = "audio.webm", mime: str = "audio/webm") -> dict[str, Any]:
-    """Transcribe user speech with OpenAI Whisper."""
+    """Transcribe user speech with Gemini (multimodal generateContent)."""
     settings = get_settings()
-    if not settings.openai_api_key:
-        return {"text": "", "error": "OPENAI_API_KEY not configured"}
+    key = llm_api_key(settings)
+    if not key:
+        return {"text": "", "error": "GOOGLE_API_KEY not configured"}
     if not data:
         return {"text": "", "error": "Empty audio payload"}
 
-    try:
-        from openai import OpenAI
+    model = default_llm_model(settings)
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {
+                        "text": (
+                            "Transcribe the spoken audio exactly. "
+                            "Return only the transcription text, no labels or commentary."
+                        )
+                    },
+                    {"inline_data": {"mime_type": mime, "data": base64.standard_b64encode(data).decode("ascii")}},
+                ]
+            }
+        ]
+    }
 
-        client = OpenAI(api_key=settings.openai_api_key)
-        buffer = BytesIO(data)
-        buffer.name = filename
-        result = client.audio.transcriptions.create(
-            model="whisper-1",
-            file=buffer,
-            response_format="json",
+    try:
+        with httpx.Client(timeout=60.0) as client:
+            response = client.post(url, params={"key": key}, json=payload)
+            response.raise_for_status()
+            body = response.json()
+        parts = (
+            body.get("candidates", [{}])[0]
+            .get("content", {})
+            .get("parts", [])
         )
-        text = (getattr(result, "text", None) or "").strip()
-        return {"text": text, "language": getattr(result, "language", None)}
+        text = "".join(p.get("text", "") for p in parts if isinstance(p, dict)).strip()
+        return {"text": text, "provider": "gemini"}
     except Exception as exc:
-        logger.exception("Whisper transcription failed: %s", exc)
+        logger.exception("Gemini transcription failed: %s", exc)
         return {"text": "", "error": str(exc)}

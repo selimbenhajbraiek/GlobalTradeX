@@ -1,0 +1,296 @@
+================================================================================
+INVENTAIRE COMPLET — Mises à jour rapport PFE GlobalTradeX
+Généré pour copie dans Word — chemins Windows depuis la racine du projet
+Racine projet : globaltradeX\
+================================================================================
+
+IMPORTANT — Deux dossiers backlog existent :
+  • A UTILISER (à jour, colonne MoSCoW) :
+      docs\rapport-global\chapitre-02-preparation\backlog\
+  • ANCIEN (sans MoSCoW, ne pas utiliser pour le rapport) :
+      docs\rapport-global\backlog-produit\
+
+IMPORTANT — Fichier Kanban remplacé par Scrum :
+  • NE PAS UTILISER : docs\rapport-global\chapitre-02-preparation\01_INTRODUCTION_ET_KANBAN.md
+  • UTILISER       : docs\rapport-global\chapitre-02-preparation\01_INTRODUCTION_ET_SCRUM.md
+
+================================================================================
+ORDRE DE TRAVAIL : du début à la fin du rapport
+================================================================================
+
+
+--------------------------------------------------------------------------------
+PARTIE 0 — INDEX & RECOMMANDATIONS SUPERVISEUR
+--------------------------------------------------------------------------------
+
+[0.1] Index global des 4 recommandations stratégiques
+      docs\rapport-global\RECOMMANDATIONS_STRATEGIQUES_PFE.md
+
+[0.2] Checklist de suivi (optionnel)
+      docs\rapport-global\CHECKLIST_MISE_A_JOUR_RAPPORT.md
+
+
+--------------------------------------------------------------------------------
+PARTIE 1 — INTRODUCTION GENERALE (avant Chapitre 1)
+--------------------------------------------------------------------------------
+
+[1.1] Introduction générale — angle Data & BI, silos de données, DSS
+      docs\rapport-global\chapitre-01-analyse\00_INTRODUCTION_GENERALE_DATA_BI.md
+
+
+--------------------------------------------------------------------------------
+PARTIE 2 — CHAPITRE 1 : ANALYSE DES BESOINS
+--------------------------------------------------------------------------------
+
+--- 2.1 Contexte et positionnement ---
+
+[2.1] Positionnement Data-Driven (§1.1 / intro chapitre)
+      docs\rapport-global\chapitre-01-analyse\01_POSITIONNEMENT_DATA_DRIVEN.md
+
+[2.2] Étude de l'existant §1.3 — Flexport, Freightos, SAP GTS
+      docs\rapport-global\chapitre-01-analyse\07_ETUDE_EXISTANT_1_3.md
+
+[2.3] TABLE 1.0 — Comparatif concurrents vs GlobalTradeX
+      docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_0_Comparatif_concurrents.txt
+
+
+--- 2.2 Besoins fonctionnels généraux (§1.6.1) ---
+
+[2.4] Intro §1.6.1 — 7 besoins fonctionnels généraux
+      docs\rapport-global\chapitre-01-analyse\04_SECTION_1_6_1_BESOINS_GENERAUX.md
+
+[2.5] Règles rédaction — langage métier (guide, pas à coller tel quel)
+      docs\rapport-global\chapitre-01-analyse\08_REGLES_REDACTION_CAHIER_DES_CHARGES.md
+
+
+--- 2.3 Tableaux par acteur (§1.6.1) ---
+
+[2.6] TABLE 1.x — Administrateur (auth + vue globale + analytics + BI)
+      docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_7_Besoins_fonctionnels_Administrateur.txt
+
+[2.7] TABLE 1.x — Exportateur
+      docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_4_Besoins_fonctionnels_Exportateur.txt
+
+[2.8] TABLE 1.x — Importateur
+      docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_3_Besoins_fonctionnels_Importateur.txt
+
+[2.9] TABLE 1.x — Transitaire (+ BI prédictive)
+      docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_5_Besoins_fonctionnels_Transitaire.txt
+
+[2.10] TABLE 1.x — Courtier en douane (+ analyse IA document)
+       docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_6_Besoins_fonctionnels_Courtier.txt
+
+[2.11] TABLE 1.x — Développeur (sans JWT/endpoints)
+       docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_8_Besoins_fonctionnels_Developpeur.txt
+
+[2.12] TABLE 1.x — Chatbot TradeFlow
+       docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_9_Besoins_fonctionnels_Chatbot.txt
+
+
+--- 2.4 BI, KPIs, NFR, méthodologie ---
+
+[2.13] Catalogue détaillé des 4 KPIs (annexe ou complément §1.6.3)
+       docs\rapport-global\chapitre-01-analyse\03_KPI_METIERS_CATALOGUE.md
+
+[2.14] §1.6.3 — Stratégie BI (KPIs + décisions automatisées) *** SECTION CLE ***
+       docs\rapport-global\chapitre-01-analyse\09_STRATEGIE_BI_CHAPITRE_1.md
+
+[2.15] §1.6.2 — Besoins non fonctionnels mesurables (99,9 %, 3 s, volumes)
+       docs\rapport-global\chapitre-01-analyse\05_BESOINS_NON_FONCTIONNELS.md
+
+[2.16] §1.7 Scrum + MoSCoW + §1.8 Conclusion Chapitre 1
+       docs\rapport-global\chapitre-01-analyse\06_METHODOLOGIE_ET_CONCLUSION.md
+
+
+--- 2.5 Référence interne Chapitre 1 (pas dans le corps du rapport) ---
+
+[2.17] Observations superviseur — Chapitre 1
+       docs\rapport-global\chapitre-01-analyse\02_OBSERVATIONS_SUPERVISEUR.md
+
+[2.18] Index / README Chapitre 1
+       docs\rapport-global\chapitre-01-analyse\README.md
+
+
+--------------------------------------------------------------------------------
+PARTIE 3 — CHAPITRE 2 : PREPARATION / CONCEPTION
+--------------------------------------------------------------------------------
+
+--- 3.1 Introduction & Scrum ---
+
+[3.1] §2.1 Introduction + §2.2 Pilotage Scrum
+      docs\rapport-global\chapitre-02-preparation\01_INTRODUCTION_ET_SCRUM.md
+
+[3.2] Priorisation MoSCoW (texte Must / Should / Could)
+      docs\rapport-global\chapitre-02-preparation\05_PRIORISATION_MOSCOW.md
+
+[3.3] Justification MVP incrémental (Sprint 1 vs MVP BI Sprint 5)
+      docs\rapport-global\chapitre-02-preparation\07_JUSTIFICATION_MVP_INCREMENTAL.md
+
+
+--- 3.2 Backlog & planification sprints ---
+
+[3.4] TABLE 2.1 — Backlog produit complet (14 modules, colonne MoSCoW) *** A JOUR ***
+      docs\rapport-global\chapitre-02-preparation\backlog\TABLEAU_2_1_Backlog_GlobalTradeX.txt
+
+[3.5] TABLE 2.2 — Planification des sprints (6 sprints, releases)
+      docs\rapport-global\chapitre-02-preparation\backlog\TABLEAU_2_2_Planification_sprints.txt
+
+      --- ANCIEN (NE PAS UTILISER) ---
+      docs\rapport-global\backlog-produit\TABLEAU_2_1_Backlog_GlobalTradeX.txt
+      docs\rapport-global\backlog-produit\TABLEAU_2_2_Planification_sprints_GlobalTradeX.txt
+
+
+--- 3.3 Technologies & stack BI ---
+
+[3.6] §2.3 Technologies (FastAPI, Next.js, MySQL — corrige Node/Mongo)
+      docs\rapport-global\chapitre-02-preparation\technologies\SECTION_2_3_Technologies_GlobalTradeX.txt
+
+[3.7] §2.3.4 Stack BI + justification (pourquoi pas Power BI / Superset)
+      docs\rapport-global\chapitre-02-preparation\06_STACK_BI_ET_JUSTIFICATION.md
+
+[3.8] TABLE 2.4 — Stack BI
+      docs\rapport-global\chapitre-02-preparation\technologies\TABLEAU_2_4_Stack_BI_GlobalTradeX.txt
+
+
+--- 3.4 Architecture ---
+
+[3.9] §2.4 Architecture des données — OLTP / OLAP / ELT / Data Marts *** SECTION CLE ***
+      docs\rapport-global\chapitre-02-preparation\02_ARCHITECTURE_DES_DONNEES.md
+
+[3.10] §2.5.2 Patterns — MVC, Repository, CQRS, Service Layer
+       docs\rapport-global\chapitre-02-preparation\03_ARCHITECTURE_LOGICIELLE.md
+
+[3.11] Flux BI pour diagrammes (document → taux conformité)
+       docs\rapport-global\chapitre-02-preparation\08_FLUX_DONNEES_BI_DIAGRAMMES.md
+
+[3.12] §2.8 Conclusion Chapitre 2
+       docs\rapport-global\chapitre-02-preparation\04_CONCLUSION_CHAPITRE_2.md
+
+
+--- 3.5 Diagrammes UML ---
+
+[3.13] Diagramme cas d'utilisation (PlantUML)
+       docs\rapport-global\chapitre-02-preparation\diagramme-cas-utilisation-global\GlobalTradeX_use_case.puml
+
+[3.14] Diagramme de classes (PlantUML)
+       docs\rapport-global\chapitre-02-preparation\diagramme-classes-global\GlobalTradeX_class_diagram.puml
+
+[3.15] Diagramme de classes — version physique cumul (PlantUML)
+       docs\rapport-global\chapitre-02-preparation\diagramme-classes-global\GlobalTradeX_class_diagram_physique_cumul.puml
+
+[3.16] Tableau classes physique cumul (texte)
+       docs\rapport-global\chapitre-02-preparation\diagramme-classes-global\TABLEAU_Diagramme_classes_physique_cumul.txt
+
+[3.17] README diagrammes classes
+       docs\rapport-global\chapitre-02-preparation\diagramme-classes-global\README_diagramme_classes.txt
+
+
+--- 3.6 Référence interne Chapitre 2 ---
+
+[3.18] Observations superviseur — Chapitre 2
+       docs\rapport-global\chapitre-02-preparation\00_OBSERVATIONS_SUPERVISEUR.md
+
+[3.19] Index / README Chapitre 2
+       docs\rapport-global\chapitre-02-preparation\README.md
+
+
+--------------------------------------------------------------------------------
+PARTIE 4 — ANNEXES & SOUTENANCE
+--------------------------------------------------------------------------------
+
+[4.1] Préparation soutenance — « Où est la BI ? », Q&R jury, checklist démo
+      docs\rapport-global\annexes\PREPARATION_SOUTENANCE_BI.md
+
+[4.2] Scénario de démonstration graduation (comptes, parcours)
+      docs\rapport-global\annexes\GRADUATION_PRESENTATION_SCENARIO.md
+
+
+================================================================================
+LISTE RAPIDE — TOUS LES TABLEAUX UNIQUEMENT
+================================================================================
+
+TABLE 1.0  Comparatif concurrents
+           docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_0_Comparatif_concurrents.txt
+
+TABLE 1.3  Importateur
+           docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_3_Besoins_fonctionnels_Importateur.txt
+
+TABLE 1.4  Exportateur
+           docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_4_Besoins_fonctionnels_Exportateur.txt
+
+TABLE 1.5  Transitaire
+           docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_5_Besoins_fonctionnels_Transitaire.txt
+
+TABLE 1.6  Courtier
+           docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_6_Besoins_fonctionnels_Courtier.txt
+
+TABLE 1.7  Administrateur
+           docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_7_Besoins_fonctionnels_Administrateur.txt
+
+TABLE 1.8  Développeur
+           docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_8_Besoins_fonctionnels_Developpeur.txt
+
+TABLE 1.9  Chatbot TradeFlow
+           docs\rapport-global\chapitre-01-analyse\besoins-fonctionnels\TABLEAU_1_9_Besoins_fonctionnels_Chatbot.txt
+
+TABLE 2.1  Backlog produit (MoSCoW) — VERSION A JOUR
+           docs\rapport-global\chapitre-02-preparation\backlog\TABLEAU_2_1_Backlog_GlobalTradeX.txt
+
+TABLE 2.2  Planification sprints — VERSION A JOUR
+           docs\rapport-global\chapitre-02-preparation\backlog\TABLEAU_2_2_Planification_sprints.txt
+
+TABLE 2.4  Stack BI
+           docs\rapport-global\chapitre-02-preparation\technologies\TABLEAU_2_4_Stack_BI_GlobalTradeX.txt
+
+
+================================================================================
+LISTE RAPIDE — TOUS LES BACKLOGS
+================================================================================
+
+BACKLOG 2.1 (à jour, MoSCoW Must 35 / Should 12 / Could 6)
+docs\rapport-global\chapitre-02-preparation\backlog\TABLEAU_2_1_Backlog_GlobalTradeX.txt
+
+BACKLOG 2.2 (planification 6 sprints)
+docs\rapport-global\chapitre-02-preparation\backlog\TABLEAU_2_2_Planification_sprints.txt
+
+BACKLOG 2.1 (ancien — sans MoSCoW — NE PAS UTILISER)
+docs\rapport-global\backlog-produit\TABLEAU_2_1_Backlog_GlobalTradeX.txt
+
+BACKLOG 2.2 (ancien — NE PAS UTILISER)
+docs\rapport-global\backlog-produit\TABLEAU_2_2_Planification_sprints_GlobalTradeX.txt
+
+
+================================================================================
+CORRESPONDANCE NUMEROTATION WORD (si ton rapport diffère)
+================================================================================
+
+Dans Word (captures)          Fichier dépôt
+-------------------          -------------
+TABLE 1.1 Admin              TABLEAU_1_7_Besoins_fonctionnels_Administrateur.txt
+TABLE 1.2 Exportateur        TABLEAU_1_4_Besoins_fonctionnels_Exportateur.txt
+TABLE 1.3 Importateur        TABLEAU_1_3_Besoins_fonctionnels_Importateur.txt
+TABLE 1.4 Transitaire        TABLEAU_1_5_Besoins_fonctionnels_Transitaire.txt
+TABLE 1.5 Courtier           TABLEAU_1_6_Besoins_fonctionnels_Courtier.txt
+TABLE 1.6 Développeur        TABLEAU_1_8_Besoins_fonctionnels_Developpeur.txt
+TABLE 1.7 Chatbot            TABLEAU_1_9_Besoins_fonctionnels_Chatbot.txt
+TABLE 1.0 Comparatif         TABLEAU_1_0_Comparatif_concurrents.txt
+TABLE 2.1 Backlog            chapitre-02-preparation\backlog\TABLEAU_2_1_...
+TABLE 2.2 Sprints            chapitre-02-preparation\backlog\TABLEAU_2_2_...
+
+
+================================================================================
+COMPTAGE
+================================================================================
+
+Sections texte (markdown)     : 22 fichiers à coller dans Word
+Tableaux Chapitre 1           : 8 fichiers (.txt)
+Tableaux / backlog Chapitre 2 : 3 fichiers (.txt)
+Technologies (texte)          : 1 fichier (.txt)
+Annexes                       : 2 fichiers
+Index / observations          : 5 fichiers (référence)
+Diagrammes UML                : 5 fichiers
+Fichiers OBSOLETES            : 3 (Kanban + backlog-produit)
+
+================================================================================
+Fin de l'inventaire
+================================================================================

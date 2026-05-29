@@ -9,33 +9,35 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 | S'authentifier                   | Pour accéder à son espace, l'exportateur s'authentifie   |
 |                                  | avec son adresse e-mail et son mot de passe. L'accès     |
 |                                  | n'est accordé qu'après vérification de l'adresse e-mail. |
-|                                  | Un jeton JWT sécurisé ouvre le cockpit exportateur       |
-|                                  | (/dashboard/exportateur).                                |
+|                                  | Après authentification, il est redirigé vers son         |
+|                                  | tableau de bord exportateur sécurisé.                    |
 +----------------------------------+----------------------------------------------------------+
 | Récupérer mot de passe           | En cas d'oubli, l'exportateur demande un lien de         |
-|                                  | réinitialisation par e-mail (SMTP). Il définit alors un  |
-|                                  | nouveau mot de passe via une page dédiée sécurisée.      |
+|                                  | réinitialisation reçu par e-mail et définit un nouveau   |
+|                                  | mot de passe sur une page sécurisée.                     |
 +----------------------------------+----------------------------------------------------------+
 | Gérer profil                     | L'exportateur peut consulter et mettre à jour ses        |
 |                                  | informations personnelles (nom complet, téléphone,       |
 |                                  | avatar) depuis l'espace Profil.                        |
 +----------------------------------+----------------------------------------------------------+
-| Consulter cockpit exportateur    | Permet d'afficher un tableau de bord métier : indicateurs|
-|                                  | (revenus estimés, expéditions actives, clients importateurs|
-|                                  | principaux), graphique d'évolution et recommandations    |
-|                                  | commerciales dérivées des dossiers en cours.             |
+| Consulter cockpit exportateur    | Cockpit **Data-Driven** : KPIs — (1) **taux de retard**   |
+| (KPIs)                           | sur expéditions sortantes, (2) **dédouanement moyen**    |
+|                                  | des dossiers clients, (3) **conformité** des documents   |
+|                                  | qu'il dépose, (4) **coût estimé vs réel** (fret/douane). |
+|                                  | Compléments : revenus estimés, clients importateurs,     |
+|                                  | graphique d'activité et recommandations commerciales.    |
 +----------------------------------+----------------------------------------------------------+
 | Gérer catalogue produits         | Permet de consulter, ajouter, modifier et supprimer les  |
 |                                  | articles du catalogue export : désignation, code SH,     |
 |                                  | prix unitaire, quantité disponible, unité et pays        |
 |                                  | d'origine. Une recherche par nom ou code facilite la     |
-|                                  | maintenance du référentiel (/dashboard/products).        |
+|                                  | maintenance du catalogue produits exportateur.             |
 +----------------------------------+----------------------------------------------------------+
 | Créer une expédition sortante    | Permet de lancer l'assistant multi-étapes (itinéraire,   |
 |                                  | fret, suggestion IA d'itinéraire) avec en plus l'étape   |
 |                                  | « Produits » : sélection des lignes du catalogue et      |
 |                                  | quantités expédiées. L'exportateur est enregistré comme  |
-|                                  | partie exportatrice (exporter_user_id) du dossier.       |
+|                                  | partie exportatrice du dossier.                          |
 +----------------------------------+----------------------------------------------------------+
 | Suivre ses expéditions           | Permet de consulter les expéditions auxquelles il est      |
 |                                  | rattaché (créées par lui ou commandées par un importateur |
@@ -83,9 +85,8 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 |                                  | l'exportateur pour l'aider sur les codes SH, les         |
 |                                  | documents requis à l'export et le suivi de ses dossiers. |
 +----------------------------------+----------------------------------------------------------+
-| Se déconnecter                   | Permet de clôturer la session en supprimant le jeton     |
-|                                  | d'authentification (cookie) depuis le profil ou la barre |
-|                                  | latérale.                                                |
+| Se déconnecter                   | Permet de clôturer la session utilisateur de manière     |
+|                                  | sécurisée depuis le profil ou le menu de navigation.    |
 +----------------------------------+----------------------------------------------------------+
 
 Remarques :

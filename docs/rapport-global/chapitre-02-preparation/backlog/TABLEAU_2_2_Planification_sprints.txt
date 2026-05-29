@@ -1,0 +1,26 @@
+================================================================================
+TABLEAU 2.2 – Planification des sprints
+Projet : GlobalTradeX
+================================================================================
+
++-----------+------------+------------------------------------------+-------------+
+| Release   | ID Sprint  | Nom du sprint                            | Période     |
++-----------+------------+------------------------------------------+-------------+
+| Release 1 | 1          | Gérer Compte                             | 12 jours    |
+|           | 2          | Gérer Expéditions & Produits             | 14 jours    |
++-----------+------------+------------------------------------------+-------------+
+| Release 2 | 3          | Gérer Documents & Douane (IA)            | 12 jours    |
+|           | 4          | Notifications & Messagerie               | 8 jours     |
++-----------+------------+------------------------------------------+-------------+
+| Release 3 | 5          | Analytics, Cartographie & Assistant      | 12 jours    |
+|           | 6          | Administration & Scénario soutenance     | 7 jours     |
++-----------+------------+------------------------------------------+-------------+
+
+Notes méthodologie Scrum :
+  - Sprints 1–4 : consolidation **OLTP** (MySQL, CRUD métier) — stories Must.
+  - Sprint 5    : couche **OLAP** + stories Must 8.x, 13.1, 13.3.
+  - Sprint 6    : Should/Could, admin, seed historique GTX-HIST pour BI.
+
+Dossiers : docs/releases/release-XX/sprint-0X-[nom]/
+
+================================================================================

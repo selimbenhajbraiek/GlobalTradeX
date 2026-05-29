@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { AreaChartEditorial } from "@/components/analytics/AreaChartEditorial";
+import { PredictiveBiPanel } from "@/components/analytics/PredictiveBiPanel";
 import { KpiSparkArea } from "@/components/app/KpiSparkArea";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { buildTradeMetrics } from "@/lib/analytics-metrics";
@@ -127,8 +128,7 @@ export function TradeAnalyticsPage() {
             Trade analytics
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Lane economics, supplier scorecards, customs SLA, sustainability — one editorial dashboard
-            powered by your live shipment, document and revenue data.
+            BI opérationnel, analytics trade et intelligence prédictive (retards par historique transitaire + IA).
           </p>
         </div>
         <Link href="/dashboard/admin" className="btn-secondary text-sm">
@@ -141,6 +141,12 @@ export function TradeAnalyticsPage() {
           {error}
         </p>
       ) : null}
+
+      <section className="rounded-2xl border border-kinetic/25 bg-gradient-to-b from-kinetic/5 to-card p-1 shadow-paper">
+        <div className="rounded-[14px] bg-card p-6 md:p-8">
+          <PredictiveBiPanel />
+        </div>
+      </section>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" data-stagger>
         <TopKpiCard

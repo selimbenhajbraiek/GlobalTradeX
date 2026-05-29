@@ -1,0 +1,36 @@
+================================================================================
+TABLEAU 1.8 – Besoins fonctionnels de l'acteur « Développeur »
+Projet : GlobalTradeX — Plateforme de pilotage du commerce international
+(Détails techniques : Chapitres 2 et 3 — pas dans le cahier des charges métier)
+================================================================================
+
++----------------------------------+----------------------------------------------------------+
+| Fonctionnalité                   | Description                                              |
++----------------------------------+----------------------------------------------------------+
+| Développer fonctionnalités       | Concevoir et implémenter les modules de la plateforme,   |
+|                                  | y compris la couche **Data-Driven** (indicateurs, BI     |
+|                                  | prédictive, analyse documentaire assistée).              |
++----------------------------------+----------------------------------------------------------+
+| Maintenir système                | Corriger les anomalies et assurer la maintenance         |
+|                                  | corrective et évolutive de l'application.                |
++----------------------------------+----------------------------------------------------------+
+| Gérer base de données            | Concevoir et faire évoluer le modèle de données,         |
+|                                  | alimenter les jeux de démonstration et garantir la       |
+|                                  | traçabilité des expéditions pour la BI.                  |
++----------------------------------+----------------------------------------------------------+
+| Tester application               | Vérifier le bon fonctionnement des parcours métier et    |
+|                                  | la exactitude des KPIs affichés sur les tableaux de bord.|
++----------------------------------+----------------------------------------------------------+
+| Déployer application             | Mettre en ligne la plateforme (serveur applicatif,       |
+|                                  | interface utilisateur, paramètres d'environnement).      |
++----------------------------------+----------------------------------------------------------+
+| Mettre à jour système            | Livrer de nouvelles fonctionnalités par releases         |
+|                                  | incrémentales (ex. KPIs supplémentaires, facteurs BI).   |
++----------------------------------+----------------------------------------------------------+
+| Surveiller performance           | Garantir les temps de réponse définis au §1.6.2 et     |
+|                                  | la sécurité des accès par rôle métier.                   |
++----------------------------------+----------------------------------------------------------+
+
+================================================================================
+Fin du tableau 1.8
+================================================================================

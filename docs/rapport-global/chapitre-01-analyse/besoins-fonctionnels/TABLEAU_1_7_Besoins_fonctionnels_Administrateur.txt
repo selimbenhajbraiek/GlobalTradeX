@@ -7,26 +7,31 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 | Fonctionnalité                   | Description                                              |
 +----------------------------------+----------------------------------------------------------+
 | S'authentifier                   | Pour accéder à son espace, l'administrateur s'authentifie|
-|                                  | avec son adresse e-mail et son mot de passe. Un jeton    |
-|                                  | JWT ouvre le tableau de bord central                     |
-|                                  | (/dashboard/admin).                                      |
+|                                  | avec son adresse e-mail et son mot de passe. Après       |
+|                                  | authentification, il accède au tableau de bord central     |
+|                                  | sécurisé de supervision du réseau.                        |
 +----------------------------------+----------------------------------------------------------+
 | Récupérer mot de passe           | En cas d'oubli, l'administrateur demande un lien de       |
-|                                  | réinitialisation par e-mail (SMTP) et définit un nouveau |
+|                                  | réinitialisation reçu par e-mail et définit un nouveau   |
 |                                  | mot de passe sur une page sécurisée.                     |
 +----------------------------------+----------------------------------------------------------+
 | Gérer profil                     | L'administrateur peut mettre à jour ses informations     |
 |                                  | personnelles et ses préférences depuis l'espace Profil.  |
 +----------------------------------+----------------------------------------------------------+
-| Consulter vue globale            | Permet d'afficher le cockpit administrateur : KPIs       |
-|                                  | réseau (expéditions actives, valeur totale, utilisateurs,|
-|                                  | file de revue documents), carte mondiale des flux,       |
-|                                  | graphique de débit et fil d'activité récent.             |
+| Consulter vue globale (KPIs)     | Cockpit admin **Data-Driven** : KPIs réseau — (1) **taux|
+|                                  | de retard à l'arrivée**, (2) **temps moyen de            |
+|                                  | dédouanement**, (3) **taux de conformité documentaire**, |
+|                                  | (4) **coût estimé vs coût réel** agrégé. Compléments :   |
+|                                  | expéditions actives, valeur totale, utilisateurs, file   |
+|                                  | de revue, carte des flux, graphique de débit, activité.  |
 +----------------------------------+----------------------------------------------------------+
-| Consulter analytics globale      | Permet d'accéder au module analytics dédié              |
-|                                  | (/dashboard/admin/analytics) : statistiques agrégées sur |
-|                                  | les expéditions, documents, délais et performances du    |
-|                                  | réseau GlobalTradeX.                                     |
+| Consulter analytics globale      | Accès au **module statistiques globales** : agrégats sur |
+|                                  | expéditions, documents, délais et performances réseau ;  |
+|                                  | alimente les 4 KPIs métiers.                             |
++----------------------------------+----------------------------------------------------------+
+| Consulter BI prédictif retards   | Consultation de l'**analyse prédictive des retards** :   |
+|                                  | score de risque par expédition active, historique des    |
+|                                  | transitaires et corridors, synthèse exécutive lisible. |
 +----------------------------------+----------------------------------------------------------+
 | Consulter toutes les expéditions | Permet de lister et ouvrir n'importe quel dossier GTX    |
 |                                  | du système, indépendamment du rôle propriétaire, pour    |
@@ -41,28 +46,26 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 |                                  | un compte (sauf le sien). Les comptes créés par l'admin  |
 |                                  | sont marqués e-mail vérifié par défaut.                  |
 +----------------------------------+----------------------------------------------------------+
-| Empêcher auto-désactivation      | L'API interdit à l'administrateur de se désactiver lui-  |
-|                                  | même, de changer son propre rôle ou de supprimer son     |
-|                                  | propre compte, afin de préserver un accès de secours.     |
+| Empêcher auto-désactivation      | Le système interdit à l'administrateur de se désactiver  |
+|                                  | lui-même, de modifier son propre rôle ou de supprimer    |
+|                                  | son propre compte, afin de préserver un accès de secours.  |
 +----------------------------------+----------------------------------------------------------+
 | Envoyer notifications système  | Permet de diffuser une notification (titre, message,     |
-|                                  | type) à des utilisateurs ciblés ou à l'ensemble de la    |
-|                                  | base via l'endpoint admin /notify.                       |
+|                                  | type) à des utilisateurs ciblés ou à l'ensemble du       |
+|                                  | réseau.                                                  |
 +----------------------------------+----------------------------------------------------------+
-| Configurer assistant / avatar    | Permet de paramétrer l'assistant vidéo TradeFlow :       |
-|                                  | identifiants HeyGen (avatar, voix), message d'accueil,   |
-|                                  | activation du service et test de génération depuis       |
-|                                  | (/dashboard/admin/assistant-avatar).                     |
+| Configurer assistant / avatar    | Permet de paramétrer l'assistant vidéo TradeFlow :        |
+|                                  | avatar, voix, message d'accueil, activation du service   |
+|                                  | et test de génération de réponses.                       |
 +----------------------------------+----------------------------------------------------------+
-| Accès transversal aux cockpits   | L'administrateur peut naviguer vers les espaces          |
-|                                  | importateur, exportateur, transitaire et courtier        |
-|                                  | (RoleGuard) à des fins de support, démonstration ou      |
-|                                  | formation, sans changer de compte.                       |
+| Accès transversal aux cockpits   | L'administrateur peut consulter les espaces importateur, |
+|                                  | exportateur, transitaire et courtier à des fins de       |
+|                                  | support, démonstration ou formation, sans changer de     |
+|                                  | compte.                                                  |
 +----------------------------------+----------------------------------------------------------+
-| Créer expédition / produits      | Par héritage des droits API, l'administrateur peut       |
-|                                  | également créer des expéditions, gérer des produits,     |
-|                                  | mettre à jour des statuts et valider des documents       |
-|                                  | comme chaque rôle métier le ferait.                      |
+| Créer expédition / produits      | L'administrateur peut également créer des expéditions,   |
+|                                  | gérer des produits, mettre à jour des statuts et valider |
+|                                  | des documents comme chaque rôle métier le ferait.        |
 +----------------------------------+----------------------------------------------------------+
 | Utiliser calculateur logistique  | Permet d'accéder au module calculateur (droits de douane,|
 |                                  | estimation fret) pour assistance aux utilisateurs.       |
@@ -82,13 +85,13 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 | Procurer aide (assistant IA)     | Accès à l'assistant conversationnel TradeFlow et aux     |
 |                                  | métriques d'usage de l'assistant côté administration.    |
 +----------------------------------+----------------------------------------------------------+
-| Se déconnecter                   | Permet de clôturer la session en supprimant le jeton     |
-|                                  | d'authentification depuis le profil ou la barre latérale.|
+| Se déconnecter                   | Permet de clôturer la session utilisateur de manière     |
+|                                  | sécurisée depuis le profil ou le menu de navigation.    |
 +----------------------------------+----------------------------------------------------------+
 
 Remarques :
-- L'administrateur dispose des privilèges cumulés de tous les rôles métier via l'API et
-  l'interface ; en production, ces droits doivent être réservés à un petit nombre de comptes.
+- L'administrateur dispose des privilèges cumulés de tous les rôles métier ; en production,
+  ces droits doivent être réservés à un petit nombre de comptes.
 - Aucun module de facturation / abonnement n'est exposé (hors périmètre du projet).
 - Scénario de démonstration : admin@scenario.globaltradex.com — supervision du réseau
   et des cinq comptes scénario (Klaus, Fatima, Karim, Amira).

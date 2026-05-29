@@ -365,6 +365,8 @@ def update_shipment_status(
         s.eta_update = patch["eta_update"]
 
     s.status = new_st
+    if current.role == UserRole.transitaire and getattr(s, "forwarder_user_id", None) is None:
+        s.forwarder_user_id = current.id
     db.flush()
 
     msg = f"Status changed to {new_st.value}. {notes_for_message}".strip()

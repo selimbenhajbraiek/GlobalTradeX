@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, CheckCircle, Clock, FileText, Ship, X } from "lucide-react";
 
+import { PredictiveBiPanel } from "@/components/analytics/PredictiveBiPanel";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { analyticsApi, documentsApi, shipmentsApi } from "@/lib/api";
 
@@ -263,6 +265,16 @@ export function TransitaireCockpit() {
           informed.
         </p>
       </header>
+
+      <section className="rounded-xl border border-kinetic/20 bg-card p-4 shadow-paper md:p-6">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm font-medium text-foreground">Aperçu BI prédictif</p>
+          <Link href="/dashboard/transitaire/predictive" className="text-xs font-medium text-kinetic hover:underline">
+            Voir l&apos;analyse complète →
+          </Link>
+        </div>
+        <PredictiveBiPanel compact />
+      </section>
 
       {toast ? (
         <div

@@ -1,4 +1,7 @@
-"""Populate MySQL (or configured DB) with scenario data only. Run from backend/: python seed_db.py"""
+"""Populate DB with scenario data (sans purge). Run from backend/: python seed_db.py
+
+Pour tout effacer puis réinjecter avec barre de progression : python reset_and_seed_db.py
+"""
 
 import os
 from datetime import date
@@ -292,6 +295,7 @@ def seed_gtx_shipment(db) -> None:
         gtx = Shipment(
             owner_id=klaus.id,
             exporter_user_id=fatima.id,
+            forwarder_user_id=karim.id if karim else None,
             reference=GTX_TUNISOLIVE_REF,
             origin="Sfax, Tunisia",
             destination="Hamburg, Germany",

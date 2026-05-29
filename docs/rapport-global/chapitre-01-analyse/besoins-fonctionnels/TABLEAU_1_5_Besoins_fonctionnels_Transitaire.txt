@@ -9,21 +9,27 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 | S'authentifier                   | Pour accéder à son espace, le transitaire s'authentifie  |
 |                                  | avec son adresse e-mail et son mot de passe. L'accès     |
 |                                  | n'est accordé qu'après vérification de l'adresse e-mail. |
-|                                  | Un jeton JWT sécurisé ouvre le cockpit fret              |
-|                                  | (/dashboard/transitaire).                                |
+|                                  | Après authentification, il est redirigé vers son         |
+|                                  | tableau de bord fret (transitaire) sécurisé.             |
 +----------------------------------+----------------------------------------------------------+
 | Récupérer mot de passe           | En cas d'oubli, le transitaire demande un lien de        |
-|                                  | réinitialisation par e-mail (SMTP). Il définit alors un  |
-|                                  | nouveau mot de passe via une page dédiée sécurisée.      |
+|                                  | réinitialisation reçu par e-mail et définit un nouveau   |
+|                                  | mot de passe sur une page sécurisée.                     |
 +----------------------------------+----------------------------------------------------------+
 | Gérer profil                     | Le transitaire peut consulter et mettre à jour ses       |
 |                                  | informations personnelles (nom complet, téléphone,       |
 |                                  | avatar) depuis l'espace Profil.                        |
 +----------------------------------+----------------------------------------------------------+
-| Consulter cockpit fret           | Permet d'afficher un tableau de bord opérationnel :      |
-|                                  | indicateurs (expéditions en transit, retards, livrées   |
-|                                  | du jour), graphiques d'activité et onglets « actives » / |
-|                                  | « complétées » pour prioriser le traitement.             |
+| Consulter cockpit fret (KPIs)    | Cockpit **Data-Driven** : (1) **taux de retard à         |
+|                                  | l'arrivée** réseau, (2) **temps moyen de dédouanement**, |
+|                                  | (3) **conformité documentaire** des dossiers gérés, (4)  |
+|                                  | **coût estimé vs réel** agrégé. Vues opérationnelles :   |
+|                                  | en transit, livrées du jour, onglets actives/complétées. |
++----------------------------------+----------------------------------------------------------+
+| Consulter BI prédictif retards   | Accès au module **analyse prédictive des retards** :     |
+|                                  | probabilité de retard par expédition active, performance |
+|                                  | historique du transitaire assigné, risque par corridor   |
+|                                  | logistique et synthèse exécutive en langage naturel.     |
 +----------------------------------+----------------------------------------------------------+
 | Consulter expéditions actives    | Permet de lister l'ensemble des dossiers d'expédition    |
 |                                  | du réseau (vue transitaire) : référence GTX, statut,     |
@@ -32,11 +38,11 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 | Consulter détail d'expédition    | Permet d'ouvrir la fiche d'un dossier sélectionné afin   |
 |                                  | d'en visualiser le contexte complet avant intervention.  |
 +----------------------------------+----------------------------------------------------------+
-| Mettre à jour statut expédition  | Permet de faire évoluer le statut logistique selon une   |
-|                                  | machine à états métier : transitions autorisées uniquement|
-|                                  | (ex. pending → in_transit ; in_transit → customs_hold,   |
-|                                  | delivered, delayed ; customs_hold → in_transit). Les     |
-|                                  | transitions invalides sont rejetées par l'API.           |
+| Mettre à jour statut expédition  | Permet de faire évoluer le statut logistique selon les   |
+|                                  | règles métier : seules les transitions autorisées sont   |
+|                                  | acceptées (ex. en attente → en transit ; en transit →    |
+|                                  | blocage douanier, livré ou retard ; blocage douanier →     |
+|                                  | en transit). Les changements invalides sont refusés.     |
 +----------------------------------+----------------------------------------------------------+
 | Enrichir informations transport  | Lors d'une mise à jour de statut, permet de renseigner   |
 |                                  | des notes opérationnelles, le nom du navire, le numéro   |
@@ -44,7 +50,7 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 |                                  | parties prenantes.                                       |
 +----------------------------------+----------------------------------------------------------+
 | Notifier parties prenantes       | Chaque changement de statut déclenche automatiquement   |
-|                                  | une notification à l'importateur (owner) et, le cas     |
+|                                  | une notification à l'importateur commanditaire et, le cas |
 |                                  | échéant, à l'exportateur rattaché au dossier.            |
 +----------------------------------+----------------------------------------------------------+
 | Téléverser documents logistiques | Permet de déposer sur un dossier les pièces de transport|
@@ -75,8 +81,8 @@ Projet : GlobalTradeX — Plateforme de pilotage du commerce international
 |                                  | questions sur les statuts, les documents de transport    |
 |                                  | et les procédures logistiques.                           |
 +----------------------------------+----------------------------------------------------------+
-| Se déconnecter                   | Permet de clôturer la session en supprimant le jeton     |
-|                                  | d'authentification depuis le profil ou la barre latérale.|
+| Se déconnecter                   | Permet de clôturer la session utilisateur de manière     |
+|                                  | sécurisée depuis le profil ou le menu de navigation.    |
 +----------------------------------+----------------------------------------------------------+
 
 Remarques :
@@ -84,7 +90,7 @@ Remarques :
   l'importateur et l'exportateur sont en lecture seule sur ce point.
 - Le transitaire ne gère pas le catalogue produits ni la validation douanière officielle des pièces.
 - Scénario de démonstration : Karim Mansour (MedTrans) — GTX-20240315-00042 :
-  customs_hold → in_transit (navire « Tunis Star », voyage HLU-TN-2024-0318) → delivered.
+  blocage douanier → en transit (navire « Tunis Star », voyage HLU-TN-2024-0318) → livré.
 
 ================================================================================
 Fin du tableau 1.5

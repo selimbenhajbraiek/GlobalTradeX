@@ -101,7 +101,7 @@ Format : ID | Fonctionnalité | User Story | Priorité
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
 |     |                                | 5.7  | En tant qu'Courtier en douane, je peux lancer une        | Élevée   |
 |     |                                |      | vérification automatique d'un document par intelligence  |          |
-|     |                                |      | artificielle (OpenAI).                                   |          |
+|     |                                |      | artificielle (Gemini 2.5 Flash).                         |          |
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
 |     |                                | 5.8  | En tant qu'Courtier en douane, je peux valider ou        | Élevée   |
 |     |                                |      | rejeter un document en enregistrant un motif de rejet.   |          |
@@ -122,17 +122,18 @@ Format : ID | Fonctionnalité | User Story | Priorité
 |     |                                | 7.2  | En tant qu'Administrateur, je peux visualiser une carte  | Moyenne  |
 |     |                                |      | mondiale des flux et l'activité récente du réseau.       |          |
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
-| 8   | Cockpits métier                | 8.1  | En tant qu'Importateur, je peux consulter mon cockpit    | Élevée   |
-|     |                                |      | (KPIs commandes, douane, exceptions, expéditions actives). |          |
+| 8   | Cockpits métier (KPIs)         | 8.1  | En tant qu'Importateur, je consulte un cockpit Data-     | Élevée   |
+|     |                                |      | Driven : retard à l'arrivée, dédouanement, conformité    |          |
+|     |                                |      | documentaire, coût estimé vs réel + expéditions actives. |          |
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
-|     |                                | 8.2  | En tant qu'Exportateur, je peux consulter mon cockpit    | Élevée   |
-|     |                                |      | (revenus, clients, recommandations commerciales).        |          |
+|     |                                | 8.2  | En tant qu'Exportateur, je consulte un cockpit avec les  | Élevée   |
+|     |                                |      | mêmes KPIs sur mes expéditions sortantes et mon catalogue.|          |
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
-|     |                                | 8.3  | En tant qu'Transitaire, je peux consulter mon cockpit    | Élevée   |
-|     |                                |      | fret (transit, retards, livraisons, onglets actif/terminé).|        |
+|     |                                | 8.3  | En tant qu'Transitaire, je consulte mon cockpit fret    | Élevée   |
+|     |                                |      | (KPIs opérationnels + accès BI prédictif retards).       |          |
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
-|     |                                | 8.4  | En tant qu'Courtier en douane, je peux consulter mon     | Élevée   |
-|     |                                |      | cockpit douane (déclarations, alertes, juridictions).    |          |
+|     |                                | 8.4  | En tant qu'Courtier en douane, je consulte mon cockpit   | Élevée   |
+|     |                                |      | douane (conformité docs, dédouanement, file de revue).  |          |
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
 | 9   | Notifications                  | 9.1  | En tant qu'Importateur, Exportateur, Transitaire,        | Élevée   |
 |     |                                |      | Courtier en douane et Administrateur, je peux consulter  |          |
@@ -174,21 +175,34 @@ Format : ID | Fonctionnalité | User Story | Priorité
 |     |                                | 12.4 | En tant qu'Administrateur, je peux supprimer un compte   | Élevée   |
 |     |                                |      | utilisateur (sauf le mien).                              |          |
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
-| 13  | Analytics                      | 13.1 | En tant qu'Administrateur, je peux consulter les         | Élevée   |
-|     |                                |      | statistiques globales du réseau (expéditions, documents, |          |
-|     |                                |      | délais, indicateurs agrégés).                            |          |
+| 13  | Analytics & BI (OLAP)          | 13.1 | En tant qu'Administrateur, je consulte les analytics     | Élevée   |
+|     |                                |      | globales (couche OLAP) : agrégats expéditions, documents,|          |
+|     |                                |      | délais et KPIs réseau via /api/analytics.                |          |
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
 |     |                                | 13.2 | En tant qu'Importateur, Exportateur, Transitaire et       | Moyenne  |
-|     |                                |      | Courtier en douane, je peux consulter les analytics      |          |
-|     |                                |      | liées à mon périmètre d'activité.                        |          |
+|     |                                |      | Courtier, je consulte les analytics de mon périmètre     |          |
+|     |                                |      | (Data Mart logique par rôle).                            |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 13.3 | En tant qu'Administrateur et Transitaire, je consulte la | Élevée   |
+|     |                                |      | BI prédictive des retards (score, corridors, performance|          |
+|     |                                |      | transitaire, synthèse Gemini) via predictive-bi.         |          |
++-----+--------------------------------+------+----------------------------------------------------------+----------+
+|     |                                | 13.4 | En tant que Développeur / équipe, le pipeline ELT extrait| Moyenne  |
+|     |                                |      | les données OLTP (MySQL) et les transforme en indicateurs|          |
+|     |                                |      | JSON sans mélanger les écritures transactionnelles.      |          |
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
 | 14  | Vitrine publique               | 14.1 | En tant qu'Internaute, je peux consulter la page vitrine  | Faible   |
 |     |                                |      | (landing) présentant les capacités de GlobalTradeX.      |          |
 +-----+--------------------------------+------+----------------------------------------------------------+----------+
 
+Architecture données (Chapitre 2) :
+  - OLTP : MySQL (SQLAlchemy) — modules 1-7, 12
+  - OLAP : services analytics + bi_delay_prediction — modules 8, 13
+  - Voir docs/rapport-global/chapitre-02-preparation/02_ARCHITECTURE_DES_DONNEES.md
+
 Synthèse des priorités :
-  - Élevée  : 35 user stories
-  - Moyenne : 11 user stories
+  - Élevée  : 36 user stories
+  - Moyenne : 12 user stories
   - Faible  : 1 user story
 
 Répartition par release (indicative, alignée TABLEAU 2.2) :

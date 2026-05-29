@@ -234,7 +234,7 @@ sequenceDiagram
 | Connexion 403 « e-mail non vérifié » | Comptes scénario/démo, ou compléter `/verify-email` |
 | Expédition GTX vide | Relancer `python seed_db.py` |
 | Pas de messages | Le seed crée des fils ; en envoyer un en live |
-| Échec vérification IA | Définir `OPENAI_API_KEY` dans `.env` backend |
+| Échec vérification IA | Définir `GOOGLE_API_KEY` dans `.env` backend |
 | 401 sur le dashboard | Effacer les cookies ; se reconnecter |
 | Mauvais cockpit de rôle | Le middleware redirige vers le rôle de l’utilisateur |
 

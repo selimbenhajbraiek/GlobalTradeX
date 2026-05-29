@@ -57,7 +57,7 @@ def main() -> None:
             **kwargs,
         )
         print("Migrations applied.")
-    print("Next: python seed_db.py")
+    print("Next: python reset_and_seed_db.py  (ou python seed_db.py)")
 
 
 if __name__ == "__main__":

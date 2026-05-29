@@ -121,6 +121,7 @@ export const analyticsApi = {
   global: () => api.get("/api/analytics/global"),
   shipments: () => api.get("/api/analytics/shipments"),
   documents: () => api.get("/api/analytics/documents"),
+  predictiveBi: (params) => api.get("/api/analytics/predictive-bi", { params }),
 };
 
 export const notificationsApi = {

@@ -1,0 +1,33 @@
+================================================================================
+TABLEAU 1.9 – Besoins fonctionnels de l'acteur « Chatbot » (TradeFlow)
+Projet : GlobalTradeX — Plateforme de pilotage du commerce international
+================================================================================
+
+L'assistant **TradeFlow** matérialise l'acteur « Chatbot » : aide conversationnelle
+intégrée à la plateforme (détails techniques au Chapitre 2).
+
++----------------------------------+----------------------------------------------------------+
+| Fonctionnalité                   | Description                                              |
++----------------------------------+----------------------------------------------------------+
+| Assister utilisateurs            | Fournir une assistance automatique contextuelle selon le |
+|                                  | rôle de l'utilisateur et ses expéditions récentes.       |
++----------------------------------+----------------------------------------------------------+
+| Répondre aux questions           | Répondre aux questions fréquentes sur les procédures,    |
+|                                  | documents et statuts d'expédition.                        |
++----------------------------------+----------------------------------------------------------+
+| Orienter navigation                | Guider l'utilisateur vers l'écran approprié (cockpit,    |
+|                                  | calculateur, documents, analyse prédictive).             |
++----------------------------------+----------------------------------------------------------+
+| Fournir informations               | Expliquer les services GlobalTradeX et aider à lire les  |
+|                                  | indicateurs KPI affichés sur les tableaux de bord.       |
++----------------------------------+----------------------------------------------------------+
+| Notifier utilisateurs              | Rappels et notifications en complément des alertes       |
+|                                  | métier automatiques.                                     |
++----------------------------------+----------------------------------------------------------+
+| Support en temps réel              | Réponses instantanées par chat ; option d'assistant      |
+|                                  | vidéo et saisie vocale si configuré par l'administrateur.|
++----------------------------------+----------------------------------------------------------+
+
+================================================================================
+Fin du tableau 1.9
+================================================================================
